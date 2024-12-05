@@ -1,0 +1,49 @@
+name: Backend deploy
+
+on:
+  [workflow_dispatch]
+
+  #push:
+  #  branches: [ "main" ]
+  #  paths:
+  #    - 'backend/src/**'
+  #pull_request:
+  #  branches: [ "main" ]
+  #  paths:
+  #    - 'backend/src/**'
+
+jobs:
+  publish_images:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Restore dependencies
+        run: dotnet restore ./backend/src/
+      - name: Build & publish
+        run: |
+          dotnet build --no-restore ./backend/src/
+          dotnet publish -c Release ./backend/src/
+      - name: Build docker image
+        run: docker build . -t supix/ghactiontrial:latest -f ./backend/docker/Dockerfile
+      - name: Publish docker image to Docker hub
+        run: |
+          docker login -u supix -p ${{ secrets.DOCKER_HUB_TOKEN }}
+          docker push supix/ghactiontrial:latest
+      # This step will be activated once the deploy server will be set up
+      # - name: Deploy to Server
+      #   uses: easingthemes/ssh-deploy@main
+      #   with:
+      #     SCRIPT_BEFORE: |
+      #       echo ${{ secrets.ESC_PWD }} | sudo -S su -
+      #     SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      #     ARGS: "-rlgoDzvc -i"
+      #     SOURCE: "frontend/docker/"
+      #     REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+      #     REMOTE_USER: ${{ secrets.REMOTE_USER }}
+      #     TARGET: "/tmp"
+      #     # EXCLUDE: "/dist/, /node_modules/"
