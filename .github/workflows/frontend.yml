@@ -27,7 +27,7 @@ jobs:
       - run: npm ci --prefix src/frontend/src
       - run: npm run build --configuration=production  --prefix src/frontend/src
       - name: Build docker image
-        run: docker build . -t supix/innovaprev_fe:latest -f ./frontend/docker/Dockerfile
+        run: docker build . -t supix/innovaprev_fe:latest -f ./src/frontend/docker/Dockerfile
       - name: Publish docker image to Docker hub
         run: |
           docker login -u supix -p ${{ secrets.DOCKER_HUB_TOKEN }}
