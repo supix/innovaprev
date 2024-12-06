@@ -2,6 +2,7 @@ import {Component} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {ApiService} from '../services/api.service';
+import {BillingDataPayload, DataPayload, PersonalDataPayload, WindowEstimateRowPayload} from '../models';
 
 @Component({
   selector: 'app-prev-form',
@@ -12,22 +13,22 @@ import {ApiService} from '../services/api.service';
 })
 export class PrevFormComponent {
   // Personal data model
-  personalData = {
+  personalData: PersonalDataPayload = {
     firstName: '',
     lastName: '',
-    address: '',
+    address: ''
   };
 
   // Billing data model
-  billingData = {
+  billingData: BillingDataPayload = {
     vatNumber: '',
     taxCode: '',
-    billingAddress: '',
+    billingAddress: ''
   };
 
   // Window estimate data model
-  rows: Array<{ height: number; width: number; color: string; quantity: number }> = [
-    {height: 100, width: 200, color: 'White', quantity: 1},
+  rows: WindowEstimateRowPayload[] = [
+    {height: 100, width: 200, color: 'White', quantity: 1}
   ];
 
   // Calculated price
@@ -37,29 +38,30 @@ export class PrevFormComponent {
   }
 
   // Action: Calculate the price
-  calculatePrice() {
+  calculatePrice(): void {
     const payload = this.buildPayload();
-    this.apiService.getPrice(payload).subscribe((price) => {
-      this.price = price;
+    this.apiService.getPrice(payload).subscribe(({totalEstimatedPrice}) => {
+      this.price = totalEstimatedPrice;
     });
   }
 
   // Action: Download the PDF
-  downloadPdf() {
+  downloadPdf(): void {
     const payload = this.buildPayload();
     this.apiService.downloadPdf(payload).subscribe((response) => {
       const blob = new Blob([response], {type: 'application/pdf'});
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
+      const timestamp = Date.now();
       a.href = url;
-      a.download = 'estimate.pdf';
+      a.download = `estimate-${timestamp}.pdf`;
       a.click();
       window.URL.revokeObjectURL(url);
     });
   }
 
   // Build payload for API
-  private buildPayload() {
+  private buildPayload(): DataPayload {
     return {
       personalData: this.personalData,
       billingData: this.billingData,
@@ -68,12 +70,12 @@ export class PrevFormComponent {
   }
 
   // Add a new row to the window estimate table
-  addRow() {
+  addRow(): void {
     this.rows.push({height: 0, width: 0, color: '', quantity: 0});
   }
 
   // Remove a specific row from the window estimate table
-  removeRow(index: number) {
+  removeRow(index: number): void {
     this.rows.splice(index, 1);
   }
 }
