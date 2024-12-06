@@ -1,0 +1,104 @@
+<div class="container mt-5">
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <button class="btn btn-primary me-2" (click)="calculatePrice()">Calcola</button>
+      <button class="btn btn-secondary" (click)="downloadPdf()">Scarica</button>
+    </div>
+    <div class="h3 text-success">Prezzo: {{ price !== null ? price + ' €' : '-' }}</div>
+  </div>
+
+  <!-- Form with Tabs -->
+  <ul class="nav nav-tabs" id="myTab" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button class="nav-link active" id="anagrafica-tab" data-bs-toggle="tab" data-bs-target="#anagrafica"
+              type="button" role="tab">
+        Sezione Anagrafica
+      </button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="fatturazione-tab" data-bs-toggle="tab" data-bs-target="#fatturazione" type="button"
+              role="tab">
+        Sezione Fatturazione
+      </button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="finestra-tab" data-bs-toggle="tab" data-bs-target="#finestra" type="button"
+              role="tab">
+        Sezione Finestra
+      </button>
+    </li>
+  </ul>
+  <div class="tab-content" id="myTabContent">
+    <!-- Tab 1: Sezione Anagrafica -->
+    <div class="tab-pane fade show active" id="anagrafica" role="tabpanel">
+      <h3 class="text-center mt-3">Sezione Anagrafica</h3>
+      <form class="row g-3">
+        <div class="col-md-6">
+          <label for="firstName" class="form-label">Nome</label>
+          <input type="text" id="firstName" [(ngModel)]="personalData.firstName" class="form-control" name="firstName"/>
+        </div>
+        <div class="col-md-6">
+          <label for="lastName" class="form-label">Cognome</label>
+          <input type="text" id="lastName" [(ngModel)]="personalData.lastName" class="form-control" name="lastName"/>
+        </div>
+        <div class="col-12">
+          <label for="address" class="form-label">Indirizzo</label>
+          <input type="text" id="address" [(ngModel)]="personalData.address" class="form-control" name="address"/>
+        </div>
+      </form>
+    </div>
+
+    <!-- Tab 2: Sezione Fatturazione -->
+    <div class="tab-pane fade" id="fatturazione" role="tabpanel">
+      <h3 class="text-center mt-3">Sezione Fatturazione</h3>
+      <form class="row g-3">
+        <div class="col-md-6">
+          <label for="vatNumber" class="form-label">Partita IVA</label>
+          <input type="text" id="vatNumber" [(ngModel)]="billingData.vatNumber" class="form-control" name="vatNumber"/>
+        </div>
+        <div class="col-md-6">
+          <label for="taxCode" class="form-label">Codice Fiscale</label>
+          <input type="text" id="taxCode" [(ngModel)]="billingData.taxCode" class="form-control" name="taxCode"/>
+        </div>
+        <div class="col-12">
+          <label for="billingAddress" class="form-label">Indirizzo di Fatturazione</label>
+          <input type="text" id="billingAddress" [(ngModel)]="billingData.billingAddress" class="form-control"
+                 name="billingAddress"/>
+        </div>
+      </form>
+    </div>
+
+    <!-- Tab 3: Sezione Finestra -->
+    <div class="tab-pane fade" id="finestra" role="tabpanel">
+      <h3 class="text-center mt-3">Sezione Finestra</h3>
+      <form>
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <thead class="table-light">
+            <tr>
+              <th>Height</th>
+              <th>Width</th>
+              <th>Color</th>
+              <th>Quantity</th>
+              <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let row of rows; let i = index">
+              <td><input type="number" [(ngModel)]="row.height" class="form-control" name="height{{ i }}"/></td>
+              <td><input type="number" [(ngModel)]="row.width" class="form-control" name="width{{ i }}"/></td>
+              <td><input type="text" [(ngModel)]="row.color" class="form-control" name="color{{ i }}"/></td>
+              <td><input type="number" [(ngModel)]="row.quantity" class="form-control" name="quantity{{ i }}"/></td>
+              <td>
+                <button type="button" class="btn btn-danger btn-sm" (click)="removeRow(i)">Remove</button>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+        <button type="button" class="btn btn-primary mt-3" (click)="addRow()">Add Row</button>
+      </form>
+    </div>
+  </div>
+</div>
