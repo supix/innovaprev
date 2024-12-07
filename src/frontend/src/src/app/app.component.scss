@@ -5,5 +5,19 @@
   justify-content: flex-start;
   min-height: 100vh;
   padding: 1rem;
-  background-color: #f8f9fa; /* Light background color */
+  background-color: #f8f9fa; /* Light background color */}
+
+header .logo {
+  max-width: 120px;
+  height: auto;
+  margin-right: 20px;
+}
+
+header h1 {
+  margin-bottom: 0.5rem;
+}
+
+header p {
+  font-size: 0.9rem;
+  color: #6c757d;
 }

@@ -1,0 +1,50 @@
+{
+  "personalData": {
+    "companyName": "ABC Srl",
+    "address": "Via Roma 123, Milano",
+    "vat": "IT12345678901",
+    "phone": "+39 345 6789012",
+    "mail": "info@abc.it",
+    "orderNumber": "ORD-20231234"
+  },
+  "productData": {
+    "product": "Finestra Scorrevole",
+    "glassStopper": true,
+    "windowSlide": false,
+    "internalColor": "Bianco",
+    "externalColor": "Grigio",
+    "accessoryColor": "Nero",
+    "climateZone": "A",
+    "notes": "Vetri antisfondamento richiesti"
+  },
+  "windowsData": [
+    {
+      "position": "1",
+      "height": 1500,
+      "width": 1200,
+      "quantity": 2,
+      "windowType": "Scorrevole",
+      "openingType": "Interna",
+      "glassType": "Doppio Vetro",
+      "crosspiece": "No",
+      "leftTrim": 10,
+      "rightTrim": 10,
+      "upperTrim": 15,
+      "belowThreshold": 5
+    },
+    {
+      "position": "2",
+      "height": 1800,
+      "width": 1400,
+      "quantity": 1,
+      "windowType": "Battente",
+      "openingType": "Esterna",
+      "glassType": "Triplo Vetro",
+      "crosspiece": "Sì",
+      "leftTrim": 8,
+      "rightTrim": 8,
+      "upperTrim": 10,
+      "belowThreshold": 6
+    }
+  ]
+}
