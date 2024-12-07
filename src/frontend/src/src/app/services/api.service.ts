@@ -1,17 +1,15 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
-import {EnvService} from './env.service';
 import {DataPayload, WindowEstimateResponse} from '../models';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ApiService {
-  private readonly baseUrl: string;
+  private readonly baseUrl: string = '/api';
 
-  constructor(private http: HttpClient, envService: EnvService) {
-    this.baseUrl = envService.apiBaseUrl;
+  constructor(private http: HttpClient) {
   }
 
   // API to get the price

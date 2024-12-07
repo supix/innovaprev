@@ -1,0 +1,19 @@
+{
+  "/api/download-pdf": {
+    "target": "http://localhost:4200/assets/sample.pdf",
+    "secure": false,
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/api/download-pdf": ""
+    }
+  },
+  "/api": {
+    "target": "http://localhost:4201",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug",
+    "pathRewrite": {
+      "^/api": "/mock-api"
+    }
+  }
+}

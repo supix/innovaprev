@@ -171,7 +171,7 @@ export class PrevFormComponent {
     return {
       personalData: this.form.value.personalData,
       productData: this.form.value.productData,
-      windowsData: this.form.value.windows,
+      windowsData: this.form.value.windowsData,
     };
   }
 

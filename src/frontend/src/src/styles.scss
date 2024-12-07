@@ -1,8 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
-@import "bootstrap/scss/bootstrap";
-
 @import 'custom-variables.scss';
-
 
 .btn-primary {
   background-color: $primary;
@@ -83,4 +80,3 @@
     color: rgba(255, 255, 255, 0.7);
   }
 }
-
