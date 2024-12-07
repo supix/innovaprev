@@ -5,11 +5,11 @@
       <button class="btn btn-primary me-2" (click)="calculatePrice()">Calcola</button>
       <button class="btn btn-secondary" (click)="downloadPdf()">Scarica</button>
     </div>
-    <div class="h3 text-success">Prezzo: {{ price !== null ? price + ' €' : '-' }}</div>
+    <div class="price-display">Prezzo: {{ price !== null ? price + ' €' : '-' }}</div>
   </div>
 
   <!-- Form with Tabs -->
-  <form [formGroup]="form" class="row g-3">
+  <form [formGroup]="form" class="row g-3 innova-form">
     <ul class="nav nav-tabs" id="tab" role="tablist">
       <li class="nav-item" role="presentation">
         <button class="nav-link active" id="personal-tab" data-bs-toggle="tab" data-bs-target="#personalSection"
@@ -59,7 +59,7 @@
           </div>
 
           <!-- Indirizzo -->
-          <div class="col-6">
+          <div class="col-md-6">
             <label for="address" class="form-label">Indirizzo</label>
             <input type="text" id="address" formControlName="address" class="form-control" name="address"
                    [ngClass]="{ 'is-invalid': submitted && form.get('personalData.address')?.errors }"/>
@@ -70,7 +70,7 @@
           </div>
 
           <!-- Telefono -->
-          <div class="col-3">
+          <div class="col-md-3">
             <label for="phone" class="form-label">Telefono</label>
             <input type="text" id="phone" formControlName="phone" class="form-control" name="phone"
                    [ngClass]="{ 'is-invalid': submitted && form.get('personalData.phone')?.errors }"/>
@@ -81,7 +81,7 @@
           </div>
 
           <!-- Email -->
-          <div class="col-3">
+          <div class="col-md-3">
             <label for="mail" class="form-label">Email</label>
             <input type="email" id="mail" formControlName="mail" class="form-control" name="mail"
                    [ngClass]="{ 'is-invalid': submitted && form.get('personalData.mail')?.errors }"/>
@@ -195,8 +195,8 @@
       <!-- Windows Data -->
       <div class="tab-pane fade" id="measurementsSection" role="tabpanel">
         <div formArrayName="windowsData" class="row g-3 mt-1">
-          <div class="table-responsive">
-            <table class="table table-bordered">
+          <div class="table-responsive d-none d-lg-block">
+            <table class="table table-sm table-bordered">
               <thead>
               <tr>
                 <th rowspan="2">Pos.</th>
@@ -315,6 +315,113 @@
               </tr>
               </tbody>
             </table>
+          </div>
+          <!-- Responsive Layout -->
+          <div class="d-block d-lg-none">
+            <div *ngFor="let row of windows.controls; let i = index" [formGroupName]="i" class="card mb-3 p-3">
+              <div class="mb-2">
+                <label class="form-label">Posizione</label>
+                <input type="text" formControlName="position" class="form-control" readonly/>
+              </div>
+              <div class="mb-2">
+                <label class="form-label">Larghezza</label>
+                <input type="text" inputmode="numeric" formControlName="width" class="form-control"
+                       [ngClass]="{ 'is-invalid': hasTriggeredValidation && row.get('width')?.errors }"
+                       (input)="onRowInputNumber($event, i, 'width')"/>
+                <div *ngIf="(row.get('width')?.touched || hasTriggeredValidation) && row.get('width')?.invalid"
+                     class="invalid-feedback">
+                  La larghezza è obbligatoria.
+                </div>
+              </div>
+              <div class="mb-2">
+                <label class="form-label">Altezza</label>
+                <input type="text" inputmode="numeric" formControlName="height" class="form-control"
+                       [ngClass]="{ 'is-invalid': hasTriggeredValidation && row.get('height')?.errors }"
+                       (input)="onRowInputNumber($event, i, 'height')"/>
+                <div *ngIf="(row.get('height')?.touched || hasTriggeredValidation) && row.get('height')?.invalid"
+                     class="invalid-feedback">
+                  L'altezza è obbligatoria.
+                </div>
+              </div>
+              <div class="mb-2">
+                <label class="form-label">Quantità</label>
+                <input type="text" inputmode="numeric" formControlName="quantity" class="form-control"
+                       [ngClass]="{ 'is-invalid': hasTriggeredValidation && row.get('quantity')?.errors }"
+                       (input)="onRowInputNumber($event, i, 'quantity')"/>
+                <div *ngIf="(row.get('quantity')?.touched || hasTriggeredValidation) && row.get('quantity')?.invalid"
+                     class="invalid-feedback">
+                  La quantità è obbligatoria.
+                </div>
+              </div>
+              <div class="mb-2">
+                <label class="form-label">Tipologia</label>
+                <input type="text" formControlName="windowType" class="form-control"
+                       [ngClass]="{ 'is-invalid': hasTriggeredValidation && row.get('windowType')?.errors }"/>
+                <div
+                  *ngIf="(row.get('windowType')?.touched || hasTriggeredValidation) && row.get('windowType')?.invalid"
+                  class="invalid-feedback">
+                  La tipologia è obbligatoria.
+                </div>
+              </div>
+              <div class="mb-2">
+                <label class="form-label">Apertura</label>
+                <input type="text" formControlName="openingType" class="form-control"
+                       [ngClass]="{ 'is-invalid': hasTriggeredValidation && row.get('openingType')?.errors }"/>
+                <div
+                  *ngIf="(row.get('openingType')?.touched || hasTriggeredValidation) && row.get('openingType')?.invalid"
+                  class="invalid-feedback">
+                  L'apertura è obbligatoria.
+                </div>
+              </div>
+              <div class="mb-2">
+                <label class="form-label">Vetro</label>
+                <input type="text" formControlName="glassType" class="form-control"
+                       [ngClass]="{ 'is-invalid': hasTriggeredValidation && row.get('glassType')?.errors }"/>
+                <div
+                  *ngIf="(row.get('glassType')?.touched || hasTriggeredValidation) && row.get('glassType')?.invalid"
+                  class="invalid-feedback">
+                  Il vetro è obbligatorio.
+                </div>
+              </div>
+              <div class="mb-2">
+                <label class="form-label">Traverso</label>
+                <input type="text" formControlName="crosspiece" class="form-control"
+                       [ngClass]="{ 'is-invalid': hasTriggeredValidation && row.get('crosspiece')?.errors }"/>
+                <div
+                  *ngIf="(row.get('crosspiece')?.touched || hasTriggeredValidation) && row.get('crosspiece')?.invalid"
+                  class="invalid-feedback">
+                  Il traverso è obbligatorio.
+                </div>
+              </div>
+
+              <hr class="section-separator" />
+
+              <!-- Rifilo Battuta Section -->
+              <div class="mb-3">
+                <h6 class="form-label">Rifilo Battuta</h6>
+                <div class="row">
+                  <div class="col-6">
+                    <label class="form-label">Sx</label>
+                    <input type="text" inputmode="numeric" formControlName="leftTrim" class="form-control"
+                           (input)="onRowInputNumber($event, i, 'leftTrim')"/></div>
+                  <div class="col-6">
+                    <label class="form-label">Dx</label>
+                    <input type="text" inputmode="numeric" formControlName="rightTrim" class="form-control"
+                           (input)="onRowInputNumber($event, i, 'rightTrim')"/></div>
+                  <div class="col-6 mt-2">
+                    <label class="form-label">Sopra</label>
+                    <input type="text" inputmode="numeric" formControlName="upperTrim" class="form-control"
+                           (input)="onRowInputNumber($event, i, 'upperTrim')"/>
+                  </div>
+                  <div class="col-6 mt-2">
+                    <label class="form-label">Sotto</label>
+                    <input type="text" inputmode="numeric" formControlName="belowThreshold" class="form-control"
+                           (input)="onRowInputNumber($event, i, 'belowThreshold')"/>
+                  </div>
+                </div>
+              </div>
+              <button type="button" class="btn btn-danger w-100" (click)="removeRow(i)">Rimuovi</button>
+            </div>
           </div>
           <button type="button" class="btn btn-primary mt-3"
                   (click)="addRow()"
