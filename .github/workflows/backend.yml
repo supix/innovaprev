@@ -6,11 +6,11 @@ on:
   #push:
   #  branches: [ "main" ]
   #  paths:
-  #    - 'backend/src/**'
+  #    - 'src/backend/src/**'
   #pull_request:
   #  branches: [ "main" ]
   #  paths:
-  #    - 'backend/src/**'
+  #    - 'src/backend/src/**'
 
 jobs:
   publish_images:
@@ -23,13 +23,13 @@ jobs:
         with:
           dotnet-version: 8.0.x
       - name: Restore dependencies
-        run: dotnet restore ./backend/src/
+        run: dotnet restore ./src/backend/src/
       - name: Build & publish
         run: |
-          dotnet build --no-restore ./backend/src/
-          dotnet publish -c Release ./backend/src/
+          dotnet build --no-restore ./src/backend/src/
+          dotnet publish -c Release ./src/backend/src/
       - name: Build docker image
-        run: docker build . -t supix/ghactiontrial:latest -f ./backend/docker/Dockerfile
+        run: docker build . -t supix/ghactiontrial:latest -f ./src/backend/docker/Dockerfile
       - name: Publish docker image to Docker hub
         run: |
           docker login -u supix -p ${{ secrets.DOCKER_HUB_TOKEN }}
