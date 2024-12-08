@@ -30,6 +30,13 @@
 }
 
 .innova-form {
+
+  .tab-is-invalid {
+    color: $danger!important;
+    border-color: $danger;
+    box-shadow: 0 0 0 0.2rem rgba(255, 111, 97, 0.25);
+  }
+
   .form-control.is-invalid {
     border-color: $danger;
     box-shadow: 0 0 0 0.2rem rgba(255, 111, 97, 0.25);

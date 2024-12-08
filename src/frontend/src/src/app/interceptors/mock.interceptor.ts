@@ -1,7 +1,7 @@
 import {HttpInterceptorFn} from '@angular/common/http';
 import {HttpResponse} from '@angular/common/http';
 import {of, throwError} from 'rxjs';
-import {WindowEstimateResponse} from './models';
+import {WindowEstimateResponse} from '../models';
 
 export const mockInterceptor: HttpInterceptorFn = (req, next) => {
   if (req.url.endsWith('/api/get-price') && req.method === 'POST') {

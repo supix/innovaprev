@@ -1,24 +1,30 @@
-import {Component} from '@angular/core';
-import {FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
+import {AbstractControl, FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {CommonModule} from '@angular/common';
 import {ApiService} from '../services/api.service';
 import {DataPayload} from '../models';
 import {Subscription} from 'rxjs';
 
 @Component({
-  selector: 'app-prev-form',
+  selector: 'app-innova-form',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: './prev-form.component.html',
-  styleUrls: ['./prev-form.component.scss'],
+  templateUrl: './innova-form.component.html',
+  styleUrls: ['./innova-form.component.scss'],
 })
-export class PrevFormComponent {
+export class InnovaFormComponent implements AfterViewInit {
+
+  @ViewChild('tab', {static: true}) tabElement!: ElementRef;
+
   form: FormGroup;
   price: number | null = null;
   subscriptions: Subscription[] = [];
 
   submitted: boolean = false;
-  hasTriggeredValidation = false
+  hasTriggeredValidation: boolean = false;
+  isLoading: boolean = false;
+
+  currentTab: TabNames = TabNames.personal;
 
   constructor(private fb: FormBuilder, private apiService: ApiService) {
     this.form = this.fb.group({
@@ -47,6 +53,13 @@ export class PrevFormComponent {
     this.addRow(true);
   }
 
+  ngAfterViewInit(): void {
+    const tabEl = this.tabElement.nativeElement;
+    tabEl.addEventListener('shown.bs.tab', (event: any) => {
+      this.currentTab = event.target.id;
+    });
+  }
+
   // Getter for the windows FormArray
   get windows(): FormArray {
     return this.form.get('windowsData') as FormArray;
@@ -54,6 +67,20 @@ export class PrevFormComponent {
 
   addRowCheck(): boolean {
     return this.hasTriggeredValidation;
+  }
+
+  hasErrorsInPersonalData(): boolean {
+    const personalDataGroup = this.form.get('personalData');
+    return this.currentTab !== TabNames.personal && this.submitted && this.hasErrors(personalDataGroup);
+  }
+
+  hasErrorsInProductData(): boolean {
+    const productDataGroup = this.form.get('productData');
+    return this.currentTab !== TabNames.product && this.submitted && this.hasErrors(productDataGroup);
+  }
+
+  hasErrorsInWindowsData(): boolean {
+    return this.currentTab !== TabNames.measurements && this.hasTriggeredValidation && !this.areAllRowsValid();
   }
 
   areAllRowsValid(): boolean {
@@ -83,23 +110,6 @@ export class PrevFormComponent {
       this.windows.push(row);
       this.updatePositions();
       this.subscribeToRowValueChanges(row, this.windows.length - 1);
-    }
-  }
-
-  // Subscribes to `valueChanges` for a specific row
-  private subscribeToRowValueChanges(row: FormGroup, index: number): void {
-    const subscription = row.valueChanges.subscribe((value) => {
-      this.onRowValueChanged(value, index);
-    });
-    this.subscriptions.push(subscription);
-  }
-
-  // Function executed whenever the values in a row change.
-  private onRowValueChanged(value: any, index: number): void {
-    const row = this.windows.at(index);
-
-    if (row && row.valid && this.hasTriggeredValidation) {
-      this.hasTriggeredValidation = false;
     }
   }
 
@@ -135,13 +145,15 @@ export class PrevFormComponent {
   // Submit the form and calculate the price
   calculatePrice(): void {
     this.submitted = true;
-
+    this.isLoading = true;
     if (this.form.valid) {
       const payload: DataPayload = this.buildPayload();
       this.apiService.getPrice(payload).subscribe(({totalEstimatedPrice}) => {
+        this.isLoading = false;
         this.price = totalEstimatedPrice;
       });
     } else {
+      this.isLoading = false;
       this.markAllTouchedAndValidate();
     }
   }
@@ -149,9 +161,11 @@ export class PrevFormComponent {
   // Download the PDF
   downloadPdf(): void {
     this.submitted = true;
+    this.isLoading = true;
     if (this.form.valid) {
       const payload: DataPayload = this.buildPayload();
       this.apiService.downloadPdf(payload).subscribe((response) => {
+        this.isLoading = false;
         const blob = new Blob([response], {type: 'application/pdf'});
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -162,8 +176,39 @@ export class PrevFormComponent {
         window.URL.revokeObjectURL(url);
       });
     } else {
+      this.isLoading = false;
       this.markAllTouchedAndValidate();
     }
+  }
+
+  // Subscribes to `valueChanges` for a specific row
+  private subscribeToRowValueChanges(row: FormGroup, index: number): void {
+    const subscription = row.valueChanges.subscribe(() => {
+      this.onRowValueChanged(index);
+    });
+    this.subscriptions.push(subscription);
+  }
+
+  // Function executed whenever the values in a row change.
+  private onRowValueChanged(index: number): void {
+    const row = this.windows.at(index);
+
+    if (row && row.valid && this.hasTriggeredValidation) {
+      this.hasTriggeredValidation = false;
+    }
+  }
+
+  // Generic method to check if there are errors in a FormGroup
+  private hasErrors(group: AbstractControl | null): boolean {
+    if (!group) return false;
+
+    if (group.invalid) return true;
+
+    if (group instanceof FormGroup) {
+      return Object.values(group.controls).some(control => this.hasErrors(control));
+    }
+
+    return false;
   }
 
   // Build payload for API
@@ -183,5 +228,11 @@ export class PrevFormComponent {
     }
   }
 
+}
+
+export enum TabNames {
+  personal = 'personal-tab',
+  product = 'product-tab',
+  measurements = 'measurements-tab'
 }
 

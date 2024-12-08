@@ -21,4 +21,5 @@ export class ApiService {
   downloadPdf(payload: DataPayload): Observable<Blob> {
     return this.http.post(`${this.baseUrl}/download-pdf`, payload, {responseType: 'blob'});
   }
+
 }
