@@ -1,16 +1,14 @@
 name: Backend deploy
 
 on:
-  [workflow_dispatch]
-
-  #push:
-  #  branches: [ "main" ]
-  #  paths:
-  #    - 'src/backend/src/**'
-  #pull_request:
-  #  branches: [ "main" ]
-  #  paths:
-  #    - 'src/backend/src/**'
+  push:
+    branches: [ "main" ]
+    paths:
+      - 'src/backend/src/**'
+  pull_request:
+    branches: [ "main" ]
+    paths:
+      - 'src/backend/src/**'
 
 jobs:
   publish_images:
