@@ -11,9 +11,9 @@ namespace InnovaPrev.Controllers
     {
         // POST api/<GetQuoteController>
         [HttpPost]
-        public OutputDto Post([FromBody] Project project)
+        public GetQuoteOutputDto Post([FromBody] Project project)
         {
-            return new OutputDto()
+            return new GetQuoteOutputDto()
             {
                 Quotation = new Quotation()
                 {
@@ -23,7 +23,7 @@ namespace InnovaPrev.Controllers
         }
     }
 
-    public class OutputDto
+    public class GetQuoteOutputDto
     {
         public required Quotation Quotation { get; set; }
     }
