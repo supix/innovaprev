@@ -1,14 +1,15 @@
 import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
 import {AbstractControl, FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {CommonModule} from '@angular/common';
-import {ApiService} from '../services/api.service';
-import {DataPayload} from '../models';
+import {ApiService} from '../../services/api.service';
+import {DataPayload} from '../../models';
 import {Subscription} from 'rxjs';
+import {PriceDisplayComponent} from "../price-display/price-display.component";
 
 @Component({
   selector: 'app-innova-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, PriceDisplayComponent],
   templateUrl: './innova-form.component.html',
   styleUrls: ['./innova-form.component.scss'],
 })
@@ -148,9 +149,9 @@ export class InnovaFormComponent implements AfterViewInit {
     this.isLoading = true;
     if (this.form.valid) {
       const payload: DataPayload = this.buildPayload();
-      this.apiService.getPrice(payload).subscribe(({totalEstimatedPrice}) => {
+      this.apiService.getPrice(payload).subscribe(({quotation}) => {
         this.isLoading = false;
-        this.price = totalEstimatedPrice;
+        this.price = quotation?.amount;
       });
     } else {
       this.isLoading = false;

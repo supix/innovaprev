@@ -1,7 +1,6 @@
-import {HttpInterceptorFn} from '@angular/common/http';
-import {HttpResponse} from '@angular/common/http';
+import {HttpInterceptorFn, HttpResponse} from '@angular/common/http';
 import {of, throwError} from 'rxjs';
-import {WindowEstimateResponse} from '../models';
+import {Quotation, QuotationResponse} from '../models';
 
 export const mockInterceptor: HttpInterceptorFn = (req, next) => {
   if (req.url.endsWith('/api/get-price') && req.method === 'POST') {
@@ -19,13 +18,13 @@ export const mockInterceptor: HttpInterceptorFn = (req, next) => {
       }));
     }
 
-    const totalEstimatedPrice = calculatePrice(body);
+    const amount = calculatePrice(body);
 
-    const mockEstimation: WindowEstimateResponse = {
-      totalEstimatedPrice
+    const quotation: Quotation = {
+      amount
     };
 
-    return of(new HttpResponse({status: 200, body: mockEstimation}));
+    return of(new HttpResponse<QuotationResponse>({status: 200, body: {quotation}}));
   }
   return next(req);
 };

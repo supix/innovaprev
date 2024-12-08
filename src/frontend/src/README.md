@@ -24,8 +24,7 @@
 ```plaintext
 src/
 ├── app/
-│   ├── error-modal/       # Error handling components
-│   ├── innova-form/       # Form logic and validation
+│   ├── components/        # UI components and form logic
 │   ├── interceptors/      # HTTP interceptors
 │   ├── models/            # Data models for API
 │   ├── services/          # API and configuration services

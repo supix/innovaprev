@@ -1,5 +1,5 @@
 import {Injectable, Injector, ComponentRef, createComponent} from '@angular/core';
-import {ErrorModalComponent} from "../error-modal/error-modal.component";
+import {ErrorModalComponent} from "../components/error-modal/error-modal.component";
 import {ApplicationRef} from '@angular/core';
 
 @Injectable({providedIn: 'root'})

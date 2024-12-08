@@ -1,0 +1,3 @@
+<div *ngIf="!isPriceNull" class="price-display badge">{{ formattedIntegerPart }}<span
+  class="price-decimals">,{{ formattedDecimalPart }} €</span></div>
+<div *ngIf="isPriceNull" class="price-display badge">Prezzo: -</div>

@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
-import {DataPayload, WindowEstimateResponse} from '../models';
+import {DataPayload, QuotationResponse} from '../models';
 
 @Injectable({
   providedIn: 'root',
@@ -13,8 +13,8 @@ export class ApiService {
   }
 
   // API to get the price
-  getPrice(payload: DataPayload): Observable<WindowEstimateResponse> {
-    return this.http.post<WindowEstimateResponse>(`${this.baseUrl}/get-price`, payload);
+  getPrice(payload: DataPayload): Observable<QuotationResponse> {
+    return this.http.post<QuotationResponse>(`${this.baseUrl}/getQuote`, payload);
   }
 
   // API to download the PDF
