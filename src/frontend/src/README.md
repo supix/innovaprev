@@ -67,9 +67,9 @@ npm run build
 ```
 
 ### Docker
-1. Build the Docker image:
+1. Build the Docker image from project root:
    ```bash
-   docker build -t innova-fe .
+   docker build -t my-angular-app -f src/frontend/docker/Dockerfile.prod .
    ```
 2. Run the container:
    ```bash
