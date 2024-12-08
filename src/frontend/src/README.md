@@ -38,7 +38,6 @@ src/
 ```
 
 ## Improvements
-- Add dropdowns (select) for managing data types in forms.
 - Enhance accessibility with ARIA roles and better keyboard navigation.
 
 ## Getting Started
@@ -74,7 +73,7 @@ npm run build
    ```
 2. Run the container:
    ```bash
-   docker run -p 8080:80 innova-fe
+   docker run -d -p 8080:80 innova-fe
    ```
 3. Access at `http://localhost:8080`.
 

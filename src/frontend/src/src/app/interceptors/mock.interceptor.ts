@@ -1,9 +1,14 @@
 import {HttpInterceptorFn, HttpResponse} from '@angular/common/http';
-import {of, throwError} from 'rxjs';
-import {Quotation, QuotationResponse} from '../models';
+import {delay, of, throwError} from 'rxjs';
+import {CollectionsResponse, Quotation, QuotationResponse} from '../models';
+import {environment} from '../../environments/environment';
 
 export const mockInterceptor: HttpInterceptorFn = (req, next) => {
-  if (req.url.endsWith('/api/get-price') && req.method === 'POST') {
+  const baseUrl = environment.api.baseUrl;
+  const endpoints = environment.api.endpoints;
+
+  // Mock for /getQuote
+  if (req.url.endsWith(`${baseUrl}${endpoints.getQuote}`) && req.method === 'POST') {
     const body = req.body;
     const validationErrors = validatePayload(body);
 
@@ -19,12 +24,18 @@ export const mockInterceptor: HttpInterceptorFn = (req, next) => {
     }
 
     const amount = calculatePrice(body);
+    const quotation: Quotation = {amount};
 
-    const quotation: Quotation = {
-      amount
-    };
+    return of(new HttpResponse<QuotationResponse>({status: 200, body: {quotation}})).pipe(
+      delay(1000)
+    );
+  }
 
-    return of(new HttpResponse<QuotationResponse>({status: 200, body: {quotation}}));
+  // Mock for /collections
+  if (req.url === `${baseUrl}${endpoints.collections}` && req.method === 'GET') {
+    return of(new HttpResponse<CollectionsResponse>({status: 200, body: getMockCollections()})).pipe(
+      delay(1000)
+    );
   }
   return next(req);
 };
@@ -84,3 +95,51 @@ function validatePayload(payload: any): string[] {
 
   return errors;
 }
+
+// Function to generate mock collections data
+const getMockCollections = (): CollectionsResponse => ({
+  product: [
+    { id: 'PRO_GIALLO', desc: 'Giallo' },
+    { id: 'PRO_VERDE', desc: 'Verde' },
+    { id: 'PRO_ROSSO', desc: 'Rosso' },
+  ],
+  internalColors: [
+    { id: 'IC_GIALLO', desc: 'Giallo' },
+    { id: 'IC_VERDE', desc: 'Verde' },
+    { id: 'IC_ROSSO', desc: 'Rosso' },
+  ],
+  externalColors: [
+    { id: 'EC_GIALLO', desc: 'Giallo' },
+    { id: 'EC_VERDE', desc: 'Verde' },
+    { id: 'EC_ROSSO', desc: 'Rosso' },
+  ],
+  accessoryColors: [
+    { id: 'AC_GIALLO', desc: 'Giallo' },
+    { id: 'AC_VERDE', desc: 'Verde' },
+    { id: 'AC_ROSSO', desc: 'Rosso' },
+  ],
+  climateZones: [
+    { id: 'CZ_GIALLO', desc: 'Giallo' },
+    { id: 'CZ_VERDE', desc: 'Verde' },
+    { id: 'CZ_ROSSO', desc: 'Rosso' },
+  ],
+  windowTypes: [
+    { id: 'WT_GRANDE', desc: 'Grande' },
+    { id: 'WT_MEDIA', desc: 'Media' },
+    { id: 'WT_PICCOLA', desc: 'Piccola' },
+  ],
+  openingTypes: [
+    { id: 'OT_DX', desc: 'SX' },
+    { id: 'OT_SX', desc: 'DX' },
+  ],
+  glassTypes: [
+    { id: 'GT_TRASPARENTE', desc: 'Trasparente' },
+    { id: 'GT_OPACO', desc: 'Opaco' },
+    { id: 'GT_AZZURRATO', desc: 'Azzurrato' },
+  ],
+  crosspieces: [
+    { id: 'CRO_ALTA', desc: 'Alta' },
+    { id: 'CRO_MEDIA', desc: 'Media' },
+    { id: 'CRO_BASSA', desc: 'Bassa' },
+  ],
+});
