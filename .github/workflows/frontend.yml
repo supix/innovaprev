@@ -5,10 +5,12 @@ on:
     branches: [ "main" ]
     paths:
       - 'src/frontend/src/**'
+      - 'src/frontend/docker/'
   pull_request:
     branches: [ "main" ]
     paths:
       - 'src/frontend/src/**'
+      - 'src/frontend/docker/'
 
 jobs:
   publish_images:
