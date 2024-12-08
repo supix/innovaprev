@@ -1,27 +1,83 @@
-# InnovaFe
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.3.11.
+# Innova-FE
 
-## Development server
+**Innova-FE** is a web application designed for calculating, customizing, and downloading estimates. Built with **Angular 17** and styled using **Bootstrap**, the app offers a streamlined user experience for managing personal, billing, and window estimation data.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+## Features
 
-## Code scaffolding
+- **Dynamic Header**:
+  - Buttons for price calculation and PDF download.
+  - Displays the calculated price dynamically.
+- **Multi-Tab Form**:
+  - Separate sections for personal, billing, and window estimate data.
+  - Dynamic row management with robust validation.
+- **API Integration**:
+  - Supports price calculation and timestamped PDF generation.
+  - Configurable base URL for flexible deployment environments.
+- **Error Handling**:
+  - Global error interceptor with dynamic modal for error messages.
+- **Responsive Design**:
+  - Table layout for larger screens; card-based layout for smaller screens.
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+## Folder Structure
 
-## Build
+```plaintext
+src/
+├── app/
+│   ├── error-modal/       # Error handling components
+│   ├── innova-form/       # Form logic and validation
+│   ├── interceptors/      # HTTP interceptors
+│   ├── models/            # Data models for API
+│   ├── services/          # API and configuration services
+│   ├── app.component.*    # Main app component
+│   ├── app.config.*       # Environment-specific configurations
+│   ├── app.routes.ts      # App routing
+├── assets/                # Static assets
+├── environments/          # Environment variables
+├── styles.scss            # Global styles
+└── index.html             # Entry point
+```
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+## Improvements
+- Add dropdowns (select) for managing data types in forms.
+- Enhance accessibility with ARIA roles and better keyboard navigation.
 
-## Running unit tests
+## Getting Started
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+### Installation
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/supix/innovaprev.git
+   cd src/frontend/src/src
+   ```
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-## Running end-to-end tests
+### Development
+1. Run the app:
+   ```bash
+   npm start
+   ```
+2. Access the app at `http://localhost:4200`.
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+### Build
+Generate a production build:
+```bash
+npm run build
+```
 
-## Further help
+### Docker
+1. Build the Docker image:
+   ```bash
+   docker build -t innova-fe .
+   ```
+2. Run the container:
+   ```bash
+   docker run -p 8080:80 innova-fe
+   ```
+3. Access at `http://localhost:8080`.
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+## License
+This project is licensed under the MIT License.
