@@ -9,3 +9,7 @@ It is a .net core application written with 8.0 target framework. The framework S
 ## Running the backend
 
 The backend can be started by executing `./serve.sh`. Once the server is started, you can go to [http://localhost:5006](http://localhost:5006).
+
+## Swagger
+
+Swagger GUI is available at the following address: [http://localhost:5006/swagger](http://localhost:5006/swagger).
