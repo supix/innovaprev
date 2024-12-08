@@ -29,11 +29,11 @@ jobs:
           dotnet build --no-restore ./src/backend/src/
           dotnet publish -c Release ./src/backend/src/
       - name: Build docker image
-        run: docker build . -t supix/ghactiontrial:latest -f ./src/backend/docker/Dockerfile
+        run: docker build . -t supix/innovaprev_be:latest -f ./src/backend/docker/Dockerfile
       - name: Publish docker image to Docker hub
         run: |
           docker login -u supix -p ${{ secrets.DOCKER_HUB_TOKEN }}
-          docker push supix/ghactiontrial:latest
+          docker push supix/innovaprev_be:latest
       # This step will be activated once the deploy server will be set up
       # - name: Deploy to Server
       #   uses: easingthemes/ssh-deploy@main
