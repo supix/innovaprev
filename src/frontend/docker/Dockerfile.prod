@@ -1,0 +1,32 @@
+# Stage 1: Build Angular App
+FROM node:18 AS build-stage
+
+# Set the working directory
+WORKDIR /app
+
+# Copy package.json and package-lock.json
+COPY ../src/package*.json ./
+
+# Install dependencies
+RUN npm install
+
+# Copy the Angular project files
+COPY ../src/ ./
+
+# Build the Angular app
+RUN npm run build
+
+# Stage 2: Serve App with Nginx
+FROM nginx:alpine AS production-stage
+
+# Copy built Angular app to Nginx default directory
+COPY --from=build-stage /app/dist/innova-fe/browser /usr/share/nginx/html
+
+# Copy default Nginx configuration (can be overridden)
+COPY ../docker/nginx.conf /etc/nginx/conf.d/default.conf
+
+# Expose port
+EXPOSE 80
+
+# Start Nginx
+CMD ["nginx", "-g", "daemon off;"]
