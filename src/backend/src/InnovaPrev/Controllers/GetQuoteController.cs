@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace InnovaPrev.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/getQuote")]
     [ApiController]
     public class GetQuoteController : ControllerBase
     {
