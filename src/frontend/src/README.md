@@ -24,8 +24,7 @@
 ```plaintext
 src/
 ├── app/
-│   ├── error-modal/       # Error handling components
-│   ├── innova-form/       # Form logic and validation
+│   ├── components/        # UI components and form logic
 │   ├── interceptors/      # HTTP interceptors
 │   ├── models/            # Data models for API
 │   ├── services/          # API and configuration services
@@ -39,7 +38,6 @@ src/
 ```
 
 ## Improvements
-- Add dropdowns (select) for managing data types in forms.
 - Enhance accessibility with ARIA roles and better keyboard navigation.
 
 ## Getting Started
@@ -69,13 +67,13 @@ npm run build
 ```
 
 ### Docker
-1. Build the Docker image:
+1. Build the Docker image from project root:
    ```bash
-   docker build -t innova-fe .
+   docker build -t my-angular-app -f src/frontend/docker/Dockerfile.prod .
    ```
 2. Run the container:
    ```bash
-   docker run -p 8080:80 innova-fe
+   docker run -d -p 8080:80 innova-fe
    ```
 3. Access at `http://localhost:8080`.
 

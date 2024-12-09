@@ -1,23 +1,29 @@
-import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {AbstractControl, FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {CommonModule} from '@angular/common';
-import {ApiService} from '../services/api.service';
-import {DataPayload} from '../models';
-import {Subscription} from 'rxjs';
+import {NgSelectConfig, NgSelectModule} from '@ng-select/ng-select';
+import {ApiService} from '../../services/api.service';
+import {CollectionsResponse, DataPayload} from '../../models';
+import {finalize, startWith, Subscription, tap} from 'rxjs';
+import {PriceDisplayComponent} from '../price-display/price-display.component';
 
 @Component({
   selector: 'app-innova-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, NgSelectModule, PriceDisplayComponent],
   templateUrl: './innova-form.component.html',
   styleUrls: ['./innova-form.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
-export class InnovaFormComponent implements AfterViewInit {
+export class InnovaFormComponent implements OnInit, AfterViewInit {
 
   @ViewChild('tab', {static: true}) tabElement!: ElementRef;
 
   form: FormGroup;
   price: number | null = null;
+  collections: CollectionsResponse | null = null;
+  isCollectionsLoading: boolean = false;
+
   subscriptions: Subscription[] = [];
 
   submitted: boolean = false;
@@ -26,7 +32,11 @@ export class InnovaFormComponent implements AfterViewInit {
 
   currentTab: TabNames = TabNames.personal;
 
-  constructor(private fb: FormBuilder, private apiService: ApiService) {
+  constructor(private fb: FormBuilder, private config: NgSelectConfig, private apiService: ApiService) {
+    this.config.bindLabel = 'desc';
+    this.config.bindValue = 'id';
+    this.config.notFoundText = 'Nessun elemento trovato';
+    // this.config.appendTo = 'body';
     this.form = this.fb.group({
       personalData: this.fb.group({
         companyName: ['', Validators.required],
@@ -34,23 +44,31 @@ export class InnovaFormComponent implements AfterViewInit {
         vat: ['', Validators.required],
         phone: ['', Validators.required],
         mail: ['', [Validators.required, Validators.email]],
-        orderNumber: ['', Validators.required],
+        orderNumber: ['', Validators.required]
       }),
       productData: this.fb.group({
-        product: ['', Validators.required],
+        product: [null, Validators.required],
         glassStopper: [false], // Checkbox
         windowSlide: [false], // Checkbox
-        internalColor: ['', Validators.required],
-        externalColor: ['', Validators.required],
-        accessoryColor: ['', Validators.required],
-        climateZone: ['', Validators.required],
-        notes: [''],
+        internalColor: [null, Validators.required],
+        externalColor: [null, Validators.required],
+        accessoryColor: [null, Validators.required],
+        climateZone: [null, Validators.required],
+        notes: ['']
       }),
       windowsData: this.fb.array([]), // Contains the rows for the window estimates
     });
 
     // Add an initial row for windows
     this.addRow(true);
+  }
+
+  ngOnInit(): void {
+    this.apiService.getCollectionsData().pipe(
+      startWith(null),
+      tap(() => this.isCollectionsLoading = true),
+      finalize(() => this.isCollectionsLoading = false)
+    ).subscribe(collections => this.collections = collections);
   }
 
   ngAfterViewInit(): void {
@@ -95,17 +113,17 @@ export class InnovaFormComponent implements AfterViewInit {
     if (this.areAllRowsValid()) {
       const row = this.fb.group({
         position: [0],
-        height: [0, [Validators.required, Validators.min(1)]],
-        width: [0, [Validators.required, Validators.min(1)]],
+        height: [null, [Validators.required, Validators.min(1)]],
+        width: [null, [Validators.required, Validators.min(1)]],
         quantity: [1, [Validators.required, Validators.min(1)]],
-        windowType: ['', Validators.required],
-        openingType: ['', Validators.required],
-        glassType: ['', Validators.required],
-        crosspiece: ['', Validators.required],
-        leftTrim: [0],
-        rightTrim: [0],
-        upperTrim: [0],
-        belowThreshold: [0],
+        windowType: [null, Validators.required],
+        openingType: [null, Validators.required],
+        glassType: [null, Validators.required],
+        crosspiece: [null, Validators.required],
+        leftTrim: [null],
+        rightTrim: [null],
+        upperTrim: [null],
+        belowThreshold: [null],
       });
       this.windows.push(row);
       this.updatePositions();
@@ -142,18 +160,31 @@ export class InnovaFormComponent implements AfterViewInit {
     }
   }
 
+  ngSelectHandleFocus(enabled: boolean): void {
+    if (enabled) {
+      setTimeout(() => {
+        const myCustomClass: string ="custom-table-lg"
+        const panel = document.querySelector('.ng-dropdown-panel');
+        if (panel){
+          panel.classList.add(myCustomClass);
+          console.log('panel', panel);
+        }
+      }, 0);
+    }
+  }
+
   // Submit the form and calculate the price
   calculatePrice(): void {
     this.submitted = true;
-    this.isLoading = true;
     if (this.form.valid) {
+      this.isLoading = true;
       const payload: DataPayload = this.buildPayload();
-      this.apiService.getPrice(payload).subscribe(({totalEstimatedPrice}) => {
-        this.isLoading = false;
-        this.price = totalEstimatedPrice;
+      this.apiService.getPrice(payload).pipe(
+        finalize(() => this.isLoading = false)
+      ).subscribe(({quotation}) => {
+        this.price = quotation?.amount;
       });
     } else {
-      this.isLoading = false;
       this.markAllTouchedAndValidate();
     }
   }
@@ -161,11 +192,12 @@ export class InnovaFormComponent implements AfterViewInit {
   // Download the PDF
   downloadPdf(): void {
     this.submitted = true;
-    this.isLoading = true;
     if (this.form.valid) {
+      this.isLoading = true;
       const payload: DataPayload = this.buildPayload();
-      this.apiService.downloadPdf(payload).subscribe((response) => {
-        this.isLoading = false;
+      this.apiService.downloadPdf(payload).pipe(
+        finalize(() => this.isLoading = false)
+      ).subscribe((response) => {
         const blob = new Blob([response], {type: 'application/pdf'});
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -176,7 +208,6 @@ export class InnovaFormComponent implements AfterViewInit {
         window.URL.revokeObjectURL(url);
       });
     } else {
-      this.isLoading = false;
       this.markAllTouchedAndValidate();
     }
   }

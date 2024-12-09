@@ -1,0 +1,551 @@
+<div class="container mt-3">
+  <!-- Header -->
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
+    <div class="order-2 order-md-1 mb-3 mb-md-0 text-center text-md-start">
+      <button class="btn btn-primary me-2" (click)="calculatePrice()" [disabled]="isLoading">
+        Calcola
+      </button>
+      <button class="btn btn-secondary" (click)="downloadPdf()" [disabled]="isLoading">
+        Scarica Preventivo
+      </button>
+    </div>
+    <app-price-display
+      [price]="price"
+      class="order-1 order-md-2 mb-3 mb-md-0 text-center text-md-end">
+    </app-price-display>
+  </div>
+
+  <!-- Form with Tabs -->
+  <form [formGroup]="form" class="row g-3 innova-form">
+    <ul class="nav nav-tabs" id="tab" #tab role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="personal-tab" data-bs-toggle="tab" data-bs-target="#personalSection"
+                [ngClass]="{ 'tab-is-invalid': hasErrorsInPersonalData() }" type="button" role="tab">
+          Sezione Anagrafica
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="product-tab" data-bs-toggle="tab" data-bs-target="#productSection"
+                [ngClass]="{ 'tab-is-invalid': hasErrorsInProductData() }" type="button" role="tab">
+          Sezione Prodotto
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="measurements-tab" data-bs-toggle="tab" data-bs-target="#measurementsSection"
+                [ngClass]="{ 'tab-is-invalid': hasErrorsInWindowsData() }" type="button" role="tab">
+          Sezione Misure
+        </button>
+      </li>
+    </ul>
+    <div class="tab-content" id="tabContent">
+
+      <!-- Personal Data -->
+      <div class="tab-pane fade show active" id="personalSection" role="tabpanel">
+
+        <div formGroupName="personalData" class="row g-3 mt-1">
+          <!-- Ragione Sociale -->
+          <div class="col-md-9">
+            <label for="companyName" class="form-label">Ragione Sociale</label>
+            <input type="text" id="companyName" formControlName="companyName" class="form-control" name="companyName"
+                   autocomplete="off"
+                   [ngClass]="{ 'is-invalid': submitted && form.get('personalData.companyName')?.errors }"/>
+            <div *ngIf="form.get('personalData.companyName')?.touched && form.get('personalData.companyName')?.invalid"
+                 class="invalid-feedback">
+              La ragione sociale è obbligatoria.
+            </div>
+          </div>
+
+          <!-- Partita IVA -->
+          <div class="col-md-3">
+            <label for="vat" class="form-label">Partita IVA</label>
+            <input type="text" id="vat" formControlName="vat" class="form-control" name="vat"
+                   autocomplete="off"
+                   [ngClass]="{ 'is-invalid': submitted && form.get('personalData.vat')?.errors }"/>
+            <div *ngIf="form.get('personalData.vat')?.touched && form.get('personalData.vat')?.invalid"
+                 class="invalid-feedback">
+              La partita IVA è obbligatoria.
+            </div>
+          </div>
+
+          <!-- Indirizzo -->
+          <div class="col-md-6">
+            <label for="address" class="form-label">Indirizzo</label>
+            <input type="text" id="address" formControlName="address" class="form-control" name="address"
+                   autocomplete="off"
+                   [ngClass]="{ 'is-invalid': submitted && form.get('personalData.address')?.errors }"/>
+            <div *ngIf="form.get('personalData.address')?.touched && form.get('personalData.address')?.invalid"
+                 class="invalid-feedback">
+              L'indirizzo è obbligatorio.
+            </div>
+          </div>
+
+          <!-- Telefono -->
+          <div class="col-md-3">
+            <label for="phone" class="form-label">Telefono</label>
+            <input type="text" id="phone" formControlName="phone" class="form-control" name="phone"
+                   autocomplete="off"
+                   [ngClass]="{ 'is-invalid': submitted && form.get('personalData.phone')?.errors }"/>
+            <div *ngIf="form.get('personalData.phone')?.touched && form.get('personalData.phone')?.invalid"
+                 class="invalid-feedback">
+              Il telefono è obbligatorio.
+            </div>
+          </div>
+
+          <!-- Email -->
+          <div class="col-md-3">
+            <label for="mail" class="form-label">Email</label>
+            <input type="email" id="mail" formControlName="mail" class="form-control" name="mail"
+                   autocomplete="off"
+                   [ngClass]="{ 'is-invalid': submitted && form.get('personalData.mail')?.errors }"/>
+            <div *ngIf="form.get('personalData.mail')?.touched && form.get('personalData.mail')?.invalid"
+                 class="invalid-feedback">
+              Inserisci un'email valida.
+            </div>
+          </div>
+
+          <!-- Riferimento Ordine -->
+          <div class="col-12">
+            <label for="orderNumber" class="form-label">Riferimento Ordine</label>
+            <input type="text" id="orderNumber" formControlName="orderNumber" class="form-control" name="orderNumber"
+                   autocomplete="off"
+                   [ngClass]="{ 'is-invalid': submitted && form.get('personalData.orderNumber')?.errors }"/>
+            <div *ngIf="form.get('personalData.orderNumber')?.touched && form.get('personalData.orderNumber')?.invalid"
+                 class="invalid-feedback">
+              Il riferimento ordine è obbligatorio.
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Product Data -->
+      <div class="tab-pane fade" id="productSection" role="tabpanel">
+        <div formGroupName="productData" class="row g-3 mt-1">
+          <!-- Prodotto -->
+          <div class="col-md-6">
+            <label class="form-label">Prodotto</label>
+            <ng-select
+              [items]="collections?.product || []"
+              [searchable]="true"
+              [clearable]="true"
+              formControlName="product"
+              [class.ng-invalid]="false"
+              [ngClass]="{ 'is-invalid': submitted && form.get('productData.product')?.errors }"
+              [loading]="isCollectionsLoading"
+              placeholder="Seleziona un prodotto">
+            </ng-select>
+            <div *ngIf="form.get('productData.product')?.touched && form.get('productData.product')?.invalid"
+                 class="invalid-feedback">
+              Il prodotto è obbligatorio.
+            </div>
+          </div>
+
+          <!-- Tipo Anta -->
+          <div class="col-md-6">
+            <label for="glassStopper" class="form-label">Tipo Anta</label>
+            <div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" formControlName="glassStopper" type="checkbox" value=""
+                       id="glassStopper"/>
+                <label class="form-check-label" for="glassStopper">Ferma Vetro</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" formControlName="windowSlide" type="checkbox" value=""
+                       id="windowSlide"/>
+                <label class="form-check-label" for="windowSlide">Infilo</label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Colore Interno -->
+          <div class="col-md-3">
+            <label class="form-label">Colore Interno</label>
+            <ng-select
+              [items]="collections?.internalColors || []"
+              [searchable]="true"
+              [clearable]="true"
+              formControlName="internalColor"
+              [class.ng-invalid]="false"
+              [ngClass]="{ 'is-invalid': submitted && form.get('productData.internalColor')?.errors }"
+              [loading]="isCollectionsLoading"
+              placeholder="Seleziona un colore">
+            </ng-select>
+            <div
+              *ngIf="form.get('productData.internalColor')?.touched && form.get('productData.internalColor')?.invalid"
+              class="invalid-feedback">
+              Il colore interno è obbligatorio.
+            </div>
+          </div>
+
+          <!-- Colore Esterno -->
+          <div class="col-md-3">
+            <label class="form-label">Colore Esterno</label>
+            <ng-select
+              [items]="collections?.externalColors || []"
+              [searchable]="true"
+              [clearable]="true"
+              formControlName="externalColor"
+              [class.ng-invalid]="false"
+              [ngClass]="{ 'is-invalid': submitted && form.get('productData.externalColor')?.errors }"
+              [loading]="isCollectionsLoading"
+              placeholder="Seleziona un colore">
+            </ng-select>
+            <div
+              *ngIf="form.get('productData.externalColor')?.touched && form.get('productData.externalColor')?.invalid"
+              class="invalid-feedback">
+              Il colore esterno è obbligatorio.
+            </div>
+          </div>
+
+          <!-- Colore Accessori -->
+          <div class="col-md-3">
+            <label class="form-label">Colore Accessori</label>
+            <ng-select
+              [items]="collections?.accessoryColors || []"
+              [searchable]="true"
+              [clearable]="true"
+              formControlName="accessoryColor"
+              [class.ng-invalid]="false"
+              [ngClass]="{ 'is-invalid': submitted && form.get('productData.accessoryColor')?.errors }"
+              [loading]="isCollectionsLoading"
+              placeholder="Seleziona un colore">
+            </ng-select>
+            <div
+              *ngIf="form.get('productData.accessoryColor')?.touched && form.get('productData.accessoryColor')?.invalid"
+              class="invalid-feedback">
+              Il colore degli accessori è obbligatorio.
+            </div>
+          </div>
+
+          <!-- Zona Climatica -->
+          <div class="col-md-3">
+            <label class="form-label">Zona Climatica</label>
+            <ng-select
+              [items]="collections?.climateZones || []"
+              [searchable]="true"
+              [clearable]="true"
+              formControlName="climateZone"
+              [class.ng-invalid]="false"
+              [ngClass]="{ 'is-invalid': submitted && form.get('productData.climateZone')?.errors }"
+              [loading]="isCollectionsLoading"
+              placeholder="Seleziona una zona">
+            </ng-select>
+            <div *ngIf="form.get('productData.climateZone')?.touched && form.get('productData.climateZone')?.invalid"
+                 class="invalid-feedback">
+              La zona climatica è obbligatoria.
+            </div>
+          </div>
+
+          <!-- Note -->
+          <div class="col-md-12">
+            <label for="notes" class="form-label">Note</label>
+            <textarea id="notes" formControlName="notes" class="form-control" autocomplete="off"></textarea>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Windows Data -->
+      <div class="tab-pane fade" id="measurementsSection" role="tabpanel">
+        <div formArrayName="windowsData" class="row g-3 mt-1">
+          <div class="table-responsive d-none d-lg-block">
+            <table class="table table-sm table-bordered">
+              <thead>
+              <tr>
+                <th rowspan="2" style="width: 5%;">Pos.</th>
+                <th rowspan="2" style="width: 8%;">Largh.</th>
+                <th rowspan="2" style="width: 8%;">Alt.</th>
+                <th rowspan="2" style="width: 5%;">Q.tà</th>
+                <th rowspan="2" style="width: 10%;">Tipologia</th>
+                <th rowspan="2" style="width: 10%;">Apertura</th>
+                <th rowspan="2" style="width: 10%;">Vetro</th>
+                <th rowspan="2" style="width: 10%;">Traversa</th>
+                <th colspan="4" style="width: 24%;">Rifilo Battuta</th>
+                <th rowspan="2" style="width: 10%;"></th>
+              </tr>
+              <tr>
+                <th style="width: 7%;font-size: 0.8rem;">Sx</th>
+                <th style="width: 7%;font-size: 0.8rem;">Dx</th>
+                <th style="width: 7%;font-size: 0.8rem;">Sopra</th>
+                <th style="width: 7%;font-size: 0.8rem;">Sotto</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let row of windows.controls; let i = index" [formGroupName]="i">
+
+                <!-- Posizione -->
+                <td>
+                  <ng-container *ngTemplateOutlet="positionInput; context: { index: i, form: row }"></ng-container>
+                </td>
+
+                <!-- Larghezza -->
+                <td>
+                  <ng-container *ngTemplateOutlet="widthInput; context: { index: i, form: row, tableLg: true }"></ng-container>
+                </td>
+
+                <!-- Altezza -->
+                <td>
+                  <ng-container *ngTemplateOutlet="heightInput; context: { index: i, form: row, tableLg: true }"></ng-container>
+                </td>
+
+                <!-- Quantità -->
+                <td>
+                  <ng-container *ngTemplateOutlet="quantityInput; context: { index: i, form: row, tableLg: true }"></ng-container>
+                </td>
+
+                <!-- Tipologia -->
+                <td>
+                  <ng-container *ngTemplateOutlet="windowTypeInput; context: { index: i, form: row, tableLg: true }"></ng-container>
+                </td>
+
+                <!-- Apertura -->
+                <td>
+                  <ng-container *ngTemplateOutlet="openingTypeInput; context: { index: i, form: row, tableLg: true }"></ng-container>
+                </td>
+
+                <!-- Vetro -->
+                <td>
+                  <ng-container *ngTemplateOutlet="glassTypeInput; context: { index: i, form: row, tableLg: true }"></ng-container>
+                </td>
+
+                <!-- Traversa -->
+                <td>
+                  <ng-container *ngTemplateOutlet="crosspieceInput; context: { index: i, form: row, tableLg: true }"></ng-container>
+                </td>
+
+                <!-- Rifilo Battuta Sx -->
+                <td>
+                  <ng-container *ngTemplateOutlet="leftTrimInput; context: { index: i, form: row }"></ng-container>
+                </td>
+
+                <!-- Rifilo Battuta Dx -->
+                <td>
+                  <ng-container *ngTemplateOutlet="rightTrimInput; context: { index: i, form: row }"></ng-container>
+                </td>
+
+                <!-- Rifilo Battuta Sopra -->
+                <td>
+                  <ng-container *ngTemplateOutlet="upperTrimInput; context: { index: i, form: row }"></ng-container>
+                </td>
+
+                <!-- Rifilo Battuta Sotto -->
+                <td>
+                  <ng-container
+                    *ngTemplateOutlet="belowThresholdInput; context: { index: i, form: row }"></ng-container>
+                </td>
+                <td class="text-center align-middle">
+                  <button style="font-size: 0.9rem;" type="button" class="btn btn-danger" (click)="removeRow(i)">Rimuovi</button>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+          <!-- Responsive Layout -->
+          <div class="d-block d-lg-none">
+            <div *ngFor="let row of windows.controls; let i = index" [formGroupName]="i" class="card mb-3 p-3">
+              <div class="mb-2">
+                <label class="form-label">Posizione</label>
+                <ng-container *ngTemplateOutlet="positionInput; context: { index: i, form: row }"></ng-container>
+              </div>
+              <div class="mb-2">
+                <label class="form-label">Larghezza</label>
+                <ng-container *ngTemplateOutlet="widthInput; context: { index: i, form: row }"></ng-container>
+              </div>
+              <div class="mb-2">
+                <label class="form-label">Altezza</label>
+                <ng-container *ngTemplateOutlet="heightInput; context: { index: i, form: row }"></ng-container>
+              </div>
+              <div class="mb-2">
+                <label class="form-label">Quantità</label>
+                <ng-container *ngTemplateOutlet="quantityInput; context: { index: i, form: row }"></ng-container>
+              </div>
+              <div class="mb-2">
+                <label class="form-label">Tipologia</label>
+                <ng-container *ngTemplateOutlet="windowTypeInput; context: { index: i, form: row }"></ng-container>
+              </div>
+              <div class="mb-2">
+                <label class="form-label">Apertura</label>
+                <ng-container *ngTemplateOutlet="openingTypeInput; context: { index: i, form: row }"></ng-container>
+              </div>
+              <div class="mb-2">
+                <label class="form-label">Vetro</label>
+                <ng-container *ngTemplateOutlet="glassTypeInput; context: { index: i, form: row }"></ng-container>
+              </div>
+              <div class="mb-2">
+                <label class="form-label">Traversa</label>
+                <ng-container *ngTemplateOutlet="crosspieceInput; context: { index: i, form: row }"></ng-container>
+              </div>
+
+              <hr class="section-separator"/>
+
+              <!-- Rifilo Battuta Section -->
+              <div class="mb-3">
+                <h6 class="form-label">Rifilo Battuta</h6>
+                <div class="row">
+                  <div class="col-6 col-md-3">
+                    <label class="form-label">Sx</label>
+                    <ng-container *ngTemplateOutlet="leftTrimInput; context: { index: i, form: row }"></ng-container>
+                  </div>
+                  <div class="col-6 col-md-3">
+                    <label class="form-label">Dx</label>
+                    <ng-container *ngTemplateOutlet="rightTrimInput; context: { index: i, form: row }"></ng-container>
+                  </div>
+                  <div class="col-6 col-md-3 mt-2 mt-md-0">
+                    <label class="form-label">Sopra</label>
+                    <ng-container *ngTemplateOutlet="upperTrimInput; context: { index: i, form: row }"></ng-container>
+                  </div>
+                  <div class="col-6 col-md-3 mt-2 mt-md-0">
+                    <label class="form-label">Sotto</label>
+                    <ng-container
+                      *ngTemplateOutlet="belowThresholdInput; context: { index: i, form: row }"></ng-container>
+                  </div>
+                </div>
+              </div>
+              <button type="button" class="btn btn-danger btn-sm" (click)="removeRow(i)">Rimuovi<span class="ms-1">Finestra #{{ row.get('position')?.value }}</span>
+              </button>
+            </div>
+          </div>
+          <button type="button" class="btn btn-primary mt-3"
+                  (click)="addRow()"
+                  [disabled]="addRowCheck()">
+            Aggiungi Finestra
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+<ng-template #positionInput let-form="form">
+  <ng-container [formGroup]="form">
+    <input type="text" inputmode="numeric" formControlName="position" class="form-control" autocomplete="off" readonly/>
+  </ng-container>
+</ng-template>
+<ng-template #widthInput let-tableLg="tableLg" let-i="index" let-form="form">
+  <ng-container [formGroup]="form">
+    <input type="text" inputmode="numeric" formControlName="width" class="form-control"
+           autocomplete="off"
+           [ngClass]="{ 'is-invalid': hasTriggeredValidation && form.get('width')?.errors }"
+           (input)="onRowInputNumber($event, i, 'width')"/>
+    <div *ngIf="(form.get('width')?.touched || hasTriggeredValidation) && form.get('width')?.invalid && !tableLg"
+         class="invalid-feedback">La larghezza è obbligatoria.
+    </div>
+  </ng-container>
+</ng-template>
+<ng-template #heightInput let-tableLg="tableLg" let-i="index" let-form="form">
+  <ng-container [formGroup]="form">
+    <input type="text" inputmode="numeric" formControlName="height" class="form-control"
+           autocomplete="off"
+           [ngClass]="{ 'is-invalid': hasTriggeredValidation && form.get('height')?.errors }"
+           (input)="onRowInputNumber($event, i, 'height')"/>
+    <div *ngIf="(form.get('height')?.touched || hasTriggeredValidation) && form.get('height')?.invalid && !tableLg"
+         class="invalid-feedback">L'altezza è obbligatoria.
+    </div>
+  </ng-container>
+</ng-template>
+<ng-template #quantityInput let-tableLg="tableLg" let-i="index" let-form="form">
+  <ng-container [formGroup]="form">
+    <input type="text" inputmode="numeric" formControlName="quantity" class="form-control"
+           autocomplete="off"
+           [ngClass]="{ 'is-invalid': hasTriggeredValidation && form.get('quantity')?.errors }"
+           (input)="onRowInputNumber($event, i, 'quantity')"/>
+    <div *ngIf="(form.get('quantity')?.touched || hasTriggeredValidation) && form.get('quantity')?.invalid && !tableLg"
+         class="invalid-feedback">La quantità è obbligatoria.
+    </div>
+  </ng-container>
+</ng-template>
+<ng-template #windowTypeInput let-tableLg="tableLg" let-form="form">
+  <ng-container [formGroup]="form">
+    <ng-select
+      (focus)="ngSelectHandleFocus(tableLg)"
+      [items]="collections?.windowTypes || []"
+      [searchable]="true"
+      [clearable]="false"
+      formControlName="windowType"
+      appendTo="body"
+      [class.ng-invalid]="false"
+      [ngClass]="{ 'is-invalid': hasTriggeredValidation && form.get('windowType')?.errors }"
+      [loading]="isCollectionsLoading">
+    </ng-select>
+    <div *ngIf="(form.get('windowType')?.touched || hasTriggeredValidation) && form.get('windowType')?.invalid && !tableLg"
+         class="invalid-feedback">La tipologia è obbligatoria.
+    </div>
+  </ng-container>
+</ng-template>
+<ng-template #openingTypeInput let-tableLg="tableLg" let-form="form">
+  <ng-container [formGroup]="form">
+    <ng-select
+      (focus)="ngSelectHandleFocus(tableLg)"
+      [items]="collections?.openingTypes || []"
+      [searchable]="true"
+      [clearable]="false"
+      formControlName="openingType"
+      appendTo="body"
+      [class.ng-invalid]="false"
+      [ngClass]="{ 'is-invalid': hasTriggeredValidation && form.get('openingType')?.errors }"
+      [loading]="isCollectionsLoading">
+    </ng-select>
+    <div *ngIf="(form.get('openingType')?.touched || hasTriggeredValidation) && form.get('openingType')?.invalid && !tableLg"
+         class="invalid-feedback">L'apertura è obbligatoria.
+    </div>
+  </ng-container>
+</ng-template>
+<ng-template #glassTypeInput let-tableLg="tableLg" let-form="form">
+  <ng-container [formGroup]="form">
+    <ng-select
+      (focus)="ngSelectHandleFocus(tableLg)"
+      [items]="collections?.glassTypes || []"
+      [searchable]="true"
+      [clearable]="false"
+      formControlName="glassType"
+      appendTo="body"
+      [class.ng-invalid]="false"
+      [ngClass]="{ 'is-invalid': hasTriggeredValidation && form.get('glassType')?.errors }"
+      [loading]="isCollectionsLoading">
+    </ng-select>
+    <div *ngIf="(form.get('glassType')?.touched || hasTriggeredValidation) && form.get('glassType')?.invalid && !tableLg"
+         class="invalid-feedback">Il vetro è obbligatorio.
+    </div>
+  </ng-container>
+</ng-template>
+<ng-template #crosspieceInput let-tableLg="tableLg" let-form="form">
+  <ng-container [formGroup]="form">
+    <ng-select
+      (focus)="ngSelectHandleFocus(tableLg)"
+      [items]="collections?.crosspieces || []"
+      [searchable]="true"
+      [clearable]="false"
+      formControlName="crosspiece"
+      appendTo="body"
+      [class.ng-invalid]="false"
+      [ngClass]="{ 'is-invalid': hasTriggeredValidation && form.get('crosspiece')?.errors  }"
+      [loading]="isCollectionsLoading">
+    </ng-select>
+    <div *ngIf="(form.get('crosspiece')?.touched || hasTriggeredValidation) && form.get('crosspiece')?.invalid && !tableLg"
+         class="invalid-feedback">Il traverso è obbligatorio.
+    </div>
+  </ng-container>
+</ng-template>
+<ng-template #leftTrimInput let-i="index" let-form="form">
+  <ng-container [formGroup]="form">
+    <input type="text" inputmode="numeric" formControlName="leftTrim" class="form-control" autocomplete="off"
+           (input)="onRowInputNumber($event, i, 'leftTrim')"/>
+  </ng-container>
+</ng-template>
+<ng-template #rightTrimInput let-i="index" let-form="form">
+  <ng-container [formGroup]="form">
+    <input type="text" inputmode="numeric" formControlName="rightTrim" class="form-control" autocomplete="off"
+           (input)="onRowInputNumber($event, i, 'rightTrim')"/>
+  </ng-container>
+</ng-template>
+<ng-template #upperTrimInput let-i="index" let-form="form">
+  <ng-container [formGroup]="form">
+    <input type="text" inputmode="numeric" formControlName="upperTrim" class="form-control" autocomplete="off"
+           (input)="onRowInputNumber($event, i, 'upperTrim')"/>
+  </ng-container>
+</ng-template>
+<ng-template #belowThresholdInput let-i="index" let-form="form">
+  <ng-container [formGroup]="form">
+    <input type="text" inputmode="numeric" formControlName="belowThreshold" class="form-control" autocomplete="off"
+           (input)="onRowInputNumber($event, i, 'belowThreshold')"/>
+  </ng-container>
+</ng-template>

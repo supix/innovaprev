@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { InnovaFormComponent } from './innova-form/innova-form.component';
+import { InnovaFormComponent } from './components/innova-form/innova-form.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'form', pathMatch: 'full' },

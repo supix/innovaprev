@@ -8,12 +8,12 @@
     }
   },
   "/api": {
-    "target": "http://localhost:4201",
+    "target": "http://localhost:5006",
     "secure": false,
     "changeOrigin": true,
     "logLevel": "debug",
     "pathRewrite": {
-      "^/api": "/mock-api"
+      "^/api": "/api"
     }
   }
 }
