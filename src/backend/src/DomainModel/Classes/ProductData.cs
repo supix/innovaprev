@@ -1,4 +1,4 @@
-﻿namespace InnovaPrev.DomainModel
+﻿namespace DomainModel.Classes
 {
     public partial class ProductData
     {
