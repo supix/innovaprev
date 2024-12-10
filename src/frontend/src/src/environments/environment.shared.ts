@@ -3,7 +3,7 @@ export const sharedEnvironment = {
     baseUrl: '/api/',
     endpoints: {
       getQuote: 'getQuote',
-      downloadPdf: 'download-pdf',
+      downloadPdf: 'pdf',
       collections: 'collections',
     }
   }

@@ -1,5 +1,13 @@
 import {AfterViewInit, Component, ElementRef, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
-import {AbstractControl, FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import {
+  AbstractControl,
+  FormArray,
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule, ValidationErrors,
+  ValidatorFn,
+  Validators
+} from '@angular/forms';
 import {CommonModule} from '@angular/common';
 import {NgSelectConfig, NgSelectModule} from '@ng-select/ng-select';
 import {ApiService} from '../../services/api.service';
@@ -31,25 +39,25 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
   isLoading: boolean = false;
 
   currentTab: TabNames = TabNames.personal;
+  tabNames = TabNames;
 
   constructor(private fb: FormBuilder, private config: NgSelectConfig, private apiService: ApiService) {
     this.config.bindLabel = 'desc';
     this.config.bindValue = 'id';
     this.config.notFoundText = 'Nessun elemento trovato';
-    // this.config.appendTo = 'body';
     this.form = this.fb.group({
       personalData: this.fb.group({
         companyName: ['', Validators.required],
         address: ['', Validators.required],
-        vat: ['', Validators.required],
-        phone: ['', Validators.required],
+        vat: ['', italianVatValidator()],
+        phone: ['', phoneNumberValidator(true)],
         mail: ['', [Validators.required, Validators.email]],
         orderNumber: ['', Validators.required]
       }),
       productData: this.fb.group({
         product: [null, Validators.required],
-        glassStopper: [false], // Checkbox
-        windowSlide: [false], // Checkbox
+        glassStopper: [false],
+        windowSlide: [false],
         internalColor: [null, Validators.required],
         externalColor: [null, Validators.required],
         accessoryColor: [null, Validators.required],
@@ -105,6 +113,24 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
     return this.windows.controls.every((row) => row.valid);
   }
 
+  hasErrorsAndNotLoading(): boolean {
+    if (!this.submitted) {
+      return false;
+    }
+    if (this.submitted && this.isLoading) {
+      return true;
+    }
+    const personalDataGroup = this.form.get('personalData');
+    const hasErrorsInPersonal = personalDataGroup ? this.hasErrors(personalDataGroup) : false;
+
+    const productDataGroup = this.form.get('productData');
+    const hasErrorsInProduct = productDataGroup ? this.hasErrors(productDataGroup) : false;
+
+    const hasErrorsInWindows = !this.areAllRowsValid();
+
+    return (hasErrorsInPersonal || hasErrorsInProduct || hasErrorsInWindows);
+  }
+
   // Add a new row to the windows FormArray
   addRow(skipFirst?: boolean): void {
     if (!skipFirst) {
@@ -113,17 +139,17 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
     if (this.areAllRowsValid()) {
       const row = this.fb.group({
         position: [0],
-        height: [null, [Validators.required, Validators.min(1)]],
-        width: [null, [Validators.required, Validators.min(1)]],
-        quantity: [1, [Validators.required, Validators.min(1)]],
+        height: [null, minNumber(1, true, 'f')],
+        width: [null, minNumber(1, true, 'f')],
+        quantity: [1, minNumber(1, true, 'f')],
         windowType: [null, Validators.required],
         openingType: [null, Validators.required],
         glassType: [null, Validators.required],
         crosspiece: [null, Validators.required],
-        leftTrim: [null],
-        rightTrim: [null],
-        upperTrim: [null],
-        belowThreshold: [null],
+        leftTrim: [null, minNumber(0, true)],
+        rightTrim: [null, minNumber(0, true)],
+        upperTrim: [null, minNumber(0, true)],
+        belowThreshold: [null, minNumber(0, true)],
       });
       this.windows.push(row);
       this.updatePositions();
@@ -156,6 +182,17 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
     const control = this.windows.at(index).get(controlName);
 
     if (control) {
+      control.setValue(+value); // Update the FormControl with the filtered value
+    }
+  }
+
+  // Filters non-numeric characters from the input and updates the corresponding FormControl.
+  onInputNumber(event: Event, controlName: string): void {
+    const input = event.target as HTMLInputElement;
+    const value = input.value.replace(/[^0-9]/g, ''); // Remove all non-numeric characters
+    const control = this.form.get(controlName);
+
+    if (control) {
       control.setValue(value); // Update the FormControl with the filtered value
     }
   }
@@ -167,7 +204,6 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
         const panel = document.querySelector('.ng-dropdown-panel');
         if (panel){
           panel.classList.add(myCustomClass);
-          console.log('panel', panel);
         }
       }, 0);
     }
@@ -180,7 +216,10 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
       this.isLoading = true;
       const payload: DataPayload = this.buildPayload();
       this.apiService.getPrice(payload).pipe(
-        finalize(() => this.isLoading = false)
+        finalize(() => {
+          this.isLoading = false;
+          this.submitted = false;
+        })
       ).subscribe(({quotation}) => {
         this.price = quotation?.amount;
       });
@@ -196,7 +235,10 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
       this.isLoading = true;
       const payload: DataPayload = this.buildPayload();
       this.apiService.downloadPdf(payload).pipe(
-        finalize(() => this.isLoading = false)
+        finalize(() => {
+          this.isLoading = false;
+          this.submitted = false;
+        })
       ).subscribe((response) => {
         const blob = new Blob([response], {type: 'application/pdf'});
         const url = window.URL.createObjectURL(blob);
@@ -261,9 +303,114 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
 
 }
 
-export enum TabNames {
+enum TabNames {
   personal = 'personal-tab',
   product = 'product-tab',
   measurements = 'measurements-tab'
 }
 
+// Checks if the value meets the minimum requirement or returns a validation error.
+function minNumber(min: number, required: boolean = false, gender: 'm' | 'f' = 'm'): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const value = control.value;
+
+    // If the value is null, undefined, or an empty string
+    if (value === null || value === undefined || value === '') {
+      if (required) {
+        return { invalidValue: { reason: ` è obbligatori${gender === 'm' ? 'o' : 'a'}` } };
+      }
+      return null; // Not required and empty values are allowed
+    }
+
+    // Ensure the value is numeric
+    const numericValue = Number(value);
+    if (isNaN(numericValue)) {
+      return { invalidValue: { reason: ' deve essere un numero valido' } };
+    }
+
+    // Check if the value meets the minimum requirement
+    if (numericValue < min) {
+      return { invalidValue: { reason: ` è minimo di ${min}` } };
+    }
+
+    return null; // Validation passed
+  };
+}
+
+// Checks the validity of the Italian Vat or returns a validation error.
+function italianVatValidator(): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const value = control.value;
+
+    // Null or empty values are not validated
+    if (value === null || value === undefined || value === '') {
+      return { italianVat: { reason: 'La partita IVA è obbligatoria.' } };
+    }
+
+    // Ensure the value is a string of exactly 11 numeric characters
+    if (!/^\d{11}$/.test(value)) {
+      return { italianVat: { reason: 'La partita IVA deve essere di 11 cifre.' } };
+    }
+
+    // Validate the Italian Vat using the checksum algorithm
+    if (!isValidItalianVat(value)) {
+      return { italianVat: { reason: 'La partita IVA non è valida.' } };
+    }
+
+    return null;
+  };
+}
+
+// Checks if the Italian Vat is valid using the checksum algorithm.
+function isValidItalianVat(vat: string): boolean {
+  const digits = vat.split('').map(Number);
+  let sum = 0;
+
+  for (let i = 0; i < 11; i++) {
+    if (i % 2 === 0) {
+      // Even positions (0-based index): add the digit as is
+      sum += digits[i];
+    } else {
+      // Odd positions: double the digit and subtract 9 if the result is >= 10
+      const doubled = digits[i] * 2;
+      sum += doubled > 9 ? doubled - 9 : doubled;
+    }
+  }
+
+  // The sum must be divisible by 10
+  return sum % 10 === 0;
+}
+
+// Validator for phone numbers
+function phoneNumberValidator(required: boolean = false, minLength: number = 8, maxLength: number = 15): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const value = control.value;
+
+    // If the value is null, undefined, or an empty string
+    if (value === null || value === undefined || value === '') {
+      if (required) {
+        return { invalidPhoneNumber: { reason: 'Il numero di telefono è obbligatorio' } };
+      }
+      return null; // Not required and empty values are allowed
+    }
+
+    // Remove spaces and dashes to validate only numeric characters
+    const sanitizedValue = value.replace(/[\s\-]/g, '');
+
+    // Check if the value contains only numbers
+    if (!/^\d+$/.test(sanitizedValue)) {
+      return { invalidPhoneNumber: { reason: 'Il numero di telefono deve contenere solo cifre numeriche.' } };
+    }
+
+    // Check the length requirements
+    if (sanitizedValue.length < minLength || sanitizedValue.length > maxLength) {
+      return {
+        invalidPhoneNumber: {
+          reason: `Il numero di telefono è troppo breve.`,
+        },
+      };
+    }
+
+    return null; // Validation passed
+  };
+}

@@ -2,10 +2,10 @@
   <!-- Header -->
   <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
     <div class="order-2 order-md-1 mb-3 mb-md-0 text-center text-md-start">
-      <button class="btn btn-primary me-2" (click)="calculatePrice()" [disabled]="isLoading">
+      <button class="btn btn-primary me-2" (click)="calculatePrice()" [disabled]="hasErrorsAndNotLoading()">
         Calcola
       </button>
-      <button class="btn btn-secondary" (click)="downloadPdf()" [disabled]="isLoading">
+      <button class="btn btn-secondary" (click)="downloadPdf()" [disabled]="hasErrorsAndNotLoading()">
         Scarica Preventivo
       </button>
     </div>
@@ -19,19 +19,19 @@
   <form [formGroup]="form" class="row g-3 innova-form">
     <ul class="nav nav-tabs" id="tab" #tab role="tablist">
       <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="personal-tab" data-bs-toggle="tab" data-bs-target="#personalSection"
+        <button class="nav-link active" [id]="tabNames.personal" data-bs-toggle="tab" data-bs-target="#personalSection"
                 [ngClass]="{ 'tab-is-invalid': hasErrorsInPersonalData() }" type="button" role="tab">
           Sezione Anagrafica
         </button>
       </li>
       <li class="nav-item" role="presentation">
-        <button class="nav-link" id="product-tab" data-bs-toggle="tab" data-bs-target="#productSection"
+        <button class="nav-link" [id]="tabNames.product" data-bs-toggle="tab" data-bs-target="#productSection"
                 [ngClass]="{ 'tab-is-invalid': hasErrorsInProductData() }" type="button" role="tab">
           Sezione Prodotto
         </button>
       </li>
       <li class="nav-item" role="presentation">
-        <button class="nav-link" id="measurements-tab" data-bs-toggle="tab" data-bs-target="#measurementsSection"
+        <button class="nav-link" [id]="tabNames.measurements" data-bs-toggle="tab" data-bs-target="#measurementsSection"
                 [ngClass]="{ 'tab-is-invalid': hasErrorsInWindowsData() }" type="button" role="tab">
           Sezione Misure
         </button>
@@ -63,7 +63,7 @@
                    [ngClass]="{ 'is-invalid': submitted && form.get('personalData.vat')?.errors }"/>
             <div *ngIf="form.get('personalData.vat')?.touched && form.get('personalData.vat')?.invalid"
                  class="invalid-feedback">
-              La partita IVA è obbligatoria.
+              {{ form.get('personalData.vat')?.getError('italianVat')?.reason }}
             </div>
           </div>
 
@@ -84,10 +84,11 @@
             <label for="phone" class="form-label">Telefono</label>
             <input type="text" id="phone" formControlName="phone" class="form-control" name="phone"
                    autocomplete="off"
-                   [ngClass]="{ 'is-invalid': submitted && form.get('personalData.phone')?.errors }"/>
+                   [ngClass]="{ 'is-invalid': submitted && form.get('personalData.phone')?.errors }"
+                   (input)="onInputNumber($event,'personalData.phone')"/>
             <div *ngIf="form.get('personalData.phone')?.touched && form.get('personalData.phone')?.invalid"
                  class="invalid-feedback">
-              Il telefono è obbligatorio.
+              {{ form.get('personalData.phone')?.getError('invalidPhoneNumber')?.reason }}
             </div>
           </div>
 
@@ -315,23 +316,23 @@
 
                 <!-- Rifilo Battuta Sx -->
                 <td>
-                  <ng-container *ngTemplateOutlet="leftTrimInput; context: { index: i, form: row }"></ng-container>
+                  <ng-container *ngTemplateOutlet="leftTrimInput; context: { index: i, form: row, tableLg: true }"></ng-container>
                 </td>
 
                 <!-- Rifilo Battuta Dx -->
                 <td>
-                  <ng-container *ngTemplateOutlet="rightTrimInput; context: { index: i, form: row }"></ng-container>
+                  <ng-container *ngTemplateOutlet="rightTrimInput; context: { index: i, form: row, tableLg: true }"></ng-container>
                 </td>
 
                 <!-- Rifilo Battuta Sopra -->
                 <td>
-                  <ng-container *ngTemplateOutlet="upperTrimInput; context: { index: i, form: row }"></ng-container>
+                  <ng-container *ngTemplateOutlet="upperTrimInput; context: { index: i, form: row, tableLg: true }"></ng-container>
                 </td>
 
                 <!-- Rifilo Battuta Sotto -->
                 <td>
                   <ng-container
-                    *ngTemplateOutlet="belowThresholdInput; context: { index: i, form: row }"></ng-container>
+                    *ngTemplateOutlet="belowThresholdInput; context: { index: i, form: row, tableLg: true }"></ng-container>
                 </td>
                 <td class="text-center align-middle">
                   <button style="font-size: 0.9rem;" type="button" class="btn btn-danger" (click)="removeRow(i)">Rimuovi</button>
@@ -427,7 +428,7 @@
            [ngClass]="{ 'is-invalid': hasTriggeredValidation && form.get('width')?.errors }"
            (input)="onRowInputNumber($event, i, 'width')"/>
     <div *ngIf="(form.get('width')?.touched || hasTriggeredValidation) && form.get('width')?.invalid && !tableLg"
-         class="invalid-feedback">La larghezza è obbligatoria.
+         class="invalid-feedback">La larghezza{{ form.get('width')?.getError('invalidValue')?.reason }}.
     </div>
   </ng-container>
 </ng-template>
@@ -438,7 +439,7 @@
            [ngClass]="{ 'is-invalid': hasTriggeredValidation && form.get('height')?.errors }"
            (input)="onRowInputNumber($event, i, 'height')"/>
     <div *ngIf="(form.get('height')?.touched || hasTriggeredValidation) && form.get('height')?.invalid && !tableLg"
-         class="invalid-feedback">L'altezza è obbligatoria.
+         class="invalid-feedback">L'altezza{{ form.get('height')?.getError('invalidValue')?.reason }}.
     </div>
   </ng-container>
 </ng-template>
@@ -449,7 +450,7 @@
            [ngClass]="{ 'is-invalid': hasTriggeredValidation && form.get('quantity')?.errors }"
            (input)="onRowInputNumber($event, i, 'quantity')"/>
     <div *ngIf="(form.get('quantity')?.touched || hasTriggeredValidation) && form.get('quantity')?.invalid && !tableLg"
-         class="invalid-feedback">La quantità è obbligatoria.
+         class="invalid-feedback">La quantità{{ form.get('quantity')?.getError('invalidValue')?.reason }}.
     </div>
   </ng-container>
 </ng-template>
@@ -525,27 +526,43 @@
     </div>
   </ng-container>
 </ng-template>
-<ng-template #leftTrimInput let-i="index" let-form="form">
+<ng-template #leftTrimInput let-tableLg="tableLg" let-i="index" let-form="form">
   <ng-container [formGroup]="form">
     <input type="text" inputmode="numeric" formControlName="leftTrim" class="form-control" autocomplete="off"
+           [ngClass]="{ 'is-invalid': hasTriggeredValidation && form.get('leftTrim')?.errors }"
            (input)="onRowInputNumber($event, i, 'leftTrim')"/>
+    <div *ngIf="(form.get('leftTrim')?.touched || hasTriggeredValidation) && form.get('leftTrim')?.invalid && !tableLg"
+         class="invalid-feedback">Il rifilo sinistro{{ form.get('leftTrim')?.getError('invalidValue')?.reason }}.
+    </div>
   </ng-container>
 </ng-template>
-<ng-template #rightTrimInput let-i="index" let-form="form">
+<ng-template #rightTrimInput let-tableLg="tableLg" let-i="index" let-form="form">
   <ng-container [formGroup]="form">
     <input type="text" inputmode="numeric" formControlName="rightTrim" class="form-control" autocomplete="off"
+           [ngClass]="{ 'is-invalid': hasTriggeredValidation && form.get('rightTrim')?.errors }"
            (input)="onRowInputNumber($event, i, 'rightTrim')"/>
+    <div *ngIf="(form.get('rightTrim')?.touched || hasTriggeredValidation) && form.get('rightTrim')?.invalid && !tableLg"
+         class="invalid-feedback">Il rifilo destro{{ form.get('rightTrim')?.getError('invalidValue')?.reason }}.
+    </div>
   </ng-container>
 </ng-template>
-<ng-template #upperTrimInput let-i="index" let-form="form">
+<ng-template #upperTrimInput let-tableLg="tableLg" let-i="index" let-form="form">
   <ng-container [formGroup]="form">
     <input type="text" inputmode="numeric" formControlName="upperTrim" class="form-control" autocomplete="off"
+           [ngClass]="{ 'is-invalid': hasTriggeredValidation && form.get('upperTrim')?.errors }"
            (input)="onRowInputNumber($event, i, 'upperTrim')"/>
+    <div *ngIf="(form.get('upperTrim')?.touched || hasTriggeredValidation) && form.get('upperTrim')?.invalid && !tableLg"
+         class="invalid-feedback">Il rifilo sopra{{ form.get('upperTrim')?.getError('invalidValue')?.reason }}.
+    </div>
   </ng-container>
 </ng-template>
-<ng-template #belowThresholdInput let-i="index" let-form="form">
+<ng-template #belowThresholdInput let-tableLg="tableLg" let-i="index" let-form="form">
   <ng-container [formGroup]="form">
     <input type="text" inputmode="numeric" formControlName="belowThreshold" class="form-control" autocomplete="off"
+           [ngClass]="{ 'is-invalid': hasTriggeredValidation && form.get('belowThreshold')?.errors }"
            (input)="onRowInputNumber($event, i, 'belowThreshold')"/>
+    <div *ngIf="(form.get('belowThreshold')?.touched || hasTriggeredValidation) && form.get('belowThreshold')?.invalid && !tableLg"
+         class="invalid-feedback">Il rifilo sotto{{ form.get('belowThreshold')?.getError('invalidValue')?.reason }}.
+    </div>
   </ng-container>
 </ng-template>
