@@ -1,4 +1,4 @@
-name: Frontend deploy
+name: Reverse proxy deploy
 
 on:
   [workflow_dispatch]
