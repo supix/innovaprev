@@ -1,151 +1,29 @@
 version: "3.9"
 services:
   lb:
-    image: "innovaprev_rp:latest"
+    image: "supix/innovaprev_rp"
     container_name: rp
-    volumes:
-      - /root/pcs/docker/haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
     ports:
       - "80:80"
-      - "8080:8080"
     networks:
-      - frontend
-      - backend
+      - fe_nw
+      - be_nw
     depends_on:
-      - "fe1"
-      - "fe2"
-      - "fe3"
-  fe1:
-    image: "supix/pcs-fe-image"
-    container_name: fe1
+      - "be"
+      - "fe"
+  fe:
+    image: "supix/innovaprev_fe"
+    container_name: fe
     networks:
-      - frontend
+      - fe_nw
     depends_on:
-      - "be1"
-      - "be2"
-      - "be3"
-  fe2:
-    image: "supix/pcs-fe-image"
-    container_name: fe2
+      - "be"
+  be:
+    image: "supix/innovaprev_be"
+    container_name: be
     networks:
-      - frontend
-    depends_on:
-      - "be1"
-      - "be2"
-      - "be3"
-  fe3:
-    image: "supix/pcs-fe-image"
-    container_name: fe3
-    networks:
-      - frontend
-    depends_on:
-      - "be1"
-      - "be2"
-      - "be3"
-  be1:
-    image: "supix/pcs-be-image"
-    container_name: be1
-    volumes:
-      - /root/pcs/docker/backend/logs1/:/logs
-    networks:
-      - backend
-      - database
-    depends_on:
-      - "db"
-      - "db2"
-      - "db3"
-      - "db4"
-      - "db5"
-  be2:
-    image: "supix/pcs-be-image"
-    container_name: be2
-    volumes:
-      - /root/pcs/docker/backend/logs2/:/logs
-    networks:
-      - backend
-      - database
-    depends_on:
-      - "db"
-      - "db2"
-      - "db3"
-      - "db4"
-      - "db5"
-  be3:
-    image: "supix/pcs-be-image"
-    container_name: be3
-    volumes:
-      - /root/pcs/docker/backend/logs3/:/logs
-    networks:
-      - backend
-      - database
-    depends_on:
-      - "db"
-      - "db2"
-      - "db3"
-      - "db4"
-      - "db5"
-  db:
-    image: mongo
-    container_name: db
-    environment:
-      - PUID=1000
-      - PGID=1000
-    volumes:
-      - /root/pcs/docker/database/mongodb/database/:/data/db
-    entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "dbrs" ]
-    restart: unless-stopped
-    networks:
-      - database
-  db2:
-    image: mongo
-    container_name: db2
-    environment:
-      - PUID=1000
-      - PGID=1000
-    volumes:
-      - /root/pcs/docker/database/mongodb/database2/:/data/db
-    entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "dbrs" ]
-    restart: unless-stopped
-    networks:
-      - database
-  db3:
-    image: mongo
-    container_name: db3
-    environment:
-      - PUID=1000
-      - PGID=1000
-    volumes:
-      - /root/pcs/docker/database/mongodb/database3/:/data/db
-    entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "dbrs" ]
-    restart: unless-stopped
-    networks:
-      - database
-  db4:
-    image: mongo
-    container_name: db4
-    environment:
-      - PUID=1000
-      - PGID=1000
-    volumes:
-      - /root/pcs/docker/database/mongodb/database4/:/data/db
-    entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "dbrs" ]
-    restart: unless-stopped
-    networks:
-      - database
-  db5:
-    image: mongo
-    container_name: db5
-    environment:
-      - PUID=1000
-      - PGID=1000
-    volumes:
-      - /root/pcs/docker/database/mongodb/database5/:/data/db
-    entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "dbrs" ]
-    restart: unless-stopped
-    networks:
-      - database
+      - be_nw
 
 networks:
-  frontend:
-  backend:
-  database:
+  fe_nw:
+  be_nw:
