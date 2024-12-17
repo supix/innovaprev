@@ -1,0 +1,26 @@
+name: Frontend deploy
+
+on:
+  [workflow_dispatch]
+  
+  # push:
+  #   branches: [ "main" ]
+  #   paths:
+  #     - 'src/reverse_proxy/docker/**'
+  # pull_request:
+  #   branches: [ "main" ]
+  #   paths:
+  #     - 'src/reverse_proxy/docker/**'
+
+jobs:
+  publish_images:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+      - name: Build docker image
+        run: docker build . -t supix/innovaprev_rp:latest -f ./src/reverse_proxy/docker/Dockerfile
+      - name: Publish docker image to Docker hub
+        run: |
+          docker login -u supix -p ${{ secrets.DOCKER_HUB_TOKEN }}
+          docker push supix/innovaprev_rp:latest
