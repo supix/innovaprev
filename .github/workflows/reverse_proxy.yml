@@ -1,16 +1,14 @@
 name: Reverse proxy deploy
 
-on:
-  [workflow_dispatch]
-  
-  # push:
-  #   branches: [ "main" ]
-  #   paths:
-  #     - 'src/reverse_proxy/docker/**'
-  # pull_request:
-  #   branches: [ "main" ]
-  #   paths:
-  #     - 'src/reverse_proxy/docker/**'
+on:  
+  push:
+    branches: [ "main" ]
+    paths:
+      - 'src/reverse_proxy/docker/**'
+  pull_request:
+    branches: [ "main" ]
+    paths:
+      - 'src/reverse_proxy/docker/**'
 
 jobs:
   publish_images:
