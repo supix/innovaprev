@@ -1,17 +1,18 @@
-name: Reverse proxy deploy
+name: Build, publish and deploy reverse proxy
 
-on:  
-  push:
-    branches: [ "main" ]
-    paths:
-      - 'src/reverse_proxy/docker/**'
-  pull_request:
-    branches: [ "main" ]
-    paths:
-      - 'src/reverse_proxy/docker/**'
+on: 
+  [workflow_dispatch] 
+  # push:
+  #   branches: [ "main" ]
+  #   paths:
+  #     - 'src/reverse_proxy/docker/**'
+  # pull_request:
+  #   branches: [ "main" ]
+  #   paths:
+  #     - 'src/reverse_proxy/docker/**'
 
 jobs:
-  publish_images:
+  deploy_reverse_proxy:
     runs-on: ubuntu-latest
     steps:
       - name: checkout
@@ -22,3 +23,20 @@ jobs:
         run: |
           docker login -u supix -p ${{ secrets.DOCKER_HUB_TOKEN }}
           docker push supix/innovaprev_rp:latest
+      - name: Deploy to target server
+        uses: easingthemes/ssh-deploy@main
+        with:
+          SCRIPT_BEFORE: |
+            docker compose down
+            echo ${{ secrets.HOST_PWD }} | sudo -S su -
+          SCRIPT_AFTER: |
+            cd prova/trial
+            docker compose rm -f
+            docker compose pull
+            docker compose up -d
+          SSH_PRIVATE_KEY: ${{ secrets.HOST_KEY }}
+          ARGS: "-rlgoDzvc -i"
+          SOURCE: "src/docker/docker-compose.yml"
+          REMOTE_HOST: ${{ secrets.HOST_ADDR }}
+          REMOTE_USER: ${{ secrets.HOST_USER }}
+          TARGET: "/root/prova/trial/"
