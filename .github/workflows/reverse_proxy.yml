@@ -36,7 +36,7 @@ jobs:
             docker compose up -d
           SSH_PRIVATE_KEY: ${{ secrets.HOST_KEY }}
           ARGS: "-rlgoDzvc -i"
-          SOURCE: "src/docker/docker-compose.yml"
+          SOURCE: "src/docker/"
           REMOTE_HOST: ${{ secrets.HOST_ADDR }}
           REMOTE_USER: ${{ secrets.HOST_USER }}
           TARGET: "/root/prova/trial/"
