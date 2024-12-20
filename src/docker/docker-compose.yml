@@ -1,15 +1,19 @@
 services:
-  lb:
+  rp:
     image: "supix/innovaprev_rp"
     container_name: rp
     ports:
       - "80:80"
+      - "443:443"
     networks:
       - fe_nw
       - be_nw
     depends_on:
       - "be"
       - "fe"
+    restart: unless-stopped
+    volumes:
+      - ./cert.pem:/etc/ssl/certs/cert.pem
   fe:
     image: "supix/innovaprev_fe"
     container_name: fe
@@ -17,11 +21,13 @@ services:
       - fe_nw
     depends_on:
       - "be"
+    restart: unless-stopped
   be:
     image: "supix/innovaprev_be"
     container_name: be
     networks:
       - be_nw
+    restart: unless-stopped
 
 networks:
   fe_nw:
