@@ -1,15 +1,14 @@
 name: Build, publish and deploy reverse proxy
 
 on: 
-  [workflow_dispatch]
-  # push:
-  #   branches: [ "main" ]
-  #   paths:
-  #     - 'src/reverse_proxy/docker/**'
-  # pull_request:
-  #   branches: [ "main" ]
-  #   paths:
-  #     - 'src/reverse_proxy/docker/**'
+  push:
+    branches: [ "main" ]
+    paths:
+      - 'src/reverse_proxy/docker/**'
+  pull_request:
+    branches: [ "main" ]
+    paths:
+      - 'src/reverse_proxy/docker/**'
 
 jobs:
   deploy_reverse_proxy:
@@ -23,20 +22,20 @@ jobs:
         run: |
           docker login -u supix -p ${{ secrets.DOCKER_HUB_TOKEN }}
           docker push supix/innovaprev_rp:latest
-      - name: Deploy to target server
-        uses: easingthemes/ssh-deploy@main
-        with:
-          SCRIPT_BEFORE: |
-            cd /home/supix/deploy
-            echo ${{ secrets.HOST_PWD }} | sudo -S docker compose down rp
-          SCRIPT_AFTER: |
-            cd /home/supix/deploy
-            echo ${{ secrets.HOST_PWD }} | sudo -S docker compose rm -f  rp
-            echo ${{ secrets.HOST_PWD }} | sudo -S docker compose pull  rp
-            echo ${{ secrets.HOST_PWD }} | sudo -S docker compose up -d  rp
-          SSH_PRIVATE_KEY: ${{ secrets.HOST_KEY }}
-          ARGS: "-rlgoDzvc -i"
-          SOURCE: "src/docker/"
-          REMOTE_HOST: ${{ secrets.HOST_ADDR }}
-          REMOTE_USER: ${{ secrets.HOST_USER }}
-          TARGET: "/home/supix/deploy"
+      # - name: Deploy to target server
+      #   uses: easingthemes/ssh-deploy@main
+      #   with:
+      #     SCRIPT_BEFORE: |
+      #       cd /home/supix/deploy
+      #       echo ${{ secrets.HOST_PWD }} | sudo -S docker compose stop
+      #       echo ${{ secrets.HOST_PWD }} | sudo -S docker compose rm -f
+      #     SCRIPT_AFTER: |
+      #       cd /home/supix/deploy
+      #       echo ${{ secrets.HOST_PWD }} | sudo -S docker compose pull rp
+      #       echo ${{ secrets.HOST_PWD }} | sudo -S docker compose up -d
+      #     SSH_PRIVATE_KEY: ${{ secrets.HOST_KEY }}
+      #     ARGS: "-rlgoDzvc -i"
+      #     SOURCE: "src/docker/"
+      #     REMOTE_HOST: ${{ secrets.HOST_ADDR }}
+      #     REMOTE_USER: ${{ secrets.HOST_USER }}
+      #     TARGET: "/home/supix/deploy"

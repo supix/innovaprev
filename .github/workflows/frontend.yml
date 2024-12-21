@@ -1,17 +1,16 @@
 name: Build, publish and deploy frontend
 
 on:
-  [workflow_dispatch]
-  # push:
-  #   branches: [ "main" ]
-  #   paths:
-  #     - 'src/frontend/src/**'
-  #     - 'src/frontend/docker/'
-  # pull_request:
-  #   branches: [ "main" ]
-  #   paths:
-  #     - 'src/frontend/src/**'
-  #     - 'src/frontend/docker/'
+  push:
+    branches: [ "main" ]
+    paths:
+      - 'src/frontend/src/**'
+      - 'src/frontend/docker/'
+  pull_request:
+    branches: [ "main" ]
+    paths:
+      - 'src/frontend/src/**'
+      - 'src/frontend/docker/'
 
 jobs:
   deploy_frontend:
@@ -25,20 +24,20 @@ jobs:
         run: |
           docker login -u supix -p ${{ secrets.DOCKER_HUB_TOKEN }}
           docker push supix/innovaprev_fe:latest
-      - name: Deploy to target server
-        uses: easingthemes/ssh-deploy@main
-        with:
-          SCRIPT_BEFORE: |
-            cd /home/supix/deploy
-            echo ${{ secrets.HOST_PWD }} | sudo -S docker compose down fe
-          SCRIPT_AFTER: |
-            cd /home/supix/deploy
-            echo ${{ secrets.HOST_PWD }} | sudo -S docker compose rm -f fe
-            echo ${{ secrets.HOST_PWD }} | sudo -S docker compose pull fe
-            echo ${{ secrets.HOST_PWD }} | sudo -S docker compose up -d fe
-          SSH_PRIVATE_KEY: ${{ secrets.HOST_KEY }}
-          ARGS: "-rlgoDzvc -i"
-          SOURCE: "src/docker/"
-          REMOTE_HOST: ${{ secrets.HOST_ADDR }}
-          REMOTE_USER: ${{ secrets.HOST_USER }}
-          TARGET: "/home/supix/deploy"
+      # - name: Deploy to target server
+      #   uses: easingthemes/ssh-deploy@main
+      #   with:
+      #     SCRIPT_BEFORE: |
+      #       cd /home/supix/deploy
+      #       echo ${{ secrets.HOST_PWD }} | sudo -S docker compose stop
+      #       echo ${{ secrets.HOST_PWD }} | sudo -S docker compose rm -f
+      #     SCRIPT_AFTER: |
+      #       cd /home/supix/deploy
+      #       echo ${{ secrets.HOST_PWD }} | sudo -S docker compose pull fe
+      #       echo ${{ secrets.HOST_PWD }} | sudo -S docker compose up -d
+      #     SSH_PRIVATE_KEY: ${{ secrets.HOST_KEY }}
+      #     ARGS: "-rlgoDzvc -i"
+      #     SOURCE: "src/docker/"
+      #     REMOTE_HOST: ${{ secrets.HOST_ADDR }}
+      #     REMOTE_USER: ${{ secrets.HOST_USER }}
+      #     TARGET: "/home/supix/deploy"
