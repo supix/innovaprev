@@ -457,15 +457,27 @@
 <ng-template #windowTypeInput let-tableLg="tableLg" let-form="form">
   <ng-container [formGroup]="form">
     <ng-select
-      (focus)="ngSelectHandleFocus(tableLg)"
+      (open)="ngSelectHandleFocus(tableLg)"
       [items]="collections?.windowTypes || []"
       [searchable]="true"
       [clearable]="false"
       formControlName="windowType"
       appendTo="body"
+      class="custom-table"
       [class.ng-invalid]="false"
       [ngClass]="{ 'is-invalid': hasTriggeredValidation && form.get('windowType')?.errors }"
       [loading]="isCollectionsLoading">
+      <ng-container *ngIf="tableLg">
+        <ng-template ng-label-tmp let-item="item">
+          <div>{{item.id}}</div>
+        </ng-template>
+      </ng-container>
+      <ng-template ng-option-tmp let-item="item">
+        <div class="dropdown-item">
+          <span class="item-id">{{ item.id }}</span>
+          <span class="item-desc">{{ item.desc }}</span>
+        </div>
+      </ng-template>
     </ng-select>
     <div *ngIf="(form.get('windowType')?.touched || hasTriggeredValidation) && form.get('windowType')?.invalid && !tableLg"
          class="invalid-feedback">La tipologia è obbligatoria.
