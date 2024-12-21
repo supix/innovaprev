@@ -22,20 +22,26 @@ jobs:
         run: |
           docker login -u supix -p ${{ secrets.DOCKER_HUB_TOKEN }}
           docker push supix/innovaprev_rp:latest
-      # - name: Deploy to target server
-      #   uses: easingthemes/ssh-deploy@main
-      #   with:
-      #     SCRIPT_BEFORE: |
-      #       docker compose down rp
-      #       echo ${{ secrets.HOST_PWD }} | sudo -S su -
-      #     SCRIPT_AFTER: |
-      #       cd prova/trial
-      #       docker compose rm -f  rp
-      #       docker compose pull  rp
-      #       docker compose up -d  rp
-      #     SSH_PRIVATE_KEY: ${{ secrets.HOST_KEY }}
-      #     ARGS: "-rlgoDzvc -i"
-      #     SOURCE: "src/docker/"
-      #     REMOTE_HOST: ${{ secrets.HOST_ADDR }}
-      #     REMOTE_USER: ${{ secrets.HOST_USER }}
-      #     TARGET: "/root/prova/trial/"
+      - name: Deploy to target server
+        uses: easingthemes/ssh-deploy@main
+        with:
+          SCRIPT_BEFORE: |
+            echo ${{ secrets.HOST_PWD }} | sudo -S su -
+            cd /home/supix/deploy
+            whoami
+            pwd
+            docker compose down rp
+          SCRIPT_AFTER: |
+            whoami
+            pwd
+            cd /home/supix/deploy
+            pwd
+            docker compose rm -f  rp
+            docker compose pull  rp
+            docker compose up -d  rp
+          SSH_PRIVATE_KEY: ${{ secrets.HOST_KEY }}
+          ARGS: "-rlgoDzvc -i"
+          SOURCE: "src/docker/"
+          REMOTE_HOST: ${{ secrets.HOST_ADDR }}
+          REMOTE_USER: ${{ secrets.HOST_USER }}
+          TARGET: "/home/supix/deploy"
