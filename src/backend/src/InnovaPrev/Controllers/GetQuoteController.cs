@@ -11,11 +11,21 @@ namespace InnovaPrev.Controllers
         [HttpPost]
         public GetQuoteOutputDto Post([FromBody] Project project)
         {
+            var total_cost = project.WindowsData.Aggregate(0d, (acc, x) => 
+            {
+                var area_sqm = x.Height * x.Width / 1e6;
+                if (area_sqm < 1.5d)
+                    area_sqm = 1.5d;
+                var total_area = area_sqm * x.Quantity;
+                acc += 985 * total_area;
+                return acc;
+            });
+
             return new GetQuoteOutputDto()
             {
                 Quotation = new Quotation()
                 {
-                    Amount = 12345
+                    Amount = Math.Round(total_cost, 2)
                 }
             };
         }
@@ -28,6 +38,6 @@ namespace InnovaPrev.Controllers
 
     public class Quotation
     {
-        public long Amount { get; set; }
+        public double Amount { get; set; }
     }
 }
