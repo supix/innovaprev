@@ -10,7 +10,7 @@ services:
       - be_nw
     restart: unless-stopped
     volumes:
-      - ./cert.pem:/etc/ssl/certs/cert.pem
+      - ../certs/cert.pem:/etc/ssl/certs/cert.pem
   fe:
     image: "supix/innovaprev_fe"
     container_name: fe

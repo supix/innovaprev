@@ -43,11 +43,13 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.HOST_KEY }}
           ARGS: "-rlgoDzvc -i --delete"
           SOURCE: "src/docker/"
-          TARGET: "/home/supix/deploy/backend"
-          SCRIPT_AFTER: |
+          TARGET: "/home/${{ secrets.HOST_USER }}/deploy/backend"
+          SCRIPT_BEFORE: |
             cd /home/${{ secrets.HOST_USER }}/deploy/backend
             echo ${{ secrets.HOST_PWD }} | sudo -S docker compose stop be
             echo ${{ secrets.HOST_PWD }} | sudo -S docker compose rm -f be
+          SCRIPT_AFTER: |
+            cd /home/${{ secrets.HOST_USER }}/deploy/backend
             echo ${{ secrets.HOST_PWD }} | sudo -S docker compose pull be
             echo ${{ secrets.HOST_PWD }} | sudo -S docker compose up -d be
   
