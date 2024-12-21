@@ -8,9 +8,6 @@ services:
     networks:
       - fe_nw
       - be_nw
-    depends_on:
-      - "be"
-      - "fe"
     restart: unless-stopped
     volumes:
       - ./cert.pem:/etc/ssl/certs/cert.pem
@@ -19,8 +16,6 @@ services:
     container_name: fe
     networks:
       - fe_nw
-    depends_on:
-      - "be"
     restart: unless-stopped
   be:
     image: "supix/innovaprev_be"
