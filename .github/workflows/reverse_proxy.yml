@@ -26,9 +26,9 @@ jobs:
       - name: Deploy to target server
         uses: easingthemes/ssh-deploy@main
         with:
-          SCRIPT_BEFORE: |
-            echo ${{ secrets.HOST_PWD }} | sudo -S su -
+          # SCRIPT_BEFORE: |
           SCRIPT_AFTER: |
+            echo ${{ secrets.HOST_PWD }} | sudo -S su -
             cd /home/supix/deploy
             whoami
             pwd
