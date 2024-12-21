@@ -30,9 +30,9 @@ jobs:
           SCRIPT_AFTER: |
             cd /home/supix/deploy
             echo ${{ secrets.HOST_PWD }} | sudo -S docker compose down rp
-            echo ${{ secrets.HOST_PWD }} | docker compose rm -f  rp
-            echo ${{ secrets.HOST_PWD }} | docker compose pull  rp
-            echo ${{ secrets.HOST_PWD }} | docker compose up -d  rp
+            echo ${{ secrets.HOST_PWD }} | sudo -S docker compose rm -f  rp
+            echo ${{ secrets.HOST_PWD }} | sudo -S docker compose pull  rp
+            echo ${{ secrets.HOST_PWD }} | sudo -S docker compose up -d  rp
           SSH_PRIVATE_KEY: ${{ secrets.HOST_KEY }}
           ARGS: "-rlgoDzvc -i"
           SOURCE: "src/docker/"
