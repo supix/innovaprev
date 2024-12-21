@@ -1,14 +1,15 @@
 name: Build, publish and deploy reverse proxy
 
 on: 
-  push:
-    branches: [ "main" ]
-    paths:
-      - 'src/reverse_proxy/docker/**'
-  pull_request:
-    branches: [ "main" ]
-    paths:
-      - 'src/reverse_proxy/docker/**'
+  [workflow_dispatch]
+  # push:
+  #   branches: [ "main" ]
+  #   paths:
+  #     - 'src/reverse_proxy/docker/**'
+  # pull_request:
+  #   branches: [ "main" ]
+  #   paths:
+  #     - 'src/reverse_proxy/docker/**'
 
 jobs:
   deploy_reverse_proxy:
