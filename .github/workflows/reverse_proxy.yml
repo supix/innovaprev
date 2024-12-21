@@ -31,6 +31,7 @@ jobs:
             echo ${{ secrets.HOST_PWD }} | sudo -S su -
             cd /home/supix/deploy
             whoami
+            whoami | wc
             pwd
             docker compose down rp
             whoami
