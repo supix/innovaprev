@@ -13,11 +13,12 @@ namespace InnovaPrev.Controllers
         {
             var total_cost = project.WindowsData.Aggregate(0d, (acc, x) => 
             {
+                const int sqm_price = 985;
                 var area_sqm = x.Height * x.Width / 1e6;
                 if (area_sqm < 1.5d)
                     area_sqm = 1.5d;
                 var total_area = area_sqm * x.Quantity;
-                acc += 985 * total_area;
+                acc += sqm_price * total_area;
                 return acc;
             });
 
