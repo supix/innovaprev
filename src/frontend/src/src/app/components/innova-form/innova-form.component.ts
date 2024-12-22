@@ -1,26 +1,12 @@
-import {
-  AfterViewInit,
-  Component,
-  ElementRef,
-  OnInit,
-  ViewChild,
-  ViewEncapsulation
-} from '@angular/core';
-import {
-  AbstractControl,
-  FormArray,
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule, ValidationErrors,
-  ValidatorFn,
-  Validators
-} from '@angular/forms';
+import {AfterViewInit, Component, ElementRef, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {AbstractControl, FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {CommonModule} from '@angular/common';
 import {NgSelectConfig, NgSelectModule} from '@ng-select/ng-select';
 import {ApiService} from '../../services/api.service';
-import {CollectionsResponse, DataPayload} from '../../models';
-import {finalize, startWith, Subscription, tap} from 'rxjs';
+import {CollectionsResponse, DataPayload, WindowsPayload} from '../../models';
+import {debounceTime, finalize, startWith, Subject, Subscription, switchMap, tap} from 'rxjs';
 import {PriceDisplayComponent} from '../price-display/price-display.component';
+import {italianVatValidator, minNumber, phoneNumberValidator} from "../../validators/innova.validator";
 
 @Component({
   selector: 'app-innova-form',
@@ -33,7 +19,6 @@ import {PriceDisplayComponent} from '../price-display/price-display.component';
 export class InnovaFormComponent implements OnInit, AfterViewInit {
 
   @ViewChild('tab', {static: true}) tabElement!: ElementRef;
-  @ViewChild('tooltip', {static: true}) tooltip!: ElementRef<HTMLDivElement>;
 
   form: FormGroup;
   price: number | null = null;
@@ -48,6 +33,8 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
 
   currentTab: TabNames = TabNames.personal;
   tabNames = TabNames;
+
+  private calculatePriceSubject = new Subject<WindowsPayload>();
 
   constructor(private fb: FormBuilder, private config: NgSelectConfig, private apiService: ApiService) {
     this.config.bindLabel = 'desc';
@@ -85,6 +72,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
       tap(() => this.isCollectionsLoading = true),
       finalize(() => this.isCollectionsLoading = false)
     ).subscribe(collections => this.collections = collections);
+    this.setupPriceCalculationSubscription();
   }
 
   ngAfterViewInit(): void {
@@ -98,6 +86,13 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
   get windows(): FormArray {
     return this.form.get('windowsData') as FormArray;
   }
+
+  // Helper function to check validity of a specific row by index
+  isRowValid(index: number): boolean {
+    const row = this.windows.at(index);
+    return row ? row.valid : false;
+  }
+
 
   addRowCheck(): boolean {
     return this.hasTriggeredValidation;
@@ -154,10 +149,10 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
         openingType: [null, Validators.required],
         glassType: [null, Validators.required],
         crosspiece: [null, Validators.required],
-        leftTrim: [null, minNumber(0, true)],
-        rightTrim: [null, minNumber(0, true)],
-        upperTrim: [null, minNumber(0, true)],
-        belowThreshold: [null, minNumber(0, true)],
+        leftTrim: [null, minNumber(0)],
+        rightTrim: [null, minNumber(0)],
+        upperTrim: [null, minNumber(0)],
+        belowThreshold: [null, minNumber(0)],
       });
       this.windows.push(row);
       this.updatePositions();
@@ -191,7 +186,8 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
 
     if (control) {
       control.setValue(+value); // Update the FormControl with the filtered value
-      this.onMaxQuantity(event, controlName)
+      this.onMaxQuantity(event, controlName);
+      this.calculatePriceHandler();
     }
   }
 
@@ -206,6 +202,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
     }
   }
 
+  // Handler to have limits on some form inputs
   onMaxQuantity(event: Event, controlName: string): void {
     const maxValues: { [key: string]: number } = {
       height: 5000,
@@ -238,7 +235,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
     }
   }
 
-
+  // Needed to work around a ng-select issue
   ngSelectHandleFocus(enabled: boolean): void {
     if (enabled) {
       setTimeout(() => {
@@ -251,23 +248,29 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
     }
   }
 
-  // Submit the form and calculate the price
-  calculatePrice(): void {
-    this.submitted = true;
-    if (this.form.valid) {
-      this.isLoading = true;
-      const payload: DataPayload = this.buildPayload();
-      this.apiService.getPrice(payload).pipe(
-        finalize(() => {
-          this.isLoading = false;
-          this.submitted = false;
-        })
-      ).subscribe(({quotation}) => {
-        this.price = quotation?.amount;
-      });
-    } else {
-      this.markAllTouchedAndValidate();
+  calculatePriceHandler(): void {
+    const validRows = this.getValidWindowsData();
+    if (validRows.length > 0) {
+      const payload: WindowsPayload = this.buildWindowsPayload();
+      this.calculatePriceSubject.next(payload);
     }
+  }
+
+  // Setup subscription to calculate price
+  private setupPriceCalculationSubscription(): void {
+    this.calculatePriceSubject.pipe(
+      debounceTime(300), // Delay to avoid frequent calls
+      switchMap((payload) => {
+        this.isLoading = true;
+        return this.apiService.getPrice(payload).pipe(
+          finalize(() => {
+            this.isLoading = false;
+          })
+        );
+      })
+    ).subscribe(({ quotation }) => {
+      this.price = quotation?.amount;
+    });
   }
 
   // Download the PDF
@@ -296,7 +299,8 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
     }
   }
 
-  onMouseEnter(event: MouseEvent, tooltipId: string): void {
+  // Adds tooltip on mouse enter
+  onEnterTooltip(event: MouseEvent, tooltipId: string): void {
     const tooltip = document.getElementById(tooltipId);
     const target = event.target as HTMLElement;
 
@@ -311,7 +315,8 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
     }
   }
 
-  onMouseLeave(tooltipId: string): void {
+  // Removes the tooltip on the mouse leave
+  onLeaveTooltip(tooltipId: string): void {
     const tooltip = document.getElementById(tooltipId);
 
     if (tooltip) {
@@ -349,12 +354,27 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
     return false;
   }
 
-  // Build payload for API
+  // Helper function to get valid rows from the FormArray
+  private getValidWindowsData(): any[] {
+    return this.windows.controls
+      .filter(row => row.valid)
+      .map(row => row.value);
+  }
+
+  // Build Data payload for API
   private buildPayload(): DataPayload {
     return {
       personalData: this.form.value.personalData,
       productData: this.form.value.productData,
-      windowsData: this.form.value.windowsData,
+      ...this.buildWindowsPayload()
+    };
+  }
+
+  // Build Windows payload for API using valid rows from the form
+  private buildWindowsPayload(): WindowsPayload {
+    const validRows = this.getValidWindowsData();
+    return {
+      windowsData: validRows
     };
   }
 
@@ -372,110 +392,4 @@ enum TabNames {
   personal = 'personal-tab',
   product = 'product-tab',
   measurements = 'measurements-tab'
-}
-
-// Checks if the value meets the minimum requirement or returns a validation error.
-function minNumber(min: number, required: boolean = false, gender: 'm' | 'f' = 'm'): ValidatorFn {
-  return (control: AbstractControl): ValidationErrors | null => {
-    const value = control.value;
-
-    // If the value is null, undefined, or an empty string
-    if (value === null || value === undefined || value === '') {
-      if (required) {
-        return {invalidValue: {reason: ` è obbligatori${gender === 'm' ? 'o' : 'a'}`}};
-      }
-      return null; // Not required and empty values are allowed
-    }
-
-    // Ensure the value is numeric
-    const numericValue = Number(value);
-    if (isNaN(numericValue)) {
-      return {invalidValue: {reason: ' deve essere un numero valido'}};
-    }
-
-    // Check if the value meets the minimum requirement
-    if (numericValue < min) {
-      return {invalidValue: {reason: ` è minimo di ${min}`}};
-    }
-
-    return null; // Validation passed
-  };
-}
-
-// Checks the validity of the Italian Vat or returns a validation error.
-function italianVatValidator(): ValidatorFn {
-  return (control: AbstractControl): ValidationErrors | null => {
-    const value = control.value;
-
-    // Null or empty values are not validated
-    if (value === null || value === undefined || value === '') {
-      return {italianVat: {reason: 'La partita IVA è obbligatoria.'}};
-    }
-
-    // Ensure the value is a string of exactly 11 numeric characters
-    if (!/^\d{11}$/.test(value)) {
-      return {italianVat: {reason: 'La partita IVA deve essere di 11 cifre.'}};
-    }
-
-    // Validate the Italian Vat using the checksum algorithm
-    if (!isValidItalianVat(value)) {
-      return {italianVat: {reason: 'La partita IVA non è valida.'}};
-    }
-
-    return null;
-  };
-}
-
-// Checks if the Italian Vat is valid using the checksum algorithm.
-function isValidItalianVat(vat: string): boolean {
-  const digits = vat.split('').map(Number);
-  let sum = 0;
-
-  for (let i = 0; i < 11; i++) {
-    if (i % 2 === 0) {
-      // Even positions (0-based index): add the digit as is
-      sum += digits[i];
-    } else {
-      // Odd positions: double the digit and subtract 9 if the result is >= 10
-      const doubled = digits[i] * 2;
-      sum += doubled > 9 ? doubled - 9 : doubled;
-    }
-  }
-
-  // The sum must be divisible by 10
-  return sum % 10 === 0;
-}
-
-// Validator for phone numbers
-function phoneNumberValidator(required: boolean = false, minLength: number = 8, maxLength: number = 15): ValidatorFn {
-  return (control: AbstractControl): ValidationErrors | null => {
-    const value = control.value;
-
-    // If the value is null, undefined, or an empty string
-    if (value === null || value === undefined || value === '') {
-      if (required) {
-        return {invalidPhoneNumber: {reason: 'Il numero di telefono è obbligatorio'}};
-      }
-      return null; // Not required and empty values are allowed
-    }
-
-    // Remove spaces and dashes to validate only numeric characters
-    const sanitizedValue = value.replace(/[\s\-]/g, '');
-
-    // Check if the value contains only numbers
-    if (!/^\d+$/.test(sanitizedValue)) {
-      return {invalidPhoneNumber: {reason: 'Il numero di telefono deve contenere solo cifre numeriche.'}};
-    }
-
-    // Check the length requirements
-    if (sanitizedValue.length < minLength || sanitizedValue.length > maxLength) {
-      return {
-        invalidPhoneNumber: {
-          reason: `Il numero di telefono è troppo breve.`,
-        },
-      };
-    }
-
-    return null; // Validation passed
-  };
 }

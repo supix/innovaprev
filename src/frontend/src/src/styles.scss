@@ -60,6 +60,11 @@
   border-color: $danger;
   color: #fff;
 
+  & svg {
+    vertical-align: middle;
+    margin-right: 0;
+  }
+
 
   &:hover {
     background-color: darken($danger, 10%);
@@ -79,4 +84,10 @@
     border-color: lighten($danger, 20%);
     color: rgba(255, 255, 255, 0.7);
   }
+}
+
+.icon-trash {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
 }

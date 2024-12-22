@@ -183,17 +183,27 @@ ng-dropdown-panel {
   padding: 0.5rem;
   border-radius: 0.25rem;
   font-size: 0.85rem;
-  white-space: nowrap;
+  white-space: normal;
+  max-width: 200px;
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.2s ease-in-out;
   z-index: 9999;
+
+  &.danger {
+    background-color: darken($danger, 10%);
+    border-color: darken($danger, 10%);
+
+    &::after {
+      border-color: transparent transparent darken($danger, 10%) transparent;
+    }
+  }
 }
 
 .tooltip::after {
   content: '';
   position: absolute;
-  top: -10px;
+  top: -9px;
   left: 50%;
   transform: translateX(-50%);
   border-width: 5px;

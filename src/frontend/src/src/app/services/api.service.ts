@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
-import {CollectionsResponse, DataPayload, QuotationResponse} from '../models';
+import {CollectionsResponse, DataPayload, QuotationResponse, WindowsPayload} from '../models';
 import {environment} from '../../environments/environment';
 
 @Injectable({
@@ -15,7 +15,7 @@ export class ApiService {
   }
 
   // API to get the price
-  getPrice(payload: DataPayload): Observable<QuotationResponse> {
+  getPrice(payload: WindowsPayload): Observable<QuotationResponse> {
     return this.http.post<QuotationResponse>(`${this.baseUrl}${this.endpoints.getQuote}`, payload);
   }
 
