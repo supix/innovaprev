@@ -145,40 +145,58 @@ app-innova-form {
 
 }
 
-ng-dropdown-panel.custom-table-lg {
-  font-size: 0.9rem !important;
-}
-
 ng-dropdown-panel {
-  min-width: 300px !important;
-  width: auto !important;
+  &.custom-table-lg {
+    font-size: 0.9rem !important;
+    min-width: 300px !important;
+    width: auto !important;
+  }
 
   .dropdown-item {
     display: flex;
     align-items: center;
-    padding: 0.2em 0.1em;
+
+    .item-id {
+      min-width: 4rem;
+      font-style: italic;
+      color: #9e9e9e;
+      font-size: 0.8rem;
+      text-align: left;
+      margin-right: 0.5rem;
+    }
+
+    .item-desc {
+      flex: 1;
+      text-align: left;
+    }
   }
 
-  .dropdown-item .item-id {
-    min-width: 4em;
-    font-style: italic;
-    color: #9e9e9e;
-    font-size: 0.85em;
-    text-align: left;
-    margin-right: 0.5em;
+  .ng-option-selected .dropdown-item .item-desc {
+    font-weight: bold;
   }
+}
 
-  .dropdown-item .item-desc {
-    flex: 1;
-    font-weight: normal;
-    font-size: 0.95em;
-    color: #333;
-    text-align: left;
-  }
+.tooltip {
+  position: fixed;
+  background-color: #333;
+  color: #fff;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.85rem;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease-in-out;
+  z-index: 9999;
+}
 
-  .dropdown-item:hover .item-desc {
-    color: #007bff;
-    text-decoration: underline;
-  }
-
+.tooltip::after {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent #333 transparent;
 }
