@@ -33,6 +33,7 @@ import {PriceDisplayComponent} from '../price-display/price-display.component';
 export class InnovaFormComponent implements OnInit, AfterViewInit {
 
   @ViewChild('tab', {static: true}) tabElement!: ElementRef;
+  @ViewChild('tooltip', {static: true}) tooltip!: ElementRef<HTMLDivElement>;
 
   form: FormGroup;
   price: number | null = null;
@@ -292,6 +293,29 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
       });
     } else {
       this.markAllTouchedAndValidate();
+    }
+  }
+
+  onMouseEnter(event: MouseEvent, tooltipId: string): void {
+    const tooltip = document.getElementById(tooltipId);
+    const target = event.target as HTMLElement;
+
+    if (tooltip && target) {
+      const rect = target.getBoundingClientRect();
+
+      tooltip.style.top = `${rect.bottom + 5}px`;
+      tooltip.style.left = `${rect.left + rect.width / 2}px`;
+      tooltip.style.transform = 'translateX(-50%)';
+
+      tooltip.style.opacity = '1';
+    }
+  }
+
+  onMouseLeave(tooltipId: string): void {
+    const tooltip = document.getElementById(tooltipId);
+
+    if (tooltip) {
+      tooltip.style.opacity = '0';
     }
   }
 

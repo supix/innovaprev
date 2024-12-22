@@ -454,9 +454,11 @@
     </div>
   </ng-container>
 </ng-template>
-<ng-template #windowTypeInput let-tableLg="tableLg" let-form="form">
+<ng-template #windowTypeInput let-tableLg="tableLg" let-i="index" let-form="form">
   <ng-container [formGroup]="form">
     <ng-select
+      (mouseenter)="onMouseEnter($event, 'tooltip-' + i)"
+      (mouseleave)="onMouseLeave('tooltip-' + i)"
       (open)="ngSelectHandleFocus(tableLg)"
       [items]="collections?.windowTypes || []"
       [searchable]="true"
@@ -470,6 +472,7 @@
       <ng-container *ngIf="tableLg">
         <ng-template ng-label-tmp let-item="item">
           <div>{{item.id}}</div>
+          <div class="tooltip" [id]="'tooltip-' + i">{{item.desc}}</div>
         </ng-template>
       </ng-container>
       <ng-template ng-option-tmp let-item="item">
