@@ -35,7 +35,7 @@ jobs:
         run: |
           docker login -u supix -p ${{ secrets.DOCKER_HUB_TOKEN }}
           docker push supix/innovaprev_be:latest
-      - name: pull and restart the container
+      - name: Pull and restart the container
         uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.HOST_ADDR }}
@@ -44,6 +44,7 @@ jobs:
           script: |
             echo ${{ secrets.HOST_PWD }} | sudo -S docker rm -f be
             echo ${{ secrets.HOST_PWD }} | sudo -S docker pull supix/innovaprev_be:latest
+            echo ${{ secrets.HOST_PWD }} | sudo -S docker network create be_nw
             echo ${{ secrets.HOST_PWD }} | sudo -S docker run -d --network=be_nw --name=be --restart=unless-stopped supix/innovaprev_be:latest
       # - name: Deploy to target server
       #   uses: easingthemes/ssh-deploy@main
