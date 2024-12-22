@@ -35,21 +35,14 @@ jobs:
         run: |
           docker login -u supix -p ${{ secrets.DOCKER_HUB_TOKEN }}
           docker push supix/innovaprev_be:latest
-      # - name: Deploy to target server
-      #   uses: easingthemes/ssh-deploy@main
+      # - name: Pull newly published image and restart the container
+      #   uses: appleboy/ssh-action@v1.2.0
       #   with:
-      #     REMOTE_HOST: ${{ secrets.HOST_ADDR }}
-      #     REMOTE_USER: ${{ secrets.HOST_USER }}
-      #     SSH_PRIVATE_KEY: ${{ secrets.HOST_KEY }}
-      #     ARGS: "-rlgoDzvc -i --delete"
-      #     SOURCE: "src/docker/"
-      #     TARGET: "/home/${{ secrets.HOST_USER }}/deploy/backend"
-      #     SCRIPT_BEFORE: |
-      #       cd /home/${{ secrets.HOST_USER }}/deploy/backend
-      #       echo ${{ secrets.HOST_PWD }} | sudo -S docker compose stop be
-      #       echo ${{ secrets.HOST_PWD }} | sudo -S docker compose rm -f be
-      #     SCRIPT_AFTER: |
-      #       cd /home/${{ secrets.HOST_USER }}/deploy/backend
-      #       echo ${{ secrets.HOST_PWD }} | sudo -S docker compose pull be
-      #       echo ${{ secrets.HOST_PWD }} | sudo -S docker compose up -d be
-  
+      #     host: ${{ secrets.HOST_ADDR }}
+      #     username: ${{ secrets.HOST_USER }}
+      #     key: ${{ secrets.HOST_KEY }}
+      #     script: |
+      #       echo ${{ secrets.HOST_PWD }} | sudo -S docker rm -f be
+      #       echo ${{ secrets.HOST_PWD }} | sudo -S docker pull supix/innovaprev_be:latest
+      #       echo ${{ secrets.HOST_PWD }} | sudo -S docker network inspect be_nw >/dev/null 2>&1 || docker network create be_nw
+      #       echo ${{ secrets.HOST_PWD }} | sudo -S docker run -d --network=be_nw --name=be --restart=unless-stopped supix/innovaprev_be:latest
