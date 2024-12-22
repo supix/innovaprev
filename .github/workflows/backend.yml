@@ -1,6 +1,7 @@
 name: Build, publish and deploy backend
 
 on:
+  workflow_dispatch:
   push:
     branches: [ "main" ]
     paths:
@@ -37,18 +38,18 @@ jobs:
       # - name: Deploy to target server
       #   uses: easingthemes/ssh-deploy@main
       #   with:
-      #     SCRIPT_BEFORE: |
-      #       cd /home/supix/deploy
-      #       echo ${{ secrets.HOST_PWD }} | sudo -S docker compose stop
-      #       echo ${{ secrets.HOST_PWD }} | sudo -S docker compose rm -f
-      #     SCRIPT_AFTER: |
-      #       cd /home/supix/deploy
-      #       echo ${{ secrets.HOST_PWD }} | sudo -S docker compose pull be
-      #       echo ${{ secrets.HOST_PWD }} | sudo -S docker compose up -d
-      #     SSH_PRIVATE_KEY: ${{ secrets.HOST_KEY }}
-      #     ARGS: "-rlgoDzvc -i"
-      #     SOURCE: "src/docker/"
       #     REMOTE_HOST: ${{ secrets.HOST_ADDR }}
       #     REMOTE_USER: ${{ secrets.HOST_USER }}
-      #     TARGET: "/home/supix/deploy"
+      #     SSH_PRIVATE_KEY: ${{ secrets.HOST_KEY }}
+      #     ARGS: "-rlgoDzvc -i --delete"
+      #     SOURCE: "src/docker/"
+      #     TARGET: "/home/${{ secrets.HOST_USER }}/deploy/backend"
+      #     SCRIPT_BEFORE: |
+      #       cd /home/${{ secrets.HOST_USER }}/deploy/backend
+      #       echo ${{ secrets.HOST_PWD }} | sudo -S docker compose stop be
+      #       echo ${{ secrets.HOST_PWD }} | sudo -S docker compose rm -f be
+      #     SCRIPT_AFTER: |
+      #       cd /home/${{ secrets.HOST_USER }}/deploy/backend
+      #       echo ${{ secrets.HOST_PWD }} | sudo -S docker compose pull be
+      #       echo ${{ secrets.HOST_PWD }} | sudo -S docker compose up -d be
   
