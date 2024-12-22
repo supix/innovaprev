@@ -35,8 +35,11 @@ export interface WindowRow {
 
 
 // Payload for a collection of window estimate rows
-export interface DataPayload {
+export interface DataPayload extends WindowsPayload {
   personalData: PersonalData;
   productData: ProductDetails;
+}
+
+export interface WindowsPayload {
   windowsData: WindowRow[];
 }
