@@ -443,6 +443,8 @@
     <div *ngIf="!isRowValid(i) && tableLg" class="tooltip danger" [id]="'tooltip-position-' + i">Compila tutti i campi
       richiesti per il calcolo.
     </div>
+    <div *ngIf="isRowValid(i) && tableLg" class="tooltip success" [id]="'tooltip-position-' + i">Contribuisce al calcolo.
+    </div>
   </ng-container>
 </ng-template>
 <ng-template #widthInput let-tableLg="tableLg" let-i="index" let-form="form">

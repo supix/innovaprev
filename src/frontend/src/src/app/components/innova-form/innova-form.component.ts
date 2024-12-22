@@ -4,7 +4,7 @@ import {CommonModule} from '@angular/common';
 import {NgSelectConfig, NgSelectModule} from '@ng-select/ng-select';
 import {ApiService} from '../../services/api.service';
 import {CollectionsResponse, DataPayload, WindowsPayload} from '../../models';
-import {debounceTime, finalize, startWith, Subject, Subscription, switchMap, tap} from 'rxjs';
+import {debounceTime, EMPTY, finalize, startWith, Subject, Subscription, switchMap, tap} from 'rxjs';
 import {PriceDisplayComponent} from '../price-display/price-display.component';
 import {italianVatValidator, minNumber, phoneNumberValidator} from '../../validators/innova.validator';
 
@@ -34,7 +34,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
   currentTab: TabNames = TabNames.personal;
   tabNames = TabNames;
 
-  private calculatePriceSubject = new Subject<WindowsPayload>();
+  private calculatePriceSubject = new Subject<WindowsPayload | null>();
 
   constructor(private fb: FormBuilder, private config: NgSelectConfig, private apiService: ApiService) {
     this.config.bindLabel = 'desc';
@@ -150,10 +150,10 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
         openingType: [null, Validators.required],
         glassType: [null, Validators.required],
         crosspiece: [null, Validators.required],
-        leftTrim: [null, minNumber(0, true)],
-        rightTrim: [null, minNumber(0, true)],
-        upperTrim: [null, minNumber(0, true)],
-        belowThreshold: [null, minNumber(0, true)],
+        leftTrim: [null, minNumber(0)],
+        rightTrim: [null, minNumber(0)],
+        upperTrim: [null, minNumber(0)],
+        belowThreshold: [null, minNumber(0)],
       });
       this.windows.push(row);
       this.updatePositions();
@@ -254,7 +254,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
       const payload: WindowsPayload = this.buildWindowsPayload();
       this.calculatePriceSubject.next(payload);
     } else {
-      this.price = null;
+      this.calculatePriceSubject.next(null);
     }
   }
 
@@ -263,6 +263,10 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
     this.calculatePriceSubject.pipe(
       debounceTime(300), // Delay to avoid frequent calls
       switchMap((payload) => {
+        if (payload === null) {
+          this.price = null;
+          return EMPTY;
+        }
         this.isLoading = true;
         return this.apiService.getPrice(payload).pipe(
           finalize(() => {
@@ -270,7 +274,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
           })
         );
       })
-    ).subscribe(({ quotation }) => {
+    ).subscribe(({quotation}) => {
       this.price = quotation?.amount;
     });
   }
