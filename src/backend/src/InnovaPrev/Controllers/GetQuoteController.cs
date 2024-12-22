@@ -9,9 +9,9 @@ namespace InnovaPrev.Controllers
     {
         // POST api/<GetQuoteController>
         [HttpPost]
-        public GetQuoteOutputDto Post([FromBody] Project project)
+        public GetQuoteOutputDto Post([FromBody] Dto dto)
         {
-            var total_cost = project.WindowsData.Aggregate(0d, (acc, x) => 
+            var total_cost = dto.WindowsData.Aggregate(0d, (acc, x) =>
             {
                 const int sqm_price = 985;
                 var area_sqm = x.Height * x.Width / 1e6;
@@ -30,6 +30,11 @@ namespace InnovaPrev.Controllers
                 }
             };
         }
+    }
+
+    public class Dto
+    {
+        public required WindowsData[] WindowsData { get; set; }
     }
 
     public class GetQuoteOutputDto
