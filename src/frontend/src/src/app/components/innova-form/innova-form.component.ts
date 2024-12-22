@@ -6,7 +6,7 @@ import {ApiService} from '../../services/api.service';
 import {CollectionsResponse, DataPayload, WindowsPayload} from '../../models';
 import {debounceTime, finalize, startWith, Subject, Subscription, switchMap, tap} from 'rxjs';
 import {PriceDisplayComponent} from '../price-display/price-display.component';
-import {italianVatValidator, minNumber, phoneNumberValidator} from "../../validators/innova.validator";
+import {italianVatValidator, minNumber, phoneNumberValidator} from '../../validators/innova.validator';
 
 @Component({
   selector: 'app-innova-form',
@@ -73,6 +73,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
       finalize(() => this.isCollectionsLoading = false)
     ).subscribe(collections => this.collections = collections);
     this.setupPriceCalculationSubscription();
+    this.subscribeToWindowsChanges();
   }
 
   ngAfterViewInit(): void {
@@ -149,10 +150,10 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
         openingType: [null, Validators.required],
         glassType: [null, Validators.required],
         crosspiece: [null, Validators.required],
-        leftTrim: [null, minNumber(0)],
-        rightTrim: [null, minNumber(0)],
-        upperTrim: [null, minNumber(0)],
-        belowThreshold: [null, minNumber(0)],
+        leftTrim: [null, minNumber(0, true)],
+        rightTrim: [null, minNumber(0, true)],
+        upperTrim: [null, minNumber(0, true)],
+        belowThreshold: [null, minNumber(0, true)],
       });
       this.windows.push(row);
       this.updatePositions();
@@ -187,7 +188,6 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
     if (control) {
       control.setValue(+value); // Update the FormControl with the filtered value
       this.onMaxQuantity(event, controlName);
-      this.calculatePriceHandler();
     }
   }
 
@@ -253,6 +253,8 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
     if (validRows.length > 0) {
       const payload: WindowsPayload = this.buildWindowsPayload();
       this.calculatePriceSubject.next(payload);
+    } else {
+      this.price = null;
     }
   }
 
@@ -384,6 +386,13 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
     if (!this.areAllRowsValid()) {
       this.hasTriggeredValidation = true;
     }
+  }
+
+  // Subscribe to changes in the FormArray
+  private subscribeToWindowsChanges(): void {
+    this.windows.valueChanges.subscribe(() => {
+      this.calculatePriceHandler();
+    });
   }
 
 }
