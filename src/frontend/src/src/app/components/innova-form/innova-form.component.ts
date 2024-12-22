@@ -1,4 +1,11 @@
-import {AfterViewInit, Component, ElementRef, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  OnInit,
+  ViewChild,
+  ViewEncapsulation
+} from '@angular/core';
 import {
   AbstractControl,
   FormArray,
@@ -183,6 +190,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
 
     if (control) {
       control.setValue(+value); // Update the FormControl with the filtered value
+      this.onMaxQuantity(event, controlName)
     }
   }
 
@@ -197,12 +205,45 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
     }
   }
 
+  onMaxQuantity(event: Event, controlName: string): void {
+    const maxValues: { [key: string]: number } = {
+      height: 5000,
+      width: 5000,
+      quantity: 500,
+      leftTrim: 500,
+      rightTrim: 500,
+      upperTrim: 500,
+      belowThreshold: 500
+    };
+
+    const max: number = maxValues[controlName];
+    if (max === undefined) {
+      return; // Exit if no max value is defined for the control
+    }
+
+    const input = event.target as HTMLInputElement;
+    const value = parseInt(input.value, 10); // Parse the input value as an integer
+
+    if (isNaN(value)) {
+      return; // Exit if the input value is not a number
+    }
+
+    if (value > max) {
+      input.value = max.toString(); // Update the input field value to the maximum allowed value
+      const control = this.form.get(controlName);
+      if (control) {
+        control.setValue(max); // Update the FormControl with the maximum allowed value
+      }
+    }
+  }
+
+
   ngSelectHandleFocus(enabled: boolean): void {
     if (enabled) {
       setTimeout(() => {
-        const myCustomClass: string ="custom-table-lg"
+        const myCustomClass: string = "custom-table-lg"
         const panel = document.querySelector('.ng-dropdown-panel');
-        if (panel){
+        if (panel) {
           panel.classList.add(myCustomClass);
         }
       }, 0);
@@ -317,7 +358,7 @@ function minNumber(min: number, required: boolean = false, gender: 'm' | 'f' = '
     // If the value is null, undefined, or an empty string
     if (value === null || value === undefined || value === '') {
       if (required) {
-        return { invalidValue: { reason: ` è obbligatori${gender === 'm' ? 'o' : 'a'}` } };
+        return {invalidValue: {reason: ` è obbligatori${gender === 'm' ? 'o' : 'a'}`}};
       }
       return null; // Not required and empty values are allowed
     }
@@ -325,12 +366,12 @@ function minNumber(min: number, required: boolean = false, gender: 'm' | 'f' = '
     // Ensure the value is numeric
     const numericValue = Number(value);
     if (isNaN(numericValue)) {
-      return { invalidValue: { reason: ' deve essere un numero valido' } };
+      return {invalidValue: {reason: ' deve essere un numero valido'}};
     }
 
     // Check if the value meets the minimum requirement
     if (numericValue < min) {
-      return { invalidValue: { reason: ` è minimo di ${min}` } };
+      return {invalidValue: {reason: ` è minimo di ${min}`}};
     }
 
     return null; // Validation passed
@@ -344,17 +385,17 @@ function italianVatValidator(): ValidatorFn {
 
     // Null or empty values are not validated
     if (value === null || value === undefined || value === '') {
-      return { italianVat: { reason: 'La partita IVA è obbligatoria.' } };
+      return {italianVat: {reason: 'La partita IVA è obbligatoria.'}};
     }
 
     // Ensure the value is a string of exactly 11 numeric characters
     if (!/^\d{11}$/.test(value)) {
-      return { italianVat: { reason: 'La partita IVA deve essere di 11 cifre.' } };
+      return {italianVat: {reason: 'La partita IVA deve essere di 11 cifre.'}};
     }
 
     // Validate the Italian Vat using the checksum algorithm
     if (!isValidItalianVat(value)) {
-      return { italianVat: { reason: 'La partita IVA non è valida.' } };
+      return {italianVat: {reason: 'La partita IVA non è valida.'}};
     }
 
     return null;
@@ -389,7 +430,7 @@ function phoneNumberValidator(required: boolean = false, minLength: number = 8, 
     // If the value is null, undefined, or an empty string
     if (value === null || value === undefined || value === '') {
       if (required) {
-        return { invalidPhoneNumber: { reason: 'Il numero di telefono è obbligatorio' } };
+        return {invalidPhoneNumber: {reason: 'Il numero di telefono è obbligatorio'}};
       }
       return null; // Not required and empty values are allowed
     }
@@ -399,7 +440,7 @@ function phoneNumberValidator(required: boolean = false, minLength: number = 8, 
 
     // Check if the value contains only numbers
     if (!/^\d+$/.test(sanitizedValue)) {
-      return { invalidPhoneNumber: { reason: 'Il numero di telefono deve contenere solo cifre numeriche.' } };
+      return {invalidPhoneNumber: {reason: 'Il numero di telefono deve contenere solo cifre numeriche.'}};
     }
 
     // Check the length requirements

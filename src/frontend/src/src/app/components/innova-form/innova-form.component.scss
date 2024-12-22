@@ -145,40 +145,34 @@ app-innova-form {
 
 }
 
-ng-dropdown-panel.custom-table-lg {
-  font-size: 0.9rem !important;
-}
-
 ng-dropdown-panel {
-  min-width: 300px !important;
-  width: auto !important;
+  &.custom-table-lg {
+    font-size: 0.9rem !important;
+    min-width: 300px !important;
+    width: auto !important;
+  }
 
   .dropdown-item {
     display: flex;
     align-items: center;
-    padding: 0.2em 0.1em;
+
+    .item-id {
+      min-width: 4rem;
+      font-style: italic;
+      color: #9e9e9e;
+      font-size: 0.8rem;
+      text-align: left;
+      margin-right: 0.5rem;
+    }
+
+    .item-desc {
+      flex: 1;
+      text-align: left;
+    }
   }
 
-  .dropdown-item .item-id {
-    min-width: 4em;
-    font-style: italic;
-    color: #9e9e9e;
-    font-size: 0.85em;
-    text-align: left;
-    margin-right: 0.5em;
+  .ng-option-selected .dropdown-item .item-desc {
+    font-weight: bold;
   }
-
-  .dropdown-item .item-desc {
-    flex: 1;
-    font-weight: normal;
-    font-size: 0.95em;
-    color: #333;
-    text-align: left;
-  }
-
-  .dropdown-item:hover .item-desc {
-    color: #007bff;
-    text-decoration: underline;
-  }
-
 }
+
