@@ -7,6 +7,7 @@ import {CollectionsResponse, DataPayload, WindowsPayload} from '../../models';
 import {debounceTime, EMPTY, finalize, startWith, Subject, Subscription, switchMap, tap} from 'rxjs';
 import {PriceDisplayComponent} from '../price-display/price-display.component';
 import {italianVatValidator, minNumber, phoneNumberValidator} from '../../validators/innova.validator';
+import {catchError} from "rxjs/operators";
 
 @Component({
   selector: 'app-innova-form',
@@ -248,6 +249,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
     }
   }
 
+  // Handler to calculate the price based on valid rows
   calculatePriceHandler(): void {
     const validRows = this.getValidWindowsData();
     if (validRows.length > 0) {
@@ -271,6 +273,11 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
         return this.apiService.getPrice(payload).pipe(
           finalize(() => {
             this.isLoading = false;
+          }),
+          catchError((error) => {
+            console.error('Error fetching price:', error);
+            this.price = null; // Reset price in case of error
+            return EMPTY;
           })
         );
       })
@@ -278,6 +285,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
       this.price = quotation?.amount;
     });
   }
+
 
   // Download the PDF
   downloadPdf(): void {
@@ -360,12 +368,24 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
     return false;
   }
 
-  // Helper function to get valid rows from the FormArray
+// Helper function to get valid rows from the FormArray
   private getValidWindowsData(): any[] {
     return this.windows.controls
       .filter(row => row.valid)
-      .map(row => row.value);
+      .map(row => {
+        const processedRow = { ...row.value };
+
+        // Cast null or undefined values to 0
+        for (const key in processedRow) {
+          if (processedRow[key] === null || processedRow[key] === undefined) {
+            processedRow[key] = 0;
+          }
+        }
+
+        return processedRow;
+      });
   }
+
 
   // Build Data payload for API
   private buildPayload(): DataPayload {

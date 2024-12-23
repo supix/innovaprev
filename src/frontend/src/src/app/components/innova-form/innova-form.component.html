@@ -436,232 +436,263 @@
     <input type="text" inputmode="numeric" formControlName="position" class="form-control" autocomplete="off"
            (mouseenter)="onEnterTooltip($event, 'tooltip-position-' + i)"
            (mouseleave)="onLeaveTooltip('tooltip-position-' + i)"
-           [ngClass]="{ 'is-valid': isRowValid(i), 'is-invalid': !isRowValid(i) }" readonly/>
+           [ngClass]="{ 'is-valid': isRowValid(i), 'is-invalid is-awaiting': !isRowValid(i) }" readonly/>
     <div *ngIf="!isRowValid(i) && !tableLg"
          class="invalid-feedback">Compila tutti i campi richiesti per il calcolo.
     </div>
-    <div *ngIf="!isRowValid(i) && tableLg" class="tooltip danger" [id]="'tooltip-position-' + i">Compila tutti i campi
+    <div *ngIf="!isRowValid(i) && tableLg" class="tooltip secondary" [id]="'tooltip-position-' + i">Compila tutti i
+      campi
       richiesti per il calcolo.
     </div>
-    <div *ngIf="isRowValid(i) && tableLg" class="tooltip success" [id]="'tooltip-position-' + i">Contribuisce al calcolo.
+    <div *ngIf="isRowValid(i) && tableLg" class="tooltip success" [id]="'tooltip-position-' + i">Contribuisce al
+      calcolo.
     </div>
   </ng-container>
 </ng-template>
 <ng-template #widthInput let-tableLg="tableLg" let-i="index" let-form="form">
   <ng-container [formGroup]="form">
-    <input type="text" inputmode="numeric" formControlName="width" class="form-control" autocomplete="off"
-           (mouseenter)="onEnterTooltip($event, 'tooltip-width-' + i)"
-           (mouseleave)="onLeaveTooltip('tooltip-width-' + i)"
-           [ngClass]="{ 'is-invalid': hasTriggeredValidation && form.get('width')?.errors }"
-           (input)="onRowInputNumber($event, i, 'width')"/>
-    <div *ngIf="(form.get('width')?.touched || hasTriggeredValidation) && form.get('width')?.invalid && !tableLg"
-         class="invalid-feedback">La larghezza{{ form.get('width')?.getError('invalidValue')?.reason }}.
-    </div>
-    <div *ngIf="(form.get('width')?.touched || hasTriggeredValidation) && form.get('width')?.invalid && tableLg"
-         class="tooltip danger" [id]="'tooltip-width-' + i">La
-      larghezza{{ form.get('width')?.getError('invalidValue')?.reason }}.
-    </div>
+    <ng-container *ngIf="form.get('width') as widthControl">
+      <input type="text" inputmode="numeric" formControlName="width" class="form-control" autocomplete="off"
+             (mouseenter)="onEnterTooltip($event, 'tooltip-width-' + i)"
+             (mouseleave)="onLeaveTooltip('tooltip-width-' + i)"
+             [ngClass]="{ 'is-invalid': (widthControl.touched || hasTriggeredValidation) && widthControl.invalid }"
+             (input)="onRowInputNumber($event, i, 'width')"/>
+      <div *ngIf="(widthControl.touched || hasTriggeredValidation) && widthControl.invalid && !tableLg"
+           class="invalid-feedback">La larghezza{{ widthControl.getError('invalidValue')?.reason }}.
+      </div>
+      <div *ngIf="(widthControl.touched || hasTriggeredValidation) && widthControl.invalid && tableLg"
+           class="tooltip danger" [id]="'tooltip-width-' + i">La
+        larghezza{{ widthControl.getError('invalidValue')?.reason }}.
+      </div>
+    </ng-container>
   </ng-container>
 </ng-template>
 <ng-template #heightInput let-tableLg="tableLg" let-i="index" let-form="form">
   <ng-container [formGroup]="form">
-    <input type="text" inputmode="numeric" formControlName="height" class="form-control" autocomplete="off"
-           (mouseenter)="onEnterTooltip($event, 'tooltip-height-' + i)"
-           (mouseleave)="onLeaveTooltip('tooltip-height-' + i)"
-           [ngClass]="{ 'is-invalid': hasTriggeredValidation && form.get('height')?.errors }"
-           (input)="onRowInputNumber($event, i, 'height')"/>
-    <div *ngIf="(form.get('height')?.touched || hasTriggeredValidation) && form.get('height')?.invalid && !tableLg"
-         class="invalid-feedback">L'altezza{{ form.get('height')?.getError('invalidValue')?.reason }}.
-    </div>
-    <div *ngIf="(form.get('height')?.touched || hasTriggeredValidation) && form.get('height')?.invalid && tableLg"
-         class="tooltip danger" [id]="'tooltip-height-' + i">L'altezza{{ form.get('height')?.getError('invalidValue')?.reason }}.
-    </div>
+    <ng-container *ngIf="form.get('height') as heightControl">
+      <input type="text" inputmode="numeric" formControlName="height" class="form-control" autocomplete="off"
+             (mouseenter)="onEnterTooltip($event, 'tooltip-height-' + i)"
+             (mouseleave)="onLeaveTooltip('tooltip-height-' + i)"
+             [ngClass]="{ 'is-invalid': (heightControl.touched || hasTriggeredValidation) && heightControl.invalid }"
+             (input)="onRowInputNumber($event, i, 'height')"/>
+      <div *ngIf="(heightControl.touched || hasTriggeredValidation) && heightControl.invalid && !tableLg"
+           class="invalid-feedback">L'altezza{{ heightControl.getError('invalidValue')?.reason }}.
+      </div>
+      <div *ngIf="(heightControl.touched || hasTriggeredValidation) && heightControl.invalid && tableLg"
+           class="tooltip danger" [id]="'tooltip-height-' + i">
+        L'altezza{{ heightControl.getError('invalidValue')?.reason }}.
+      </div>
+    </ng-container>
   </ng-container>
 </ng-template>
 <ng-template #quantityInput let-tableLg="tableLg" let-i="index" let-form="form">
   <ng-container [formGroup]="form">
-    <input type="text" inputmode="numeric" formControlName="quantity" class="form-control" autocomplete="off"
-           (mouseenter)="onEnterTooltip($event, 'tooltip-quantity-' + i)"
-           (mouseleave)="onLeaveTooltip('tooltip-quantity-' + i)"
-           [ngClass]="{ 'is-invalid': hasTriggeredValidation && form.get('quantity')?.errors }"
-           (input)="onRowInputNumber($event, i, 'quantity')"/>
-    <div *ngIf="(form.get('quantity')?.touched || hasTriggeredValidation) && form.get('quantity')?.invalid && !tableLg"
-         class="invalid-feedback">La quantità{{ form.get('quantity')?.getError('invalidValue')?.reason }}.
-    </div>
-    <div *ngIf="(form.get('quantity')?.touched || hasTriggeredValidation) && form.get('quantity')?.invalid && tableLg"
-         class="tooltip danger" [id]="'tooltip-quantity-' + i">La quantità{{ form.get('quantity')?.getError('invalidValue')?.reason }}.
-    </div>
+    <ng-container *ngIf="form.get('quantity') as quantityControl">
+      <input type="text" inputmode="numeric" formControlName="quantity" class="form-control" autocomplete="off"
+             (mouseenter)="onEnterTooltip($event, 'tooltip-quantity-' + i)"
+             (mouseleave)="onLeaveTooltip('tooltip-quantity-' + i)"
+             [ngClass]="{ 'is-invalid': (quantityControl.touched || hasTriggeredValidation) && quantityControl.invalid }"
+             (input)="onRowInputNumber($event, i, 'quantity')"/>
+      <div *ngIf="(quantityControl.touched || hasTriggeredValidation) && quantityControl.invalid && !tableLg"
+           class="invalid-feedback">La quantità{{ quantityControl.getError('invalidValue')?.reason }}.
+      </div>
+      <div *ngIf="(quantityControl.touched || hasTriggeredValidation) && quantityControl.invalid && tableLg"
+           class="tooltip danger" [id]="'tooltip-quantity-' + i">
+        La quantità{{ quantityControl.getError('invalidValue')?.reason }}.
+      </div>
+    </ng-container>
   </ng-container>
 </ng-template>
 <ng-template #windowTypeInput let-tableLg="tableLg" let-i="index" let-form="form">
   <ng-container [formGroup]="form">
-    <ng-select
-      (mouseenter)="onEnterTooltip($event, 'tooltip-windowType-' + i)"
-      (mouseleave)="onLeaveTooltip('tooltip-windowType-' + i)"
-      (open)="ngSelectHandleFocus(tableLg)"
-      [items]="collections?.windowTypes || []"
-      [searchable]="true"
-      [clearable]="false"
-      formControlName="windowType"
-      appendTo="body"
-      class="custom-table"
-      [class.ng-invalid]="false"
-      [ngClass]="{ 'is-invalid': hasTriggeredValidation && form.get('windowType')?.errors }"
-      [loading]="isCollectionsLoading">
-      <ng-container *ngIf="tableLg">
-        <ng-template ng-label-tmp let-item="item">
-          <div>{{ item.id }}</div>
-          <div class="tooltip" [id]="'tooltip-windowType-' + i">{{ item.desc }}</div>
+    <ng-container *ngIf="form.get('windowType') as windowTypeControl">
+      <ng-select
+        (mouseenter)="onEnterTooltip($event, 'tooltip-windowType-' + i)"
+        (mouseleave)="onLeaveTooltip('tooltip-windowType-' + i)"
+        (open)="ngSelectHandleFocus(tableLg)"
+        [items]="collections?.windowTypes || []"
+        [searchable]="true"
+        [clearable]="false"
+        formControlName="windowType"
+        appendTo="body"
+        class="custom-table"
+        [class.ng-invalid]="false"
+        [ngClass]="{ 'is-invalid': (windowTypeControl.touched || hasTriggeredValidation) && windowTypeControl.invalid }"
+        [loading]="isCollectionsLoading">
+        <ng-container *ngIf="tableLg">
+          <ng-template ng-label-tmp let-item="item">
+            <div>{{ item.id }}</div>
+            <div class="tooltip" [id]="'tooltip-windowType-' + i">{{ item.desc }}</div>
+          </ng-template>
+        </ng-container>
+        <ng-template ng-option-tmp let-item="item">
+          <div class="dropdown-item">
+            <span class="item-id">{{ item.id }}</span>
+            <span class="item-desc">{{ item.desc }}</span>
+          </div>
         </ng-template>
-      </ng-container>
-      <ng-template ng-option-tmp let-item="item">
-        <div class="dropdown-item">
-          <span class="item-id">{{ item.id }}</span>
-          <span class="item-desc">{{ item.desc }}</span>
-        </div>
-      </ng-template>
-    </ng-select>
-    <div
-      *ngIf="(form.get('windowType')?.touched || hasTriggeredValidation) && form.get('windowType')?.invalid && !tableLg"
-      class="invalid-feedback">La tipologia è obbligatoria.
-    </div>
-    <div *ngIf="(form.get('windowType')?.touched || hasTriggeredValidation) && form.get('windowType')?.invalid && tableLg"
-         class="tooltip danger" [id]="'tooltip-windowType-' + i">La tipologia è obbligatoria.
-    </div>
+      </ng-select>
+      <div
+        *ngIf="(windowTypeControl.touched || hasTriggeredValidation) && windowTypeControl.invalid && !tableLg"
+        class="invalid-feedback">La tipologia è obbligatoria.
+      </div>
+      <div
+        *ngIf="(windowTypeControl.touched || hasTriggeredValidation) && windowTypeControl.invalid && tableLg"
+        class="tooltip danger" [id]="'tooltip-windowType-' + i">La tipologia è obbligatoria.
+      </div>
+    </ng-container>
   </ng-container>
 </ng-template>
 <ng-template #openingTypeInput let-tableLg="tableLg" let-i="index" let-form="form">
   <ng-container [formGroup]="form">
-    <ng-select
-      (mouseenter)="onEnterTooltip($event, 'tooltip-openingType-' + i)"
-      (mouseleave)="onLeaveTooltip('tooltip-openingType-' + i)"
-      (open)="ngSelectHandleFocus(tableLg)"
-      [items]="collections?.openingTypes || []"
-      [searchable]="true"
-      [clearable]="false"
-      formControlName="openingType"
-      appendTo="body"
-      [class.ng-invalid]="false"
-      [ngClass]="{ 'is-invalid': hasTriggeredValidation && form.get('openingType')?.errors }"
-      [loading]="isCollectionsLoading">
-    </ng-select>
-    <div
-      *ngIf="(form.get('openingType')?.touched || hasTriggeredValidation) && form.get('openingType')?.invalid && !tableLg"
-      class="invalid-feedback">L'apertura è obbligatoria.
-    </div>
-    <div *ngIf="(form.get('openingType')?.touched || hasTriggeredValidation) && form.get('openingType')?.invalid && tableLg"
-         class="tooltip danger" [id]="'tooltip-openingType-' + i">L'apertura è obbligatoria.
-    </div>
+    <ng-container *ngIf="form.get('openingType') as openingTypeControl">
+      <ng-select
+        (mouseenter)="onEnterTooltip($event, 'tooltip-openingType-' + i)"
+        (mouseleave)="onLeaveTooltip('tooltip-openingType-' + i)"
+        (open)="ngSelectHandleFocus(tableLg)"
+        [items]="collections?.openingTypes || []"
+        [searchable]="true"
+        [clearable]="false"
+        formControlName="openingType"
+        appendTo="body"
+        [class.ng-invalid]="false"
+        [ngClass]="{ 'is-invalid': (openingTypeControl.touched || hasTriggeredValidation) && openingTypeControl.invalid }"
+        [loading]="isCollectionsLoading">
+      </ng-select>
+      <div
+        *ngIf="(openingTypeControl.touched || hasTriggeredValidation) && openingTypeControl.invalid && !tableLg"
+        class="invalid-feedback">L'apertura è obbligatoria.
+      </div>
+      <div
+        *ngIf="(openingTypeControl.touched || hasTriggeredValidation) && openingTypeControl.invalid && tableLg"
+        class="tooltip danger" [id]="'tooltip-openingType-' + i">L'apertura è obbligatoria.
+      </div>
+    </ng-container>
   </ng-container>
 </ng-template>
 <ng-template #glassTypeInput let-tableLg="tableLg" let-i="index" let-form="form">
   <ng-container [formGroup]="form">
-    <ng-select
-      (mouseenter)="onEnterTooltip($event, 'tooltip-glassType-' + i)"
-      (mouseleave)="onLeaveTooltip('tooltip-glassType-' + i)"
-      (open)="ngSelectHandleFocus(tableLg)"
-      [items]="collections?.glassTypes || []"
-      [searchable]="true"
-      [clearable]="false"
-      formControlName="glassType"
-      appendTo="body"
-      [class.ng-invalid]="false"
-      [ngClass]="{ 'is-invalid': hasTriggeredValidation && form.get('glassType')?.errors }"
-      [loading]="isCollectionsLoading">
-    </ng-select>
-    <div
-      *ngIf="(form.get('glassType')?.touched || hasTriggeredValidation) && form.get('glassType')?.invalid && !tableLg"
-      class="invalid-feedback">Il vetro è obbligatorio.
-    </div>
-    <div *ngIf="(form.get('glassType')?.touched || hasTriggeredValidation) && form.get('glassType')?.invalid && tableLg"
-         class="tooltip danger" [id]="'tooltip-glassType-' + i">Il vetro è obbligatorio.
-    </div>
+    <ng-container *ngIf="form.get('glassType') as glassTypeControl">
+      <ng-select
+        (mouseenter)="onEnterTooltip($event, 'tooltip-glassType-' + i)"
+        (mouseleave)="onLeaveTooltip('tooltip-glassType-' + i)"
+        (open)="ngSelectHandleFocus(tableLg)"
+        [items]="collections?.glassTypes || []"
+        [searchable]="true"
+        [clearable]="false"
+        formControlName="glassType"
+        appendTo="body"
+        [class.ng-invalid]="false"
+        [ngClass]="{ 'is-invalid': (glassTypeControl.touched || hasTriggeredValidation) && glassTypeControl.invalid }"
+        [loading]="isCollectionsLoading">
+      </ng-select>
+      <div
+        *ngIf="(glassTypeControl.touched || hasTriggeredValidation) && glassTypeControl.invalid && !tableLg"
+        class="invalid-feedback">Il vetro è obbligatorio.
+      </div>
+      <div *ngIf="(glassTypeControl.touched || hasTriggeredValidation) && glassTypeControl.invalid && tableLg"
+           class="tooltip danger" [id]="'tooltip-glassType-' + i">Il vetro è obbligatorio.
+      </div>
+    </ng-container>
   </ng-container>
 </ng-template>
 <ng-template #crosspieceInput let-tableLg="tableLg" let-i="index" let-form="form">
   <ng-container [formGroup]="form">
-    <ng-select
-      (mouseenter)="onEnterTooltip($event, 'tooltip-crosspiece-' + i)"
-      (mouseleave)="onLeaveTooltip('tooltip-crosspiece-' + i)"
-      (open)="ngSelectHandleFocus(tableLg)"
-      [items]="collections?.crosspieces || []"
-      [searchable]="true"
-      [clearable]="false"
-      formControlName="crosspiece"
-      appendTo="body"
-      [class.ng-invalid]="false"
-      [ngClass]="{ 'is-invalid': hasTriggeredValidation && form.get('crosspiece')?.errors  }"
-      [loading]="isCollectionsLoading">
-    </ng-select>
-    <div
-      *ngIf="(form.get('crosspiece')?.touched || hasTriggeredValidation) && form.get('crosspiece')?.invalid && !tableLg"
-      class="invalid-feedback">Il traverso è obbligatorio.
-    </div>
-    <div *ngIf="(form.get('crosspiece')?.touched || hasTriggeredValidation) && form.get('crosspiece')?.invalid && tableLg"
-         class="tooltip danger" [id]="'tooltip-crosspiece-' + i">Il traverso è obbligatorio.
-    </div>
+    <ng-container *ngIf="form.get('crosspiece') as crosspieceControl">
+      <ng-select
+        (mouseenter)="onEnterTooltip($event, 'tooltip-crosspiece-' + i)"
+        (mouseleave)="onLeaveTooltip('tooltip-crosspiece-' + i)"
+        (open)="ngSelectHandleFocus(tableLg)"
+        [items]="collections?.crosspieces || []"
+        [searchable]="true"
+        [clearable]="false"
+        formControlName="crosspiece"
+        appendTo="body"
+        [class.ng-invalid]="false"
+        [ngClass]="{ 'is-invalid': (crosspieceControl.touched || hasTriggeredValidation) && crosspieceControl.invalid }"
+        [loading]="isCollectionsLoading">
+      </ng-select>
+      <div
+        *ngIf="(crosspieceControl.touched || hasTriggeredValidation) && crosspieceControl.invalid && !tableLg"
+        class="invalid-feedback">Il traverso è obbligatorio.
+      </div>
+      <div
+        *ngIf="(crosspieceControl.touched || hasTriggeredValidation) && crosspieceControl.invalid && tableLg"
+        class="tooltip danger" [id]="'tooltip-crosspiece-' + i">Il traverso è obbligatorio.
+      </div>
+    </ng-container>
   </ng-container>
 </ng-template>
 <ng-template #leftTrimInput let-tableLg="tableLg" let-i="index" let-form="form">
   <ng-container [formGroup]="form">
-    <input type="text" inputmode="numeric" formControlName="leftTrim" class="form-control" autocomplete="off"
-           (mouseenter)="onEnterTooltip($event, 'tooltip-leftTrim-' + i)"
-           (mouseleave)="onLeaveTooltip('tooltip-leftTrim-' + i)"
-           [ngClass]="{ 'is-invalid': hasTriggeredValidation && form.get('leftTrim')?.errors }"
-           (input)="onRowInputNumber($event, i, 'leftTrim')"/>
-    <div *ngIf="(form.get('leftTrim')?.touched || hasTriggeredValidation) && form.get('leftTrim')?.invalid && !tableLg"
-         class="invalid-feedback">Il rifilo sinistro{{ form.get('leftTrim')?.getError('invalidValue')?.reason }}.
-    </div>
-    <div *ngIf="(form.get('leftTrim')?.touched || hasTriggeredValidation) && form.get('leftTrim')?.invalid && tableLg"
-         class="tooltip danger" [id]="'tooltip-leftTrim-' + i">Il rifilo sinistro{{ form.get('leftTrim')?.getError('invalidValue')?.reason }}.
-    </div>
+    <ng-container *ngIf="form.get('leftTrim') as leftTrimControl">
+      <input type="text" inputmode="numeric" formControlName="leftTrim" class="form-control" autocomplete="off"
+             (mouseenter)="onEnterTooltip($event, 'tooltip-leftTrim-' + i)"
+             (mouseleave)="onLeaveTooltip('tooltip-leftTrim-' + i)"
+             [ngClass]="{ 'is-invalid': (leftTrimControl.touched || hasTriggeredValidation) && leftTrimControl.invalid }"
+             (input)="onRowInputNumber($event, i, 'leftTrim')"/>
+      <div *ngIf="(leftTrimControl.touched || hasTriggeredValidation) && leftTrimControl.invalid && !tableLg"
+           class="invalid-feedback">Il rifilo sinistro{{ leftTrimControl.getError('invalidValue')?.reason }}.
+      </div>
+      <div *ngIf="(leftTrimControl.touched || hasTriggeredValidation) && leftTrimControl.invalid && tableLg"
+           class="tooltip danger" [id]="'tooltip-leftTrim-' + i">
+        Il rifilo sinistro{{ leftTrimControl.getError('invalidValue')?.reason }}.
+      </div>
+    </ng-container>
   </ng-container>
 </ng-template>
 <ng-template #rightTrimInput let-tableLg="tableLg" let-i="index" let-form="form">
   <ng-container [formGroup]="form">
-    <input type="text" inputmode="numeric" formControlName="rightTrim" class="form-control" autocomplete="off"
-           (mouseenter)="onEnterTooltip($event, 'tooltip-rightTrim-' + i)"
-           (mouseleave)="onLeaveTooltip('tooltip-rightTrim-' + i)"
-           [ngClass]="{ 'is-invalid': hasTriggeredValidation && form.get('rightTrim')?.errors }"
-           (input)="onRowInputNumber($event, i, 'rightTrim')"/>
-    <div
-      *ngIf="(form.get('rightTrim')?.touched || hasTriggeredValidation) && form.get('rightTrim')?.invalid && !tableLg"
-      class="invalid-feedback">Il rifilo destro{{ form.get('rightTrim')?.getError('invalidValue')?.reason }}.
-    </div>
-    <div *ngIf="(form.get('rightTrim')?.touched || hasTriggeredValidation) && form.get('rightTrim')?.invalid && tableLg"
-         class="tooltip danger" [id]="'tooltip-rightTrim-' + i">Il rifilo destro{{ form.get('rightTrim')?.getError('invalidValue')?.reason }}.
-    </div>
+    <ng-container *ngIf="form.get('rightTrim') as rightTrimControl">
+      <input type="text" inputmode="numeric" formControlName="rightTrim" class="form-control" autocomplete="off"
+             (mouseenter)="onEnterTooltip($event, 'tooltip-rightTrim-' + i)"
+             (mouseleave)="onLeaveTooltip('tooltip-rightTrim-' + i)"
+             [ngClass]="{ 'is-invalid': (rightTrimControl.touched || hasTriggeredValidation) && rightTrimControl.invalid }"
+             (input)="onRowInputNumber($event, i, 'rightTrim')"/>
+      <div *ngIf="(rightTrimControl.touched || hasTriggeredValidation) && rightTrimControl.invalid && !tableLg"
+           class="invalid-feedback">Il rifilo destro{{ rightTrimControl.getError('invalidValue')?.reason }}.
+      </div>
+      <div *ngIf="(rightTrimControl.touched || hasTriggeredValidation) && rightTrimControl.invalid && tableLg"
+           class="tooltip danger" [id]="'tooltip-rightTrim-' + i">
+        Il rifilo destro{{ rightTrimControl.getError('invalidValue')?.reason }}.
+      </div>
+    </ng-container>
   </ng-container>
 </ng-template>
 <ng-template #upperTrimInput let-tableLg="tableLg" let-i="index" let-form="form">
   <ng-container [formGroup]="form">
-    <input type="text" inputmode="numeric" formControlName="upperTrim" class="form-control" autocomplete="off"
-           (mouseenter)="onEnterTooltip($event, 'tooltip-upperTrim-' + i)"
-           (mouseleave)="onLeaveTooltip('tooltip-upperTrim-' + i)"
-           [ngClass]="{ 'is-invalid': hasTriggeredValidation && form.get('upperTrim')?.errors }"
-           (input)="onRowInputNumber($event, i, 'upperTrim')"/>
-    <div
-      *ngIf="(form.get('upperTrim')?.touched || hasTriggeredValidation) && form.get('upperTrim')?.invalid && !tableLg"
-      class="invalid-feedback">Il rifilo sopra{{ form.get('upperTrim')?.getError('invalidValue')?.reason }}.
-    </div>
-    <div *ngIf="(form.get('upperTrim')?.touched || hasTriggeredValidation) && form.get('upperTrim')?.invalid && tableLg"
-         class="tooltip danger" [id]="'tooltip-upperTrim-' + i">Il rifilo sopra{{ form.get('upperTrim')?.getError('invalidValue')?.reason }}.
-    </div>
+    <ng-container *ngIf="form.get('upperTrim') as upperTrimControl">
+      <input type="text" inputmode="numeric" formControlName="upperTrim" class="form-control" autocomplete="off"
+             (mouseenter)="onEnterTooltip($event, 'tooltip-upperTrim-' + i)"
+             (mouseleave)="onLeaveTooltip('tooltip-upperTrim-' + i)"
+             [ngClass]="{ 'is-invalid': (upperTrimControl.touched || hasTriggeredValidation) && upperTrimControl.invalid }"
+             (input)="onRowInputNumber($event, i, 'upperTrim')"/>
+      <div *ngIf="(upperTrimControl.touched || hasTriggeredValidation) && upperTrimControl.invalid && !tableLg"
+           class="invalid-feedback">Il rifilo sopra{{ upperTrimControl.getError('invalidValue')?.reason }}.
+      </div>
+      <div *ngIf="(upperTrimControl.touched || hasTriggeredValidation) && upperTrimControl.invalid && tableLg"
+           class="tooltip danger" [id]="'tooltip-upperTrim-' + i">
+        Il rifilo sopra{{ upperTrimControl.getError('invalidValue')?.reason }}.
+      </div>
+    </ng-container>
   </ng-container>
 </ng-template>
 <ng-template #belowThresholdInput let-tableLg="tableLg" let-i="index" let-form="form">
   <ng-container [formGroup]="form">
-    <input type="text" inputmode="numeric" formControlName="belowThreshold" class="form-control" autocomplete="off"
-           (mouseenter)="onEnterTooltip($event, 'tooltip-belowThreshold-' + i)"
-           (mouseleave)="onLeaveTooltip('tooltip-belowThreshold-' + i)"
-           [ngClass]="{ 'is-invalid': hasTriggeredValidation && form.get('belowThreshold')?.errors }"
-           (input)="onRowInputNumber($event, i, 'belowThreshold')"/>
-    <div
-      *ngIf="(form.get('belowThreshold')?.touched || hasTriggeredValidation) && form.get('belowThreshold')?.invalid && !tableLg"
-      class="invalid-feedback">Il rifilo sotto{{ form.get('belowThreshold')?.getError('invalidValue')?.reason }}.
-    </div>
-    <div *ngIf="(form.get('belowThreshold')?.touched || hasTriggeredValidation) && form.get('belowThreshold')?.invalid && tableLg"
-         class="tooltip danger" [id]="'tooltip-belowThreshold-' + i">Il rifilo sotto{{ form.get('belowThreshold')?.getError('invalidValue')?.reason }}.
-    </div>
+    <ng-container *ngIf="form.get('belowThreshold') as belowThresholdControl">
+      <input type="text" inputmode="numeric" formControlName="belowThreshold" class="form-control" autocomplete="off"
+             (mouseenter)="onEnterTooltip($event, 'tooltip-belowThreshold-' + i)"
+             (mouseleave)="onLeaveTooltip('tooltip-belowThreshold-' + i)"
+             [ngClass]="{ 'is-invalid': (belowThresholdControl.touched || hasTriggeredValidation) && belowThresholdControl.invalid }"
+             (input)="onRowInputNumber($event, i, 'belowThreshold')"/>
+      <div
+        *ngIf="(belowThresholdControl.touched || hasTriggeredValidation) && belowThresholdControl.invalid && !tableLg"
+        class="invalid-feedback">Il rifilo sotto{{ belowThresholdControl.getError('invalidValue')?.reason }}.
+      </div>
+      <div *ngIf="(belowThresholdControl.touched || hasTriggeredValidation) && belowThresholdControl.invalid && tableLg"
+           class="tooltip danger" [id]="'tooltip-belowThreshold-' + i">
+        Il rifilo sotto{{ belowThresholdControl.getError('invalidValue')?.reason }}.
+      </div>
+    </ng-container>
   </ng-container>
 </ng-template>
