@@ -4,9 +4,11 @@ import {CommonModule} from '@angular/common';
 import {NgSelectConfig, NgSelectModule} from '@ng-select/ng-select';
 import {ApiService} from '../../services/api.service';
 import {CollectionsResponse, DataPayload, WindowsPayload} from '../../models';
-import {debounceTime, EMPTY, finalize, startWith, Subject, Subscription, switchMap, tap} from 'rxjs';
+import {debounceTime, EMPTY, filter, finalize, startWith, Subject, Subscription, switchMap, tap} from 'rxjs';
 import {PriceDisplayComponent} from '../price-display/price-display.component';
 import {italianVatValidator, minNumber, phoneNumberValidator} from '../../validators/innova.validator';
+import {catchError} from "rxjs/operators";
+import CryptoJS from 'crypto-js';
 
 @Component({
   selector: 'app-innova-form',
@@ -35,6 +37,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
   tabNames = TabNames;
 
   private calculatePriceSubject = new Subject<WindowsPayload | null>();
+  private previousPayloadHash: string | null = null;
 
   constructor(private fb: FormBuilder, private config: NgSelectConfig, private apiService: ApiService) {
     this.config.bindLabel = 'desc';
@@ -248,6 +251,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
     }
   }
 
+  // Handler to calculate the price based on valid rows
   calculatePriceHandler(): void {
     const validRows = this.getValidWindowsData();
     if (validRows.length > 0) {
@@ -262,6 +266,21 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
   private setupPriceCalculationSubscription(): void {
     this.calculatePriceSubject.pipe(
       debounceTime(300), // Delay to avoid frequent calls
+      filter((payload) => {
+        if (payload === null) {
+          this.previousPayloadHash = null; // Reset hash if payload is null
+          return true; // Allow null payload to pass through
+        }
+
+        const currentPayloadHash = this.calculateHash(payload);
+
+        if (this.previousPayloadHash === currentPayloadHash) {
+          return false; // Payload has not changed, skipping calculation.
+        }
+
+        this.previousPayloadHash = currentPayloadHash;
+        return true; // Allow new payload to pass through
+      }),
       switchMap((payload) => {
         if (payload === null) {
           this.price = null;
@@ -271,13 +290,19 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
         return this.apiService.getPrice(payload).pipe(
           finalize(() => {
             this.isLoading = false;
+          }),
+          catchError((error) => {
+            console.error('Error fetching price:', error);
+            this.price = null; // Reset price in case of error
+            return EMPTY;
           })
         );
       })
-    ).subscribe(({quotation}) => {
+    ).subscribe(({ quotation }) => {
       this.price = quotation?.amount;
     });
   }
+
 
   // Download the PDF
   downloadPdf(): void {
@@ -360,12 +385,24 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
     return false;
   }
 
-  // Helper function to get valid rows from the FormArray
+// Helper function to get valid rows from the FormArray
   private getValidWindowsData(): any[] {
     return this.windows.controls
       .filter(row => row.valid)
-      .map(row => row.value);
+      .map(row => {
+        const processedRow = { ...row.value };
+
+        // Cast null or undefined values to 0
+        for (const key in processedRow) {
+          if (processedRow[key] === null || processedRow[key] === undefined) {
+            processedRow[key] = 0;
+          }
+        }
+
+        return processedRow;
+      });
   }
+
 
   // Build Data payload for API
   private buildPayload(): DataPayload {
@@ -397,6 +434,11 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
     this.windows.valueChanges.subscribe(() => {
       this.calculatePriceHandler();
     });
+  }
+
+  // Function to calculate the SHA-256 hash of the payload
+  private calculateHash(payload: WindowsPayload): string {
+    return CryptoJS.SHA256(JSON.stringify(payload)).toString();
   }
 
 }
