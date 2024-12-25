@@ -70,59 +70,13 @@ namespace PdfQuote
                         .Component(new AddressComponent("DATI CLIENTE", this.project.PersonalData));
                 });
 
-                column.Item().Element(ComposeTable);
+                column.Item().Background(Colors.Grey.Lighten3).Padding(2).AlignCenter().DefaultTextStyle(x => x.FontSize(8)).Text("ARTICOLI");
+                var idx = 0;
+                foreach (var wd in this.project.WindowsData)
+                    column.Item().PaddingBottom(3).Component(new ArticleComponent(++idx, wd));
 
                 if (!string.IsNullOrWhiteSpace(this.project.PersonalData.CompanyName))
                     column.Item().PaddingTop(25).Element(ComposeComments);
-            });
-        }
-
-        private void ComposeTable(IContainer container)
-        {
-            container
-                .DefaultTextStyle(x => x.FontSize(8))
-                .Table(table =>
-            {
-                table.ColumnsDefinition(columns =>
-                {
-                    columns.ConstantColumn(25);
-                    columns.RelativeColumn(2);
-                    columns.RelativeColumn(1);
-                    columns.RelativeColumn(6);
-                    columns.RelativeColumn(2);
-                    columns.RelativeColumn(2);
-                });
-
-                table.Header(header =>
-                {
-                    header.Cell().Element(CellStyle).Text("#");
-                    header.Cell().Element(CellStyle).Text("Mis. (mm)");
-                    header.Cell().Element(CellStyle).AlignRight().PaddingRight(10).Text("Q.tà");
-                    header.Cell().Element(CellStyle).Text("Articolo");
-                    header.Cell().Element(CellStyle).AlignRight().Text("Prezzo Un.");
-                    header.Cell().Element(CellStyle).AlignRight().Text("Totale");
-
-                    static IContainer CellStyle(IContainer container)
-                    {
-                        return container.DefaultTextStyle(x => x.SemiBold()).PaddingVertical(5).BorderBottom(1).BorderColor(Colors.Black);
-                    }
-                });
-
-                var idx = 0;
-                foreach (var wd in this.project.WindowsData)
-                {
-                    table.Cell().Element(CellStyle).Text((++idx).ToString());
-                    table.Cell().Element(CellStyle).Text($"{wd.Width}x{wd.Height}");
-                    table.Cell().Element(CellStyle).AlignRight().PaddingRight(10).Text($"{wd.Quantity}");
-                    table.Cell().Element(CellStyle).Text(wd.WindowType);
-                    table.Cell().Element(CellStyle).AlignRight().Text($"€1.234,56");
-                    table.Cell().Element(CellStyle).AlignRight().Text($"{1234.56 * wd.Quantity}€");
-
-                    static IContainer CellStyle(IContainer container)
-                    {
-                        return container.BorderBottom(1).BorderColor(Colors.Grey.Lighten2).PaddingVertical(5);
-                    }
-                }
             });
         }
 
