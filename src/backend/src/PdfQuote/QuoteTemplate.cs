@@ -58,7 +58,7 @@ namespace PdfQuote
 
         private void ComposeContent(IContainer container)
         {
-            container.PaddingVertical(40).Column(column =>
+            container.PaddingVertical(10).Column(column =>
             {
                 column.Spacing(5);
 
