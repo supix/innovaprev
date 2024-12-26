@@ -1,4 +1,5 @@
 ﻿using DomainModel.Classes;
+using DomainModel.Services.PriceCalculator;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InnovaPrev.Controllers
@@ -11,22 +12,16 @@ namespace InnovaPrev.Controllers
         [HttpPost]
         public GetQuoteOutputDto Post([FromBody] Dto dto)
         {
-            var total_cost = dto.WindowsData.Aggregate(0d, (acc, x) =>
-            {
-                const int sqm_price = 985;
-                var area_sqm = x.Height * x.Width / 1e6;
-                if (area_sqm < 1.5d)
-                    area_sqm = 1.5d;
-                var total_area = area_sqm * x.Quantity;
-                acc += sqm_price * total_area;
-                return acc;
-            });
+            var priceCalculator = new PriceCalculator(dto.ProductData, dto.WindowsData);
 
+            Price prices = priceCalculator.getPrices();
             return new GetQuoteOutputDto()
             {
                 Quotation = new Quotation()
                 {
-                    Amount = Math.Round(total_cost, 2)
+                    Amount = Math.Round(prices.Total, 2),
+                    Tax = Math.Round(prices.Tax, 2),
+                    GrandTotal = Math.Round(prices.GrandTotal, 2),
                 }
             };
         }
@@ -45,6 +40,8 @@ namespace InnovaPrev.Controllers
 
     public class Quotation
     {
-        public double Amount { get; set; }
+        public decimal Amount { get; set; }
+        public decimal Tax { get; set; }
+        public decimal GrandTotal { get; set; }
     }
 }
