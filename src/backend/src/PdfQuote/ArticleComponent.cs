@@ -26,75 +26,32 @@ namespace PdfQuote
         {
             container.Column(c =>
             {
-                c.Item().Table(table =>
+                c.Item().Row(r =>
                 {
-                    table.ColumnsDefinition(columns =>
-                    {
-                        columns.ConstantColumn(25);
-                        columns.RelativeColumn(3);
-                        columns.RelativeColumn(3);
-                        columns.RelativeColumn(2);
-                        columns.RelativeColumn(1);
-                        columns.RelativeColumn(1);
-                        columns.RelativeColumn(1);
-                        columns.RelativeColumn(1);
-                    });
-
-                    table.Cell().Element(CellStyle).Text($"#{index.ToString()}").Bold();
-                    table.Cell().Element(CellStyle).Text($"l (mm): {this.windowsData.Width}");
-                    table.Cell().Element(CellStyle).Text($"h (mm): {this.windowsData.Height}");
-                    table.Cell().Element(CellStyle).Text($"Q.tà: {this.windowsData.Quantity}");
-                    table.Cell().Element(CellStyle).AlignRight().Text($"sx: {this.windowsData.LeftTrim}");
-                    table.Cell().Element(CellStyle).AlignRight().Text($"dx: {this.windowsData.RightTrim}");
-                    table.Cell().Element(CellStyle).AlignRight().Text($"sop: {this.windowsData.UpperTrim}");
-                    table.Cell().Element(CellStyle).AlignRight().Text($"sot: {this.windowsData.BelowThreshold}");
-
-                    static IContainer CellStyle(IContainer container)
-                    {
-                        return container; //.BorderColor(Colors.Grey.Lighten2).PaddingVertical(5);
-                    }
+                    r.ConstantItem(25).Text($"#{index.ToString()}").Bold();
+                    r.RelativeItem(3).Text($"l (mm): {this.windowsData.Width}");
+                    r.RelativeItem(3).Text($"h (mm): {this.windowsData.Height}");
+                    r.RelativeItem(2).Text($"Q.tà: {this.windowsData.Quantity}");
+                    r.RelativeItem(1).AlignRight().Text($"sx: {this.windowsData.LeftTrim}");
+                    r.RelativeItem(1).AlignRight().Text($"dx: {this.windowsData.RightTrim}");
+                    r.RelativeItem(1).AlignRight().Text($"sop: {this.windowsData.UpperTrim}");
+                    r.RelativeItem(1).AlignRight().Text($"sot: {this.windowsData.BelowThreshold}");
                 });
 
-                c.Item().Table(table =>
+                c.Item().DefaultTextStyle(x => x.FontSize(8)).Row(r =>
                 {
-                    table.ColumnsDefinition(columns =>
-                    {
-                        columns.ConstantColumn(25);
-                        columns.RelativeColumn(3);
-                        columns.RelativeColumn(3);
-                        columns.RelativeColumn(2);
-                        columns.RelativeColumn(2);
-                    });
-
-                    table.Cell().Element(CellStyle).Text(string.Empty);
-                    table.Cell().Element(CellStyle).Text($"Tipologia: {this.windowsData.WindowType}");
-                    table.Cell().Element(CellStyle).Text($"Apertura (vista interna): {this.windowsData.OpeningType}");
-                    table.Cell().Element(CellStyle).Text($"Vetro: {this.windowsData.GlassType}");
-                    table.Cell().Element(CellStyle).AlignRight().Text($"Traverso: {this.windowsData.Crosspiece}");
-
-                    static IContainer CellStyle(IContainer container)
-                    {
-                        return container.DefaultTextStyle(x => x.FontSize(8));
-                    }
+                    r.ConstantItem(25).Text(string.Empty);
+                    r.RelativeItem(3).Text($"Tipologia: {this.windowsData.WindowType}");
+                    r.RelativeItem(3).Text($"Apertura (vista interna): {this.windowsData.OpeningType}");
+                    r.RelativeItem(2).Text($"Vetro: {this.windowsData.GlassType}");
+                    r.RelativeItem(2).AlignRight().Text($"Traverso: {this.windowsData.Crosspiece}");
                 });
 
-                c.Item().Table(table =>
+                c.Item().Row(r =>
                 {
-                    table.ColumnsDefinition(columns =>
-                    {
-                        columns.RelativeColumn(4);
-                        columns.RelativeColumn(2);
-                        columns.RelativeColumn(2);
-                    });
-
-                    table.Cell().Element(CellStyle).Text(string.Empty);
-                    table.Cell().Element(CellStyle).AlignRight().Text($"Prezzo unitario: 1.234,56€");
-                    table.Cell().Element(CellStyle).AlignRight().Text($"Tot.: {1234.56*this.windowsData.Quantity}€").Bold();
-
-                    static IContainer CellStyle(IContainer container)
-                    {
-                        return container;
-                    }
+                    r.RelativeItem(4).Text(string.Empty);
+                    r.RelativeItem(2).AlignRight().Text($"Prezzo unitario: 1.234,56€");
+                    r.RelativeItem(2).AlignRight().Text($"Tot.: {1234.56*this.windowsData.Quantity}€").Bold();
                 });
             });
         }
