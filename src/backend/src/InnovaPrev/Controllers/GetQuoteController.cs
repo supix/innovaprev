@@ -34,6 +34,7 @@ namespace InnovaPrev.Controllers
 
     public class Dto
     {
+        public required ProductData[] ProductData { get; set; }
         public required WindowsData[] WindowsData { get; set; }
     }
 
