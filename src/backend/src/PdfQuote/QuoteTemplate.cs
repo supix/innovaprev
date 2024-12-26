@@ -1,5 +1,6 @@
 ﻿using System;
 using DomainModel.Classes;
+using DomainModel.Services.PriceCalculator;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
@@ -9,9 +10,12 @@ namespace PdfQuote
     internal class QuoteTemplate : IDocument
     {
         private readonly Project project;
+        private readonly PriceInfo priceInfo;
 
-        public QuoteTemplate(Project project) {
+        public QuoteTemplate(Project project, PriceInfo priceInfo)
+        {
             this.project = project ?? throw new ArgumentNullException(nameof(project));
+            this.priceInfo = priceInfo ?? throw new ArgumentNullException(nameof(priceInfo));
         }
         public void Compose(IDocumentContainer container)
         {
@@ -100,16 +104,22 @@ namespace PdfQuote
                 column.Item().PaddingTop(10).Background(Colors.Grey.Lighten2).Padding(2).AlignCenter().DefaultTextStyle(x => x.FontSize(8)).Text("MISURE");
                 var idx = 0;
                 foreach (var wd in this.project.WindowsData)
-                    column.Item().PaddingBottom(3).Component(new ArticleComponent(++idx, wd));
+                {
+                    var detailPrice = priceInfo.DetailPrices[idx];
+                    column.Item().PaddingBottom(3).Component(new ArticleComponent(++idx, wd, detailPrice));
+                }
 
                 // Total
                 column.Item()
                     .PaddingTop(10)
                     .Background(Colors.Grey.Lighten3)
                     .Padding(2)
-                    .AlignRight()
-                    .DefaultTextStyle(x => x.FontSize(14))
-                    .Text("Tot.: 9.999,99€");
+                    .Column(c =>
+                    {
+                        c.Item().Text($"Imponibile: {priceInfo.Total:n}€").AlignRight();
+                        c.Item().Text($"Imposta: {priceInfo.Tax:n}€").AlignRight();
+                        c.Item().Text($"TOTALE: {priceInfo.GrandTotal:n}€").FontSize(14).Bold().AlignRight();
+                    });
             });
         }
     }

@@ -14,7 +14,7 @@ namespace InnovaPrev.Controllers
         {
             var priceCalculator = new PriceCalculator(dto.ProductData, dto.WindowsData);
 
-            Price prices = priceCalculator.getPrices();
+            PriceInfo prices = priceCalculator.getPrices();
             return new GetQuoteOutputDto()
             {
                 Quotation = new Quotation()

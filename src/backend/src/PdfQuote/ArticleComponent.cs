@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using DomainModel.Classes;
+﻿using DomainModel.Classes;
+using DomainModel.Services.PriceCalculator;
 using QuestPDF.Fluent;
-using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
 
 namespace PdfQuote
@@ -14,18 +8,21 @@ namespace PdfQuote
     internal class ArticleComponent : IComponent
     {
         private readonly int index;
-        private WindowsData windowsData { get; }
+        private readonly DetailPrice detailPrice;
+        private readonly WindowsData windowsData;
 
-        public ArticleComponent(int index, WindowsData windowsData)
+        public ArticleComponent(int index, WindowsData windowsData, DetailPrice detailPrice)
         {
             this.index = index;
-            this.windowsData = windowsData;
+            this.windowsData = windowsData ?? throw new ArgumentNullException(nameof(windowsData));
+            this.detailPrice = detailPrice ?? throw new ArgumentNullException(nameof(detailPrice));
         }
 
         public void Compose(IContainer container)
         {
             container.Column(c =>
             {
+                // Lengths
                 c.Item().Row(r =>
                 {
                     r.ConstantItem(25).Text($"#{index.ToString()}").Bold();
@@ -38,6 +35,7 @@ namespace PdfQuote
                     r.RelativeItem(1).AlignRight().Text($"sot: {this.windowsData.BelowThreshold}");
                 });
 
+                // Types
                 c.Item().DefaultTextStyle(x => x.FontSize(8)).Row(r =>
                 {
                     r.ConstantItem(25).Text(string.Empty);
@@ -47,11 +45,12 @@ namespace PdfQuote
                     r.RelativeItem(2).AlignRight().Text($"Traverso: {this.windowsData.Crosspiece}");
                 });
 
+                // Prices
                 c.Item().Row(r =>
                 {
                     r.RelativeItem(4).Text(string.Empty);
-                    r.RelativeItem(2).AlignRight().Text($"Prezzo unitario: 1.234,56€");
-                    r.RelativeItem(2).AlignRight().Text($"Tot.: {1234.56*this.windowsData.Quantity}€").Bold();
+                    r.RelativeItem(2).AlignRight().Text($"Prezzo mq: {this.detailPrice.UnitPrice:n}€");
+                    r.RelativeItem(2).AlignRight().Text($"Tot.: {this.detailPrice.NetPrice:n}€").Bold();
                 });
             });
         }

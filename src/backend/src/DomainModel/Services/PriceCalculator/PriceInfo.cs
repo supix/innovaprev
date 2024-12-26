@@ -2,7 +2,7 @@
 
 namespace DomainModel.Services.PriceCalculator
 {
-    public class Price
+    public class PriceInfo
     {
         public decimal Total { get; set; }
         public decimal Tax { get; set; }
