@@ -29,8 +29,8 @@ namespace PdfQuote
                 c.Item().Row(r =>
                 {
                     r.ConstantItem(25).Text($"#{index.ToString()}").Bold();
-                    r.RelativeItem(3).Text($"l (mm): {this.windowsData.Width}");
-                    r.RelativeItem(3).Text($"h (mm): {this.windowsData.Height}");
+                    r.RelativeItem(3).Text($"L (mm): {this.windowsData.Width}");
+                    r.RelativeItem(3).Text($"H (mm): {this.windowsData.Height}");
                     r.RelativeItem(2).Text($"Q.tà: {this.windowsData.Quantity}");
                     r.RelativeItem(1).AlignRight().Text($"sx: {this.windowsData.LeftTrim}");
                     r.RelativeItem(1).AlignRight().Text($"dx: {this.windowsData.RightTrim}");
