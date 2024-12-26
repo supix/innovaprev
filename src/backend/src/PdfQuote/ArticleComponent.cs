@@ -41,7 +41,7 @@ namespace PdfQuote
                         columns.RelativeColumn(1);
                     });
 
-                    table.Cell().Element(CellStyle).Text($"#{index.ToString()}");
+                    table.Cell().Element(CellStyle).Text($"#{index.ToString()}").Bold();
                     table.Cell().Element(CellStyle).Text($"lar. (mm): {this.windowsData.Width}");
                     table.Cell().Element(CellStyle).Text($"alt. (mm): {this.windowsData.Height}");
                     table.Cell().Element(CellStyle).Text($"Q.tà: {this.windowsData.Quantity}");
@@ -60,12 +60,14 @@ namespace PdfQuote
                 {
                     table.ColumnsDefinition(columns =>
                     {
+                        columns.ConstantColumn(25);
                         columns.RelativeColumn(3);
                         columns.RelativeColumn(3);
                         columns.RelativeColumn(2);
                         columns.RelativeColumn(2);
                     });
 
+                    table.Cell().Element(CellStyle).Text(string.Empty);
                     table.Cell().Element(CellStyle).Text($"Tipologia: {this.windowsData.WindowType}");
                     table.Cell().Element(CellStyle).Text($"Apertura (vista interna): {this.windowsData.OpeningType}");
                     table.Cell().Element(CellStyle).Text($"Vetro: {this.windowsData.GlassType}");
@@ -73,7 +75,7 @@ namespace PdfQuote
 
                     static IContainer CellStyle(IContainer container)
                     {
-                        return container; //.BorderColor(Colors.Grey.Lighten2).PaddingVertical(5);
+                        return container.DefaultTextStyle(x => x.FontSize(8));
                     }
                 });
 
@@ -88,11 +90,11 @@ namespace PdfQuote
 
                     table.Cell().Element(CellStyle).Text(string.Empty);
                     table.Cell().Element(CellStyle).AlignRight().Text($"Prezzo unitario: 1.234,56€");
-                    table.Cell().Element(CellStyle).AlignRight().DefaultTextStyle(x => x.Bold()).Text($"Tot.: {1234.56*this.windowsData.Quantity}€");
+                    table.Cell().Element(CellStyle).AlignRight().Text($"Tot.: {1234.56*this.windowsData.Quantity}€").Bold();
 
                     static IContainer CellStyle(IContainer container)
                     {
-                        return container; //.BorderColor(Colors.Grey.Lighten2).PaddingVertical(5);
+                        return container;
                     }
                 });
             });

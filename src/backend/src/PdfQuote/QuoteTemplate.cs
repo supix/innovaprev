@@ -36,14 +36,14 @@ namespace PdfQuote
         {
             container.Row(row =>
             {
-                row.RelativeItem().Component(new AddressComponent(string.Empty, this.project.PersonalData));
+                row.RelativeItem().Component(new AddressComponent(string.Empty, this.project.SupplierData));
                 
                 row.ConstantItem(50);
                 
                 row.RelativeItem().Column(column =>
                 {
                     column.Item()
-                        .Text($"Preventivo #{this.project.PersonalData.OrderNumber}")
+                        .Text($"Preventivo #{this.project.ProductData.OrderNumber}")
                         .FontSize(12).SemiBold().FontColor(Colors.Black);
 
                     column.Item().Text(text =>
@@ -67,26 +67,38 @@ namespace PdfQuote
                     row.ConstantItem(50);
                     row.RelativeItem()
                         .PaddingBottom(10)
-                        .Component(new AddressComponent("DATI CLIENTE", this.project.PersonalData));
+                        .Component(new AddressComponent("DATI CLIENTE", this.project.CustomerData));
                 });
 
+                // Articles
                 column.Item().Background(Colors.Grey.Lighten3).Padding(2).AlignCenter().DefaultTextStyle(x => x.FontSize(8)).Text("ARTICOLI");
                 var idx = 0;
                 foreach (var wd in this.project.WindowsData)
                     column.Item().PaddingBottom(3).Component(new ArticleComponent(++idx, wd));
 
-                if (!string.IsNullOrWhiteSpace(this.project.PersonalData.CompanyName))
-                    column.Item().PaddingTop(25).Element(ComposeComments);
+                // Total
+                column.Item()
+                    .PaddingTop(10)
+                    .Background(Colors.Grey.Lighten3)
+                    .Padding(2)
+                    .AlignRight()
+                    .DefaultTextStyle(x => x.FontSize(14))
+                    .Text("Tot.: 9.999,99€");
+                
+                // Notes
+                column.Item().PaddingTop(25).Element(ComposeNotes);
             });
         }
 
-        private void ComposeComments(IContainer container)
+        private void ComposeNotes(IContainer container)
         {
-            container.Background(Colors.Grey.Lighten3).Padding(10).AlignRight().Column(column =>
-            {
-                column.Spacing(5);
-                column.Item().Text("Tot.: 1.234,56€").FontSize(14);
-            });
+            if (!string.IsNullOrWhiteSpace(this.project.ProductData.Notes))
+                container.Padding(10).Column(column =>
+                {
+                    column.Spacing(5);
+                    column.Item().Text("Note");
+                    column.Item().Border(1).Padding(10).Text(this.project.ProductData.Notes);
+                });
         }
     }
 }

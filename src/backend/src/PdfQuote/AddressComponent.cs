@@ -13,12 +13,12 @@ namespace PdfQuote
     internal class AddressComponent : IComponent
     {
         private string title { get; }
-        private PersonalData personalData { get; }
+        private CompanyData companyData { get; }
 
-        public AddressComponent(string title, PersonalData personalData)
+        public AddressComponent(string title, CompanyData companyData)
         {
             this.title = title;
-            this.personalData = personalData;
+            this.companyData = companyData;
         }
 
         public void Compose(IContainer container)
@@ -36,11 +36,17 @@ namespace PdfQuote
                         .Text(this.title).SemiBold();
                 }
 
-                column.Item().Text(this.personalData.CompanyName);
-                column.Item().Text(this.personalData.Address);
-                column.Item().Text($"Partita IVA: {this.personalData.Vat}");
-                column.Item().Text($"Tel.: {this.personalData.Phone}");
-                column.Item().Text($"Email: {this.personalData.Mail}");
+                column.Item().Text(this.companyData.CompanyName);
+                if (!string.IsNullOrWhiteSpace(this.companyData.Address))
+                    column.Item().Text(this.companyData.Address);
+                if (!string.IsNullOrWhiteSpace(this.companyData.taxCode))
+                    column.Item().Text($"Partita IVA: {this.companyData.taxCode}");
+                if (!string.IsNullOrWhiteSpace(this.companyData.Phone))
+                    column.Item().Text($"Tel.: {this.companyData.Phone}");
+                if (!string.IsNullOrWhiteSpace(this.companyData.Mail))
+                    column.Item().Text($"Email: {this.companyData.Mail}");
+                if (!string.IsNullOrWhiteSpace(this.companyData.Iban))
+                    column.Item().Text($"IBAN: {this.companyData.Iban}");
             });
         }
     }
