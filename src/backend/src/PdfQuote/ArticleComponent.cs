@@ -26,7 +26,6 @@ namespace PdfQuote
         {
             container.Column(c =>
             {
-                // .DefaultTextStyle(x => x.FontSize(8))
                 c.Item().Table(table =>
                 {
                     table.ColumnsDefinition(columns =>
@@ -42,8 +41,8 @@ namespace PdfQuote
                     });
 
                     table.Cell().Element(CellStyle).Text($"#{index.ToString()}").Bold();
-                    table.Cell().Element(CellStyle).Text($"lar. (mm): {this.windowsData.Width}");
-                    table.Cell().Element(CellStyle).Text($"alt. (mm): {this.windowsData.Height}");
+                    table.Cell().Element(CellStyle).Text($"l (mm): {this.windowsData.Width}");
+                    table.Cell().Element(CellStyle).Text($"h (mm): {this.windowsData.Height}");
                     table.Cell().Element(CellStyle).Text($"Q.tà: {this.windowsData.Quantity}");
                     table.Cell().Element(CellStyle).AlignRight().Text($"sx: {this.windowsData.LeftTrim}");
                     table.Cell().Element(CellStyle).AlignRight().Text($"dx: {this.windowsData.RightTrim}");

@@ -1,4 +1,5 @@
-﻿using DomainModel.Classes;
+﻿using System;
+using DomainModel.Classes;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
@@ -61,17 +62,42 @@ namespace PdfQuote
             {
                 column.Spacing(5);
 
+                // Customer data
                 column.Item().Row(row =>
                 {
                     row.RelativeItem().Text(string.Empty);
-                    row.ConstantItem(50);
                     row.RelativeItem()
                         .PaddingBottom(10)
-                        .Component(new AddressComponent("DATI CLIENTE", this.project.CustomerData));
+                        .Component(new AddressComponent("DATI CLIENTE", project.CustomerData));
                 });
 
-                // Articles
-                column.Item().Background(Colors.Grey.Lighten3).Padding(2).AlignCenter().DefaultTextStyle(x => x.FontSize(8)).Text("ARTICOLI");
+                // Product
+                var pd = this.project.ProductData;
+                column.Item().Background(Colors.Grey.Lighten4).Padding(5).Column(c => {
+                    c.Item().PaddingBottom(10).Text(pd.Product).FontSize(14).AlignCenter();
+                    c.Item().Row(row =>
+                    {
+                        row.RelativeItem(1).Column(c =>
+                        {
+                            c.Item().Text($"Tipo Anta");
+                            c.Item().PaddingLeft(5).Text($"Fermavetro: {(pd.GlassStopper ? "SI" : "NO")}");
+                            c.Item().PaddingLeft(5).Text($"Infilo: {(pd.WindowSlide ? "SI" : "NO")}");
+                        });
+                        row.RelativeItem(1).Column(c => {
+                            c.Item().Text($"Colore");
+                            c.Item().PaddingLeft(5).Text($"Interno: {pd.InternalColor}");
+                            c.Item().PaddingLeft(5).Text($"Esterno: {pd.ExternalColor}");
+                            c.Item().PaddingLeft(5).Text($"Accessori: {pd.AccessoryColor}");
+                        });
+                        row.RelativeItem(1).AlignRight().Text($"Zona climatica: {pd.ClimateZone}");
+                    });
+
+                    if (!string.IsNullOrWhiteSpace(pd.Notes))
+                        c.Item().PaddingTop(10).Text($"Note: {pd.Notes}");
+                });
+
+                // Measures
+                column.Item().PaddingTop(10).Background(Colors.Grey.Lighten2).Padding(2).AlignCenter().DefaultTextStyle(x => x.FontSize(8)).Text("MISURE");
                 var idx = 0;
                 foreach (var wd in this.project.WindowsData)
                     column.Item().PaddingBottom(3).Component(new ArticleComponent(++idx, wd));
@@ -84,21 +110,7 @@ namespace PdfQuote
                     .AlignRight()
                     .DefaultTextStyle(x => x.FontSize(14))
                     .Text("Tot.: 9.999,99€");
-                
-                // Notes
-                column.Item().PaddingTop(25).Element(ComposeNotes);
             });
-        }
-
-        private void ComposeNotes(IContainer container)
-        {
-            if (!string.IsNullOrWhiteSpace(this.project.ProductData.Notes))
-                container.Padding(10).Column(column =>
-                {
-                    column.Spacing(5);
-                    column.Item().Text("Note");
-                    column.Item().Border(1).Padding(10).Text(this.project.ProductData.Notes);
-                });
         }
     }
 }
