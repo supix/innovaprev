@@ -23,8 +23,8 @@ export const mockInterceptor: HttpInterceptorFn = (req, next) => {
       }));
     }
 
-    const amount = calculatePrice(body);
-    const quotation: Quotation = {amount};
+    const grandTotal = calculatePrice(body);
+    const quotation: Quotation = {amount: grandTotal / 1.22, grandTotal, tax: grandTotal - (grandTotal / 1.22)};
 
     return of(new HttpResponse<QuotationResponse>({status: 200, body: {quotation}})).pipe(
       delay(1000)
@@ -60,27 +60,27 @@ function validatePayload(payload: any): string[] {
   //   if (!mail) errors.push('personalData.mail is required.');
   //   if (!orderNumber) errors.push('personalData.orderNumber is required.');
   // }
-  //
-  // if (!payload.productData) {
-  //   errors.push('Missing productData object.');
-  // } else {
-  //   const {
-  //     product,
-  //     glassStopper,
-  //     windowSlide,
-  //     internalColor,
-  //     externalColor,
-  //     accessoryColor,
-  //     climateZone
-  //   } = payload.productData;
-  //   if (!product) errors.push('productData.product is required.');
-  //   if (glassStopper === undefined) errors.push('productData.glassStopper is required.');
-  //   if (windowSlide === undefined) errors.push('productData.windowSlide is required.');
-  //   if (!internalColor) errors.push('productData.internalColor is required.');
-  //   if (!externalColor) errors.push('productData.externalColor is required.');
-  //   if (!accessoryColor) errors.push('productData.accessoryColor is required.');
-  //   if (!climateZone) errors.push('productData.climateZone is required.');
-  // }
+
+  if (!payload.productData) {
+    errors.push('Missing productData object.');
+  } else {
+    const {
+      product,
+      // glassStopper,
+      // windowSlide,
+      internalColor,
+      externalColor,
+      accessoryColor,
+      climateZone
+    } = payload.productData;
+    if (!product) errors.push('productData.product is required.');
+    // if (glassStopper === undefined) errors.push('productData.glassStopper is required.');
+    // if (windowSlide === undefined) errors.push('productData.windowSlide is required.');
+    if (!internalColor) errors.push('productData.internalColor is required.');
+    if (!externalColor) errors.push('productData.externalColor is required.');
+    if (!accessoryColor) errors.push('productData.accessoryColor is required.');
+    if (!climateZone) errors.push('productData.climateZone is required.');
+  }
 
   if (!payload.windowsData || !Array.isArray(payload.windowsData) || payload.windowsData.length === 0) {
     errors.push('windowsData must be a non-empty array.');
@@ -99,47 +99,47 @@ function validatePayload(payload: any): string[] {
 // Function to generate mock collections data
 const getMockCollections = (): CollectionsResponse => ({
   product: [
-    { id: 'PRO_GIALLO', desc: 'Giallo' },
-    { id: 'PRO_VERDE', desc: 'Verde' },
-    { id: 'PRO_ROSSO', desc: 'Rosso' },
+    {id: 'PRO_GIALLO', desc: 'Giallo'},
+    {id: 'PRO_VERDE', desc: 'Verde'},
+    {id: 'PRO_ROSSO', desc: 'Rosso'},
   ],
   internalColors: [
-    { id: 'IC_GIALLO', desc: 'Giallo' },
-    { id: 'IC_VERDE', desc: 'Verde' },
-    { id: 'IC_ROSSO', desc: 'Rosso' },
+    {id: 'IC_GIALLO', desc: 'Giallo'},
+    {id: 'IC_VERDE', desc: 'Verde'},
+    {id: 'IC_ROSSO', desc: 'Rosso'},
   ],
   externalColors: [
-    { id: 'EC_GIALLO', desc: 'Giallo' },
-    { id: 'EC_VERDE', desc: 'Verde' },
-    { id: 'EC_ROSSO', desc: 'Rosso' },
+    {id: 'EC_GIALLO', desc: 'Giallo'},
+    {id: 'EC_VERDE', desc: 'Verde'},
+    {id: 'EC_ROSSO', desc: 'Rosso'},
   ],
   accessoryColors: [
-    { id: 'AC_GIALLO', desc: 'Giallo' },
-    { id: 'AC_VERDE', desc: 'Verde' },
-    { id: 'AC_ROSSO', desc: 'Rosso' },
+    {id: 'AC_GIALLO', desc: 'Giallo'},
+    {id: 'AC_VERDE', desc: 'Verde'},
+    {id: 'AC_ROSSO', desc: 'Rosso'},
   ],
   climateZones: [
-    { id: 'CZ_GIALLO', desc: 'Giallo' },
-    { id: 'CZ_VERDE', desc: 'Verde' },
-    { id: 'CZ_ROSSO', desc: 'Rosso' },
+    {id: 'CZ_GIALLO', desc: 'Giallo'},
+    {id: 'CZ_VERDE', desc: 'Verde'},
+    {id: 'CZ_ROSSO', desc: 'Rosso'},
   ],
   windowTypes: [
-    { id: 'WT_GRANDE', desc: 'Grande' },
-    { id: 'WT_MEDIA', desc: 'Media' },
-    { id: 'WT_PICCOLA', desc: 'Piccola' },
+    {id: 'WT_GRANDE', desc: 'Grande'},
+    {id: 'WT_MEDIA', desc: 'Media'},
+    {id: 'WT_PICCOLA', desc: 'Piccola'},
   ],
   openingTypes: [
-    { id: 'OT_DX', desc: 'SX' },
-    { id: 'OT_SX', desc: 'DX' },
+    {id: 'OT_DX', desc: 'SX'},
+    {id: 'OT_SX', desc: 'DX'},
   ],
   glassTypes: [
-    { id: 'GT_TRASPARENTE', desc: 'Trasparente' },
-    { id: 'GT_OPACO', desc: 'Opaco' },
-    { id: 'GT_AZZURRATO', desc: 'Azzurrato' },
+    {id: 'GT_TRASPARENTE', desc: 'Trasparente'},
+    {id: 'GT_OPACO', desc: 'Opaco'},
+    {id: 'GT_AZZURRATO', desc: 'Azzurrato'},
   ],
   crosspieces: [
-    { id: 'CRO_ALTA', desc: 'Alta' },
-    { id: 'CRO_MEDIA', desc: 'Media' },
-    { id: 'CRO_BASSA', desc: 'Bassa' },
+    {id: 'CRO_ALTA', desc: 'Alta'},
+    {id: 'CRO_MEDIA', desc: 'Media'},
+    {id: 'CRO_BASSA', desc: 'Bassa'},
   ],
 });

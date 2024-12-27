@@ -3,11 +3,27 @@ import {AbstractControl, FormArray, FormBuilder, FormGroup, ReactiveFormsModule,
 import {CommonModule} from '@angular/common';
 import {NgSelectConfig, NgSelectModule} from '@ng-select/ng-select';
 import {ApiService} from '../../services/api.service';
-import {CollectionsResponse, DataPayload, WindowsPayload} from '../../models';
-import {debounceTime, EMPTY, filter, finalize, startWith, Subject, Subscription, switchMap, tap} from 'rxjs';
+import {BillingPayload, CollectionsResponse, PricePayload, Quotation, WindowsPayload} from '../../models';
+import {
+  combineLatest,
+  debounceTime,
+  EMPTY,
+  filter,
+  finalize,
+  startWith,
+  Subject,
+  Subscription,
+  switchMap,
+  tap
+} from 'rxjs';
 import {PriceDisplayComponent} from '../price-display/price-display.component';
-import {italianVatValidator, minNumber, phoneNumberValidator} from '../../validators/innova.validator';
-import {catchError} from "rxjs/operators";
+import {
+  bankCoordinatesValidator,
+  italianVatValidator,
+  minNumber,
+  phoneNumberValidator
+} from '../../validators/innova.validator';
+import {catchError} from 'rxjs/operators';
 import CryptoJS from 'crypto-js';
 
 @Component({
@@ -23,7 +39,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
   @ViewChild('tab', {static: true}) tabElement!: ElementRef;
 
   form: FormGroup;
-  price: number | null = null;
+  quotation: Quotation | null = null;
   collections: CollectionsResponse | null = null;
   isCollectionsLoading: boolean = false;
 
@@ -33,26 +49,36 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
   hasTriggeredValidation: boolean = false;
   isLoading: boolean = false;
 
-  currentTab: TabNames = TabNames.personal;
+  currentTab: TabNames = TabNames.supplier;
   tabNames = TabNames;
 
-  private calculatePriceSubject = new Subject<WindowsPayload | null>();
+  private calculatePriceSubject = new Subject<PricePayload | null>();
   private previousPayloadHash: string | null = null;
 
   constructor(private fb: FormBuilder, private config: NgSelectConfig, private apiService: ApiService) {
     this.config.bindLabel = 'desc';
     this.config.bindValue = 'id';
     this.config.notFoundText = 'Nessun elemento trovato';
+    this.config.clearAllText = 'Pulisci tutto';
     this.form = this.fb.group({
-      personalData: this.fb.group({
+      supplierData: this.fb.group({
         companyName: ['', Validators.required],
-        address: ['', Validators.required],
-        vat: ['', italianVatValidator()],
-        phone: ['', phoneNumberValidator(true)],
-        mail: ['', [Validators.required, Validators.email]],
-        orderNumber: ['', Validators.required]
+        address: [''],
+        taxCode: ['', italianVatValidator()],
+        phone: ['', phoneNumberValidator(false)],
+        mail: ['', [Validators.email]],
+        iban: ['', bankCoordinatesValidator()],
+      }),
+      customerData: this.fb.group({
+        companyName: ['', Validators.required],
+        address: [''],
+        taxCode: ['', italianVatValidator()],
+        phone: ['', phoneNumberValidator(false)],
+        mail: ['', [Validators.email]],
+        iban: ['', bankCoordinatesValidator()],
       }),
       productData: this.fb.group({
+        orderNumber: [''],
         product: [null, Validators.required],
         glassStopper: [false],
         windowSlide: [false],
@@ -76,7 +102,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
       finalize(() => this.isCollectionsLoading = false)
     ).subscribe(collections => this.collections = collections);
     this.setupPriceCalculationSubscription();
-    this.subscribeToWindowsChanges();
+    this.subscribeToFormChanges();
   }
 
   ngAfterViewInit(): void {
@@ -86,9 +112,20 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
     });
   }
 
+  // Getter for the windows FormGroup
+  get productData(): FormGroup {
+    return this.form.get('productData') as FormGroup;
+  }
+
   // Getter for the windows FormArray
   get windows(): FormArray {
     return this.form.get('windowsData') as FormArray;
+  }
+
+
+  // Check if the 'productData' form is valid
+  private isProductDataValid(): boolean {
+    return this.productData.valid;
   }
 
   // Helper function to check validity of a specific row by index
@@ -102,13 +139,18 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
     return this.hasTriggeredValidation;
   }
 
-  hasErrorsInPersonalData(): boolean {
-    const personalDataGroup = this.form.get('personalData');
-    return this.currentTab !== TabNames.personal && this.submitted && this.hasErrors(personalDataGroup);
+  hasErrorsInSupplierData(): boolean {
+    const supplierDataGroup = this.form.get('supplierData');
+    return this.currentTab !== TabNames.supplier && this.submitted && this.hasErrors(supplierDataGroup);
+  }
+
+  hasErrorsInCustomerData(): boolean {
+    const customerDataGroup = this.form.get('customerData');
+    return this.currentTab !== TabNames.customer && this.submitted && this.hasErrors(customerDataGroup);
   }
 
   hasErrorsInProductData(): boolean {
-    const productDataGroup = this.form.get('productData');
+    const productDataGroup = this.productData;
     return this.currentTab !== TabNames.product && this.submitted && this.hasErrors(productDataGroup);
   }
 
@@ -127,15 +169,19 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
     if (this.submitted && this.isLoading) {
       return true;
     }
-    const personalDataGroup = this.form.get('personalData');
-    const hasErrorsInPersonal = personalDataGroup ? this.hasErrors(personalDataGroup) : false;
 
-    const productDataGroup = this.form.get('productData');
+    const supplierDataGroup = this.form.get('supplierData');
+    const hasErrorsInSupplier = supplierDataGroup ? this.hasErrors(supplierDataGroup) : false;
+
+    const customerDataGroup = this.form.get('customerData');
+    const hasErrorsInCustomer = customerDataGroup ? this.hasErrors(customerDataGroup) : false;
+
+    const productDataGroup = this.productData;
     const hasErrorsInProduct = productDataGroup ? this.hasErrors(productDataGroup) : false;
 
     const hasErrorsInWindows = !this.areAllRowsValid();
 
-    return (hasErrorsInPersonal || hasErrorsInProduct || hasErrorsInWindows);
+    return (hasErrorsInSupplier || hasErrorsInCustomer || hasErrorsInProduct || hasErrorsInWindows);
   }
 
   // Add a new row to the windows FormArray
@@ -254,8 +300,8 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
   // Handler to calculate the price based on valid rows
   calculatePriceHandler(): void {
     const validRows = this.getValidWindowsData();
-    if (validRows.length > 0) {
-      const payload: WindowsPayload = this.buildWindowsPayload();
+    if (validRows.length > 0 && this.isProductDataValid()) {
+      const payload: PricePayload = this.buildPayload();
       this.calculatePriceSubject.next(payload);
     } else {
       this.calculatePriceSubject.next(null);
@@ -283,7 +329,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
       }),
       switchMap((payload) => {
         if (payload === null) {
-          this.price = null;
+          this.quotation = null;
           return EMPTY;
         }
         this.isLoading = true;
@@ -293,13 +339,13 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
           }),
           catchError((error) => {
             console.error('Error fetching price:', error);
-            this.price = null; // Reset price in case of error
+            this.quotation = null; // Reset price in case of error
             return EMPTY;
           })
         );
       })
-    ).subscribe(({ quotation }) => {
-      this.price = quotation?.amount;
+    ).subscribe(({quotation}) => {
+      this.quotation = quotation;
     });
   }
 
@@ -309,7 +355,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
     this.submitted = true;
     if (this.form.valid) {
       this.isLoading = true;
-      const payload: DataPayload = this.buildPayload();
+      const payload: BillingPayload = this.buildBillingPayload();
       this.apiService.downloadPdf(payload).pipe(
         finalize(() => {
           this.isLoading = false;
@@ -390,7 +436,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
     return this.windows.controls
       .filter(row => row.valid)
       .map(row => {
-        const processedRow = { ...row.value };
+        const processedRow = {...row.value};
 
         // Cast null or undefined values to 0
         for (const key in processedRow) {
@@ -403,11 +449,18 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
       });
   }
 
+  // Build Billing Data payload for API
+  private buildBillingPayload(): BillingPayload {
+    return {
+      supplierData: this.form.value.supplierData,
+      customerData: this.form.value.customerData,
+      ...this.buildPayload()
+    };
+  }
 
   // Build Data payload for API
-  private buildPayload(): DataPayload {
+  private buildPayload(): PricePayload {
     return {
-      personalData: this.form.value.personalData,
       productData: this.form.value.productData,
       ...this.buildWindowsPayload()
     };
@@ -429,9 +482,12 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
     }
   }
 
-  // Subscribe to changes in the FormArray
-  private subscribeToWindowsChanges(): void {
-    this.windows.valueChanges.subscribe(() => {
+  // Subscribe to changes in both the 'windows' FormArray and the 'productData' FormGroup
+  private subscribeToFormChanges(): void {
+    combineLatest([
+      this.windows.valueChanges,
+      this.productData.valueChanges
+    ]).pipe(debounceTime(300)).subscribe(() => {
       this.calculatePriceHandler();
     });
   }
@@ -444,7 +500,8 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
 }
 
 enum TabNames {
-  personal = 'personal-tab',
+  supplier = 'supplier-tab',
+  customer = 'personal-tab',
   product = 'product-tab',
   measurements = 'measurements-tab'
 }

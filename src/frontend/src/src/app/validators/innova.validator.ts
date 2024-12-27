@@ -28,14 +28,52 @@ export function minNumber(min: number, required: boolean = false, gender: 'm' | 
   };
 }
 
+// Validator for bank coordinates (IBAN or bank code)
+export function bankCoordinatesValidator(required: boolean = false): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const value = control.value;
+
+    // Check if the field is required and empty
+    if (required && (!value || value.trim() === '')) {
+      return {bankCoordinates: {reason: 'Le coordinate bancarie sono obbligatorie.'}};
+    }
+
+    // If the field is not required and empty, no errors
+    if (!value) {
+      return null;
+    }
+
+    // Regular expression for IBAN (ISO 13616 format)
+    const ibanRegex = /^[A-Z]{2}[0-9]{2}[A-Z0-9]{1,30}$/;
+
+    // Regular expression for generic bank code format
+    const bankCodeRegex = /^[0-9]{8,11}$/;
+
+    // Check if the value matches IBAN or bank code
+    const isIbanValid = ibanRegex.test(value);
+    const isBankCodeValid = bankCodeRegex.test(value);
+
+    // If the value is invalid as both IBAN and bank code
+    if (!isIbanValid && !isBankCodeValid) {
+      return {bankCoordinates: {reason: 'Il codice IBAN non è valido.'}};
+    }
+
+    // No validation errors
+    return null;
+  };
+}
+
 // Checks the validity of the Italian Vat or returns a validation error.
-export function italianVatValidator(): ValidatorFn {
+export function italianVatValidator(required: boolean = false): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
     const value = control.value;
 
     // Null or empty values are not validated
     if (value === null || value === undefined || value === '') {
-      return {italianVat: {reason: 'La partita IVA è obbligatoria.'}};
+      if (required) {
+        return {italianVat: {reason: 'La partita IVA è obbligatoria.'}};
+      }
+      return null; // Not required and empty values are allowed
     }
 
     // Ensure the value is a string of exactly 11 numeric characters
