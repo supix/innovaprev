@@ -25,14 +25,14 @@ jobs:
         run: |
           docker login -u supix -p ${{ secrets.DOCKER_HUB_TOKEN }}
           docker push supix/innovaprev_fe:latest
-      # - name: Pull newly published image and restart the container
-      #   uses: appleboy/ssh-action@v1.2.0
-      #   with:
-      #     host: ${{ secrets.HOST_ADDR }}
-      #     username: ${{ secrets.HOST_USER }}
-      #     key: ${{ secrets.HOST_KEY }}
-      #     script: |
-      #       echo ${{ secrets.HOST_PWD }} | sudo -S docker rm -f fe
-      #       echo ${{ secrets.HOST_PWD }} | sudo -S docker pull supix/innovaprev_fe:latest
-      #       echo ${{ secrets.HOST_PWD }} | sudo -S docker network inspect fe_nw >/dev/null 2>&1 || docker network create fe_nw
-      #       echo ${{ secrets.HOST_PWD }} | sudo -S docker run -d --network=fe_nw --name=fe --restart=unless-stopped supix/innovaprev_fe:latest
+      - name: Pull newly published image and restart the container
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.HOST_ADDR }}
+          username: ${{ secrets.HOST_USER }}
+          key: ${{ secrets.HOST_KEY }}
+          script: |
+            echo ${{ secrets.HOST_PWD }} | sudo -S docker rm -f fe
+            echo ${{ secrets.HOST_PWD }} | sudo -S docker pull supix/innovaprev_fe:latest
+            echo ${{ secrets.HOST_PWD }} | sudo -S docker network inspect fe_nw >/dev/null 2>&1 || echo ${{ secrets.HOST_PWD }} | docker network create fe_nw
+            echo ${{ secrets.HOST_PWD }} | sudo -S docker run -d --network=fe_nw --name=fe --restart=unless-stopped supix/innovaprev_fe:latest
