@@ -1,13 +1,14 @@
 export interface PersonalData {
   companyName: string;
   address: string;
-  vat: string;
+  taxCode: string;
   phone: string;
   mail: string;
-  orderNumber: string;
+  iban: string;
 }
 
 export interface ProductDetails {
+  orderNumber: string;
   product: string;
   glassStopper: boolean;
   windowSlide: boolean;
@@ -33,10 +34,13 @@ export interface WindowRow {
   belowThreshold: number;
 }
 
+export interface BillingPayload extends PricePayload {
+  supplierData: PersonalData;
+  customerData: PersonalData;
+}
 
 // Payload for a collection of window estimate rows
-export interface DataPayload extends WindowsPayload {
-  personalData: PersonalData;
+export interface PricePayload extends WindowsPayload {
   productData: ProductDetails;
 }
 

@@ -1,14 +1,16 @@
 <div class="container mt-3">
   <!-- Header -->
   <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
-    <div class="order-2 order-md-1 mb-3 mb-md-0 text-center text-md-start">
+    <div class="order-2 order-md-1 mb-2 mb-md-0 text-center text-md-start d-grid d-md-block">
       <button class="btn btn-secondary" (click)="downloadPdf()" [disabled]="hasErrorsAndNotLoading()">
         Scarica Preventivo
       </button>
     </div>
     <app-price-display
-      [price]="price"
-      class="order-1 order-md-2 mb-3 mb-md-0 text-center text-md-end">
+      [grandTotal]="quotation?.grandTotal"
+      [amount]="quotation?.amount"
+      [tax]="quotation?.tax"
+      class="order-1 order-md-2 mb-4 mb-md-0 text-center text-md-end d-grid d-md-block">
     </app-price-display>
   </div>
 
@@ -16,37 +18,44 @@
   <form [formGroup]="form" class="row g-3 innova-form">
     <ul class="nav nav-tabs" id="tab" #tab role="tablist">
       <li class="nav-item" role="presentation">
-        <button class="nav-link active" [id]="tabNames.personal" data-bs-toggle="tab" data-bs-target="#personalSection"
-                [ngClass]="{ 'tab-is-invalid': hasErrorsInPersonalData() }" type="button" role="tab">
-          Sezione Anagrafica
+        <button class="nav-link active" [id]="tabNames.supplier" data-bs-toggle="tab" data-bs-target="#supplierSection"
+                [ngClass]="{ 'tab-is-invalid': hasErrorsInSupplierData() }" type="button" role="tab">
+          Fornitore
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" [id]="tabNames.customer" data-bs-toggle="tab" data-bs-target="#customerSection"
+                [ngClass]="{ 'tab-is-invalid': hasErrorsInCustomerData() }" type="button" role="tab">
+          Cliente
         </button>
       </li>
       <li class="nav-item" role="presentation">
         <button class="nav-link" [id]="tabNames.product" data-bs-toggle="tab" data-bs-target="#productSection"
                 [ngClass]="{ 'tab-is-invalid': hasErrorsInProductData() }" type="button" role="tab">
-          Sezione Prodotto
+          Prodotto
         </button>
       </li>
       <li class="nav-item" role="presentation">
         <button class="nav-link" [id]="tabNames.measurements" data-bs-toggle="tab" data-bs-target="#measurementsSection"
                 [ngClass]="{ 'tab-is-invalid': hasErrorsInWindowsData() }" type="button" role="tab">
-          Sezione Misure
+          Misure
         </button>
       </li>
     </ul>
     <div class="tab-content" id="tabContent">
 
-      <!-- Personal Data -->
-      <div class="tab-pane fade show active" id="personalSection" role="tabpanel">
+      <!-- Supplier Data -->
+      <div class="tab-pane fade show active" id="supplierSection" role="tabpanel">
 
-        <div formGroupName="personalData" class="row g-3 mt-1">
+        <div formGroupName="supplierData" class="row g-3 mt-1">
           <!-- Ragione Sociale -->
-          <div class="col-md-9">
-            <label for="companyName" class="form-label">Ragione Sociale</label>
-            <input type="text" id="companyName" formControlName="companyName" class="form-control" name="companyName"
+          <div class="col-md-6">
+            <label for="supplierCompanyName" class="form-label">Ragione Sociale</label>
+            <input type="text" id="supplierCompanyName" formControlName="companyName" class="form-control"
+                   name="companyName"
                    autocomplete="off"
-                   [ngClass]="{ 'is-invalid': submitted && form.get('personalData.companyName')?.errors }"/>
-            <div *ngIf="form.get('personalData.companyName')?.touched && form.get('personalData.companyName')?.invalid"
+                   [ngClass]="{ 'is-invalid': submitted && form.get('supplierData.companyName')?.errors }"/>
+            <div *ngIf="form.get('supplierData.companyName')?.touched && form.get('supplierData.companyName')?.invalid"
                  class="invalid-feedback">
               La ragione sociale è obbligatoria.
             </div>
@@ -54,13 +63,105 @@
 
           <!-- Partita IVA -->
           <div class="col-md-3">
-            <label for="vat" class="form-label">Partita IVA</label>
-            <input type="text" id="vat" formControlName="vat" class="form-control" name="vat"
+            <label for="supplierTaxCode" class="form-label">Partita IVA</label>
+            <input type="text" id="supplierTaxCode" formControlName="taxCode" class="form-control" name="taxCode"
                    autocomplete="off"
-                   [ngClass]="{ 'is-invalid': submitted && form.get('personalData.vat')?.errors }"/>
-            <div *ngIf="form.get('personalData.vat')?.touched && form.get('personalData.vat')?.invalid"
+                   [ngClass]="{ 'is-invalid': submitted && form.get('supplierData.taxCode')?.errors }"/>
+            <div *ngIf="form.get('supplierData.taxCode')?.touched && form.get('supplierData.taxCode')?.invalid"
                  class="invalid-feedback">
-              {{ form.get('personalData.vat')?.getError('italianVat')?.reason }}
+              {{ form.get('supplierData.taxCode')?.getError('italianVat')?.reason }}
+            </div>
+          </div>
+
+          <!-- IBAN -->
+          <div class="col-md-3">
+            <label for="supplierIban" class="form-label">Coordinate Bancarie</label>
+            <input type="text" id="supplierIban" formControlName="iban" class="form-control" name="iban"
+                   autocomplete="off"
+                   [ngClass]="{ 'is-invalid': submitted && form.get('supplierData.iban')?.errors }"/>
+            <div *ngIf="form.get('supplierData.iban')?.touched && form.get('supplierData.iban')?.invalid"
+                 class="invalid-feedback">
+              Le coordinate bancarie sono obbligatorie.
+            </div>
+          </div>
+
+          <!-- Indirizzo -->
+          <div class="col-md-6">
+            <label for="supplierAddress" class="form-label">Indirizzo</label>
+            <input type="text" id="supplierAddress" formControlName="address" class="form-control" name="address"
+                   autocomplete="off"
+                   [ngClass]="{ 'is-invalid': submitted && form.get('supplierData.address')?.errors }"/>
+            <div *ngIf="form.get('supplierData.address')?.touched && form.get('supplierData.address')?.invalid"
+                 class="invalid-feedback">
+              L'indirizzo è obbligatorio.
+            </div>
+          </div>
+
+          <!-- Telefono -->
+          <div class="col-md-3">
+            <label for="supplierPhone" class="form-label">Telefono</label>
+            <input type="text" id="supplierPhone" formControlName="phone" class="form-control" name="phone"
+                   autocomplete="off"
+                   [ngClass]="{ 'is-invalid': submitted && form.get('supplierData.phone')?.errors }"
+                   (input)="onInputNumber($event,'supplierData.phone')"/>
+            <div *ngIf="form.get('supplierData.phone')?.touched && form.get('supplierData.phone')?.invalid"
+                 class="invalid-feedback">
+              {{ form.get('supplierData.phone')?.getError('invalidPhoneNumber')?.reason }}
+            </div>
+          </div>
+
+          <!-- Email -->
+          <div class="col-md-3">
+            <label for="supplierMail" class="form-label">Email</label>
+            <input type="email" id="supplierMail" formControlName="mail" class="form-control" name="mail"
+                   autocomplete="off"
+                   [ngClass]="{ 'is-invalid': submitted && form.get('supplierData.mail')?.errors }"/>
+            <div *ngIf="form.get('supplierData.mail')?.touched && form.get('supplierData.mail')?.invalid"
+                 class="invalid-feedback">
+              Inserisci un'email valida.
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Customer Data -->
+      <div class="tab-pane fade show" id="customerSection" role="tabpanel">
+
+        <div formGroupName="customerData" class="row g-3 mt-1">
+          <!-- Ragione Sociale -->
+          <div class="col-md-6">
+            <label for="companyName" class="form-label">Ragione Sociale</label>
+            <input type="text" id="companyName" formControlName="companyName" class="form-control" name="companyName"
+                   autocomplete="off"
+                   [ngClass]="{ 'is-invalid': submitted && form.get('customerData.companyName')?.errors }"/>
+            <div *ngIf="form.get('customerData.companyName')?.touched && form.get('customerData.companyName')?.invalid"
+                 class="invalid-feedback">
+              La ragione sociale è obbligatoria.
+            </div>
+          </div>
+
+          <!-- Partita IVA -->
+          <div class="col-md-3">
+            <label for="taxCode" class="form-label">Partita IVA</label>
+            <input type="text" id="taxCode" formControlName="taxCode" class="form-control" name="taxCode"
+                   autocomplete="off"
+                   [ngClass]="{ 'is-invalid': submitted && form.get('customerData.taxCode')?.errors }"/>
+            <div *ngIf="form.get('customerData.taxCode')?.touched && form.get('customerData.taxCode')?.invalid"
+                 class="invalid-feedback">
+              {{ form.get('customerData.taxCode')?.getError('italianVat')?.reason }}
+            </div>
+          </div>
+
+          <!-- IBAN -->
+          <div class="col-md-3">
+            <label for="iban" class="form-label">Coordinate Bancarie</label>
+            <input type="text" id="iban" formControlName="iban" class="form-control" name="iban"
+                   autocomplete="off"
+                   [ngClass]="{ 'is-invalid': submitted && form.get('customerData.iban')?.errors }"/>
+            <div *ngIf="form.get('customerData.iban')?.touched && form.get('customerData.iban')?.invalid"
+                 class="invalid-feedback">
+              Le coordinate bancarie sono obbligatorie.
             </div>
           </div>
 
@@ -69,8 +170,8 @@
             <label for="address" class="form-label">Indirizzo</label>
             <input type="text" id="address" formControlName="address" class="form-control" name="address"
                    autocomplete="off"
-                   [ngClass]="{ 'is-invalid': submitted && form.get('personalData.address')?.errors }"/>
-            <div *ngIf="form.get('personalData.address')?.touched && form.get('personalData.address')?.invalid"
+                   [ngClass]="{ 'is-invalid': submitted && form.get('customerData.address')?.errors }"/>
+            <div *ngIf="form.get('customerData.address')?.touched && form.get('customerData.address')?.invalid"
                  class="invalid-feedback">
               L'indirizzo è obbligatorio.
             </div>
@@ -81,11 +182,11 @@
             <label for="phone" class="form-label">Telefono</label>
             <input type="text" id="phone" formControlName="phone" class="form-control" name="phone"
                    autocomplete="off"
-                   [ngClass]="{ 'is-invalid': submitted && form.get('personalData.phone')?.errors }"
-                   (input)="onInputNumber($event,'personalData.phone')"/>
-            <div *ngIf="form.get('personalData.phone')?.touched && form.get('personalData.phone')?.invalid"
+                   [ngClass]="{ 'is-invalid': submitted && form.get('customerData.phone')?.errors }"
+                   (input)="onInputNumber($event,'customerData.phone')"/>
+            <div *ngIf="form.get('customerData.phone')?.touched && form.get('customerData.phone')?.invalid"
                  class="invalid-feedback">
-              {{ form.get('personalData.phone')?.getError('invalidPhoneNumber')?.reason }}
+              {{ form.get('customerData.phone')?.getError('invalidPhoneNumber')?.reason }}
             </div>
           </div>
 
@@ -94,22 +195,10 @@
             <label for="mail" class="form-label">Email</label>
             <input type="email" id="mail" formControlName="mail" class="form-control" name="mail"
                    autocomplete="off"
-                   [ngClass]="{ 'is-invalid': submitted && form.get('personalData.mail')?.errors }"/>
-            <div *ngIf="form.get('personalData.mail')?.touched && form.get('personalData.mail')?.invalid"
+                   [ngClass]="{ 'is-invalid': submitted && form.get('customerData.mail')?.errors }"/>
+            <div *ngIf="form.get('customerData.mail')?.touched && form.get('customerData.mail')?.invalid"
                  class="invalid-feedback">
               Inserisci un'email valida.
-            </div>
-          </div>
-
-          <!-- Riferimento Ordine -->
-          <div class="col-12">
-            <label for="orderNumber" class="form-label">Riferimento Ordine</label>
-            <input type="text" id="orderNumber" formControlName="orderNumber" class="form-control" name="orderNumber"
-                   autocomplete="off"
-                   [ngClass]="{ 'is-invalid': submitted && form.get('personalData.orderNumber')?.errors }"/>
-            <div *ngIf="form.get('personalData.orderNumber')?.touched && form.get('personalData.orderNumber')?.invalid"
-                 class="invalid-feedback">
-              Il riferimento ordine è obbligatorio.
             </div>
           </div>
         </div>
@@ -119,27 +208,40 @@
       <!-- Product Data -->
       <div class="tab-pane fade" id="productSection" role="tabpanel">
         <div formGroupName="productData" class="row g-3 mt-1">
+          <!-- Riferimento Ordine -->
+          <div class="col-md-3">
+            <label for="orderNumber" class="form-label">Riferimento Ordine</label>
+            <input type="text" id="orderNumber" formControlName="orderNumber" class="form-control" name="orderNumber"
+                   autocomplete="off"
+                   [ngClass]="{ 'is-invalid': submitted && form.get('productData.orderNumber')?.errors }"/>
+            <div *ngIf="form.get('productData.orderNumber')?.touched && form.get('productData.orderNumber')?.invalid"
+                 class="invalid-feedback">
+              Il riferimento ordine è obbligatorio.
+            </div>
+          </div>
           <!-- Prodotto -->
           <div class="col-md-6">
             <label class="form-label">Prodotto</label>
-            <ng-select
-              [items]="collections?.product || []"
-              [searchable]="true"
-              [clearable]="true"
-              formControlName="product"
-              [class.ng-invalid]="false"
-              [ngClass]="{ 'is-invalid': submitted && form.get('productData.product')?.errors }"
-              [loading]="isCollectionsLoading"
-              placeholder="Seleziona un prodotto">
-            </ng-select>
-            <div *ngIf="form.get('productData.product')?.touched && form.get('productData.product')?.invalid"
-                 class="invalid-feedback">
-              Il prodotto è obbligatorio.
-            </div>
+            <ng-container *ngIf="form.get('productData.product') as productControl">
+              <ng-select
+                [items]="collections?.product || []"
+                [searchable]="true"
+                [clearable]="false"
+                formControlName="product"
+                [class.ng-invalid]="false"
+                [ngClass]="{ 'is-invalid is-awaiting': (submitted || productControl.touched) && productControl.invalid }"
+                [loading]="isCollectionsLoading"
+                placeholder="Seleziona un prodotto">
+              </ng-select>
+              <div *ngIf="submitted && productControl.touched && productControl.invalid"
+                   class="invalid-feedback">
+                Il prodotto è obbligatorio.
+              </div>
+            </ng-container>
           </div>
 
           <!-- Tipo Anta -->
-          <div class="col-md-6">
+          <div class="col-md-3">
             <label for="glassStopper" class="form-label">Tipo Anta</label>
             <div>
               <div class="form-check form-check-inline">
@@ -158,80 +260,88 @@
           <!-- Colore Interno -->
           <div class="col-md-3">
             <label class="form-label">Colore Interno</label>
-            <ng-select
-              [items]="collections?.internalColors || []"
-              [searchable]="true"
-              [clearable]="true"
-              formControlName="internalColor"
-              [class.ng-invalid]="false"
-              [ngClass]="{ 'is-invalid': submitted && form.get('productData.internalColor')?.errors }"
-              [loading]="isCollectionsLoading"
-              placeholder="Seleziona un colore">
-            </ng-select>
-            <div
-              *ngIf="form.get('productData.internalColor')?.touched && form.get('productData.internalColor')?.invalid"
-              class="invalid-feedback">
-              Il colore interno è obbligatorio.
-            </div>
+            <ng-container *ngIf="form.get('productData.internalColor') as internalColorControl">
+              <ng-select
+                [items]="collections?.internalColors || []"
+                [searchable]="true"
+                [clearable]="false"
+                formControlName="internalColor"
+                [class.ng-invalid]="false"
+                [ngClass]="{ 'is-invalid': (submitted || internalColorControl.touched) && internalColorControl.invalid }"
+                [loading]="isCollectionsLoading"
+                placeholder="Seleziona un colore">
+              </ng-select>
+              <div
+                *ngIf="submitted && internalColorControl.touched && internalColorControl.invalid"
+                class="invalid-feedback">
+                Il colore interno è obbligatorio.
+              </div>
+            </ng-container>
           </div>
 
           <!-- Colore Esterno -->
           <div class="col-md-3">
             <label class="form-label">Colore Esterno</label>
-            <ng-select
-              [items]="collections?.externalColors || []"
-              [searchable]="true"
-              [clearable]="true"
-              formControlName="externalColor"
-              [class.ng-invalid]="false"
-              [ngClass]="{ 'is-invalid': submitted && form.get('productData.externalColor')?.errors }"
-              [loading]="isCollectionsLoading"
-              placeholder="Seleziona un colore">
-            </ng-select>
-            <div
-              *ngIf="form.get('productData.externalColor')?.touched && form.get('productData.externalColor')?.invalid"
-              class="invalid-feedback">
-              Il colore esterno è obbligatorio.
-            </div>
+            <ng-container *ngIf="form.get('productData.externalColor') as externalColorControl">
+              <ng-select
+                [items]="collections?.externalColors || []"
+                [searchable]="true"
+                [clearable]="false"
+                formControlName="externalColor"
+                [class.ng-invalid]="false"
+                [ngClass]="{ 'is-invalid': (submitted || externalColorControl.touched) && externalColorControl.invalid }"
+                [loading]="isCollectionsLoading"
+                placeholder="Seleziona un colore">
+              </ng-select>
+              <div
+                *ngIf="submitted && externalColorControl.touched && externalColorControl.invalid"
+                class="invalid-feedback">
+                Il colore esterno è obbligatorio.
+              </div>
+            </ng-container>
           </div>
 
           <!-- Colore Accessori -->
           <div class="col-md-3">
             <label class="form-label">Colore Accessori</label>
-            <ng-select
-              [items]="collections?.accessoryColors || []"
-              [searchable]="true"
-              [clearable]="true"
-              formControlName="accessoryColor"
-              [class.ng-invalid]="false"
-              [ngClass]="{ 'is-invalid': submitted && form.get('productData.accessoryColor')?.errors }"
-              [loading]="isCollectionsLoading"
-              placeholder="Seleziona un colore">
-            </ng-select>
-            <div
-              *ngIf="form.get('productData.accessoryColor')?.touched && form.get('productData.accessoryColor')?.invalid"
-              class="invalid-feedback">
-              Il colore degli accessori è obbligatorio.
-            </div>
+            <ng-container *ngIf="form.get('productData.accessoryColor') as accessoryColorControl">
+              <ng-select
+                [items]="collections?.accessoryColors || []"
+                [searchable]="true"
+                [clearable]="false"
+                formControlName="accessoryColor"
+                [class.ng-invalid]="false"
+                [ngClass]="{ 'is-invalid': (submitted || accessoryColorControl.touched) && accessoryColorControl.invalid }"
+                [loading]="isCollectionsLoading"
+                placeholder="Seleziona un colore">
+              </ng-select>
+              <div
+                *ngIf="submitted && accessoryColorControl.touched && accessoryColorControl.invalid"
+                class="invalid-feedback">
+                Il colore degli accessori è obbligatorio.
+              </div>
+            </ng-container>
           </div>
 
           <!-- Zona Climatica -->
           <div class="col-md-3">
             <label class="form-label">Zona Climatica</label>
-            <ng-select
-              [items]="collections?.climateZones || []"
-              [searchable]="true"
-              [clearable]="true"
-              formControlName="climateZone"
-              [class.ng-invalid]="false"
-              [ngClass]="{ 'is-invalid': submitted && form.get('productData.climateZone')?.errors }"
-              [loading]="isCollectionsLoading"
-              placeholder="Seleziona una zona">
-            </ng-select>
-            <div *ngIf="form.get('productData.climateZone')?.touched && form.get('productData.climateZone')?.invalid"
-                 class="invalid-feedback">
-              La zona climatica è obbligatoria.
-            </div>
+            <ng-container *ngIf="form.get('productData.climateZone') as climateZoneControl">
+              <ng-select
+                [items]="collections?.climateZones || []"
+                [searchable]="true"
+                [clearable]="false"
+                formControlName="climateZone"
+                [class.ng-invalid]="false"
+                [ngClass]="{ 'is-invalid': (submitted || climateZoneControl.touched) && climateZoneControl.invalid }"
+                [loading]="isCollectionsLoading"
+                placeholder="Seleziona una zona">
+              </ng-select>
+              <div *ngIf="submitted && climateZoneControl.touched && climateZoneControl.invalid"
+                   class="invalid-feedback">
+                La zona climatica è obbligatoria.
+              </div>
+            </ng-container>
           </div>
 
           <!-- Note -->
