@@ -34,4 +34,10 @@ jobs:
             echo ${{ secrets.HOST_PWD }} | sudo -S docker pull supix/innovaprev_rp:latest
             echo ${{ secrets.HOST_PWD }} | sudo -S docker network inspect be_nw >/dev/null 2>&1 || echo ${{ secrets.HOST_PWD }} | sudo -S docker network create be_nw
             echo ${{ secrets.HOST_PWD }} | sudo -S docker network inspect fe_nw >/dev/null 2>&1 || echo ${{ secrets.HOST_PWD }} | sudo -S docker network create fe_nw
-            echo ${{ secrets.HOST_PWD }} | sudo -S docker run -d --network=be_nw --network=fe_nw --name=rp --restart=unless-stopped -v ./certs/cert.pem:/etc/ssl/certs/cert.pem supix/innovaprev_rp:latest
+            echo ${{ secrets.HOST_PWD }} | sudo -S docker run -d \
+              --network=be_nw --network=fe_nw \
+              --name=rp \
+              --restart=unless-stopped \
+              -v ./certs/cert.pem:/etc/ssl/certs/cert.pem \
+              -p 80:80 -p 443:443
+              supix/innovaprev_rp:latest
