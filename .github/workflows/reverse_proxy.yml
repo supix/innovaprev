@@ -39,5 +39,5 @@ jobs:
               --name=rp \
               --restart=unless-stopped \
               -v ./certs/cert.pem:/etc/ssl/certs/cert.pem \
-              -p 80:80 -p 443:443
+              -p 80:80 -p 443:443 \
               supix/innovaprev_rp:latest
