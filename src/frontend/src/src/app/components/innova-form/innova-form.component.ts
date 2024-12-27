@@ -17,7 +17,12 @@ import {
   tap
 } from 'rxjs';
 import {PriceDisplayComponent} from '../price-display/price-display.component';
-import {minNumber, phoneNumberValidator} from '../../validators/innova.validator';
+import {
+  bankCoordinatesValidator,
+  italianVatValidator,
+  minNumber,
+  phoneNumberValidator
+} from '../../validators/innova.validator';
 import {catchError} from 'rxjs/operators';
 import CryptoJS from 'crypto-js';
 
@@ -59,18 +64,18 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
       supplierData: this.fb.group({
         companyName: ['', Validators.required],
         address: [''],
-        taxCode: [''],
+        taxCode: ['', italianVatValidator()],
         phone: ['', phoneNumberValidator(false)],
         mail: ['', [Validators.email]],
-        iban: [''],
+        iban: ['', bankCoordinatesValidator()],
       }),
       customerData: this.fb.group({
         companyName: ['', Validators.required],
         address: [''],
-        taxCode: [''],
+        taxCode: ['', italianVatValidator()],
         phone: ['', phoneNumberValidator(false)],
         mail: ['', [Validators.email]],
-        iban: [''],
+        iban: ['', bankCoordinatesValidator()],
       }),
       productData: this.fb.group({
         orderNumber: [''],

@@ -81,7 +81,7 @@
                    [ngClass]="{ 'is-invalid': submitted && form.get('supplierData.iban')?.errors }"/>
             <div *ngIf="form.get('supplierData.iban')?.touched && form.get('supplierData.iban')?.invalid"
                  class="invalid-feedback">
-              Le coordinate bancarie sono obbligatorie.
+              {{ form.get('supplierData.iban')?.getError('bankCoordinates')?.reason }}
             </div>
           </div>
 
@@ -161,7 +161,7 @@
                    [ngClass]="{ 'is-invalid': submitted && form.get('customerData.iban')?.errors }"/>
             <div *ngIf="form.get('customerData.iban')?.touched && form.get('customerData.iban')?.invalid"
                  class="invalid-feedback">
-              Le coordinate bancarie sono obbligatorie.
+              {{ form.get('customerData.iban')?.getError('bankCoordinates')?.reason }}
             </div>
           </div>
 
