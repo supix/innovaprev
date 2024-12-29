@@ -128,9 +128,9 @@ namespace PdfQuote
                     .Padding(2)
                     .Column(c =>
                     {
-                        c.Item().Text($"Imponibile: {priceInfo.Total:n}€").AlignRight();
-                        c.Item().Text($"Imposta: {priceInfo.Tax:n}€").AlignRight();
-                        c.Item().Text($"TOTALE: {priceInfo.GrandTotal:n}€").FontSize(14).Bold().AlignRight();
+                        c.Item().Text($"Imponibile: {priceInfo.Total:c}").AlignRight();
+                        c.Item().Text($"Imposta: {priceInfo.Tax:c}").AlignRight();
+                        c.Item().Text($"TOTALE: {priceInfo.GrandTotal:c}").FontSize(14).Bold().AlignRight();
                     });
             });
         }
