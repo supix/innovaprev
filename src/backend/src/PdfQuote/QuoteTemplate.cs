@@ -105,7 +105,7 @@ namespace PdfQuote
                     });
 
                     if (!string.IsNullOrWhiteSpace(pd.Notes))
-                        c.Item().PaddingTop(10).Text($"Note: {pd.Notes}");
+                        c.Item().PaddingTop(10).Text($"Note: {pd.Notes}").FontSize(9);
                 });
 
                 // Measures
