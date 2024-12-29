@@ -15,29 +15,30 @@ namespace DomainModel.Services.CollectionsProvider
             {
                 Product = new[]
                 {
-                    new CollectionItem() { Id = "PRO_GIALLO", Desc = "Giallo" },
-                    new CollectionItem() { Id = "PRO_VERDE", Desc = "Verde" },
-                    new CollectionItem() { Id = "PRO_ROSSO", Desc = "Rosso" },
+                    new CollectionItem() { Id = "P_F2A", Desc = "Finestra a due ante" },
+                    new CollectionItem() { Id = "P_PF2A", Desc = "Porta finestra a due ante" },
+                    new CollectionItem() { Id = "P_F1A", Desc = "Finestra a una anta" },
+                    new CollectionItem() { Id = "P_PF1A", Desc = "Porta finestra a una anta" },
                 },
                 InternalColors = new[] {
-                    new CollectionItem() { Id = "IC_GIALLO", Desc = "Giallo" },
-                    new CollectionItem() { Id = "IC_VERDE", Desc = "Verde" },
-                    new CollectionItem() { Id = "IC_ROSSO", Desc = "Rosso" },
+                    new CollectionItem() { Id = "IC_G", Desc = "Giallo" },
+                    new CollectionItem() { Id = "IC_V", Desc = "Verde" },
+                    new CollectionItem() { Id = "IC_R", Desc = "Rosso" },
                 },
                 ExternalColors = new[] {
-                    new CollectionItem() { Id = "EC_GIALLO", Desc = "Giallo" },
-                    new CollectionItem() { Id = "EC_VERDE", Desc = "Verde" },
-                    new CollectionItem() { Id = "EC_ROSSO", Desc = "Rosso" },
+                    new CollectionItem() { Id = "EC_G", Desc = "Giallo" },
+                    new CollectionItem() { Id = "EC_V", Desc = "Verde" },
+                    new CollectionItem() { Id = "EC_R", Desc = "Rosso" },
                 },
                 AccessoryColors = new[] {
-                    new CollectionItem() { Id = "AC_GIALLO", Desc = "Giallo" },
-                    new CollectionItem() { Id = "AC_VERDE", Desc = "Verde" },
-                    new CollectionItem() { Id = "AC_ROSSO", Desc = "Rosso" },
+                    new CollectionItem() { Id = "AC_G", Desc = "Giallo" },
+                    new CollectionItem() { Id = "AC_V", Desc = "Verde" },
+                    new CollectionItem() { Id = "AC_R", Desc = "Rosso" },
                 },
                 ClimateZones = new[] {
-                    new CollectionItem() { Id = "CZ_GIALLO", Desc = "Giallo" },
-                    new CollectionItem() { Id = "CZ_VERDE", Desc = "Verde" },
-                    new CollectionItem() { Id = "CZ_ROSSO", Desc = "Rosso" },
+                    new CollectionItem() { Id = "CZ_F", Desc = "Fredda" },
+                    new CollectionItem() { Id = "CZ_M", Desc = "Mite" },
+                    new CollectionItem() { Id = "CZ_C", Desc = "Calda" },
                 },
                 WindowTypes = new[] {
                     new CollectionItem() { Id = "FIX", Desc = "Fisso con fermavetro" },
@@ -73,9 +74,9 @@ namespace DomainModel.Services.CollectionsProvider
                     new CollectionItem() { Id = "GT_AZZURRATO", Desc = "Azzurrato" },
                 },
                 Crosspieces = new[] {
-                    new CollectionItem() { Id = "CRO_ALTA", Desc = "Alta" },
-                    new CollectionItem() { Id = "CRO_MEDIA", Desc = "Media" },
-                    new CollectionItem() { Id = "CRO_BASSA", Desc = "Bassa" },
+                    new CollectionItem() { Id = "CR_A", Desc = "Alta" },
+                    new CollectionItem() { Id = "CR_M", Desc = "Media" },
+                    new CollectionItem() { Id = "CR_B", Desc = "Bassa" },
                 },
             };
         }
