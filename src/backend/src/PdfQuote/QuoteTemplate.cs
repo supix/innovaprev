@@ -47,9 +47,13 @@ namespace PdfQuote
                 
                 row.RelativeItem().Column(column =>
                 {
-                    column.Item()
-                        .Text($"Preventivo #{this.project.ProductData.OrderNumber}")
-                        .FontSize(12).SemiBold().FontColor(Colors.Black);
+                    column.Item().DefaultTextStyle(x => x.FontSize(12).SemiBold().FontColor(Colors.Black))
+                        .Text(x =>
+                        {
+                            x.Span("Preventivo");
+                            if (!string.IsNullOrWhiteSpace(this.project.ProductData.OrderNumber))
+                                x.Span($" #{this.project.ProductData.OrderNumber}");
+                        });
 
                     column.Item().Text(text =>
                     {
