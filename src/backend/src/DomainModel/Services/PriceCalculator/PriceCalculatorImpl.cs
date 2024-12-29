@@ -7,18 +7,9 @@ using DomainModel.Classes;
 
 namespace DomainModel.Services.PriceCalculator
 {
-    public class PriceCalculator
+    internal class PriceCalculatorImpl : IPriceCalculator
     {
-        private readonly ProductData productData;
-        private readonly WindowsData[] windowsData;
-
-        public PriceCalculator(ProductData productData, WindowsData[] windowsData)
-        {
-            this.productData = productData ?? throw new ArgumentNullException(nameof(productData));
-            this.windowsData = windowsData ?? throw new ArgumentNullException(nameof(windowsData));
-        }
-
-        public PriceInfo getPrices()
+        public PriceInfo getPrices(ProductData productData, WindowsData[] windowsData)
         {
             var price = new PriceInfo
             {
@@ -26,7 +17,7 @@ namespace DomainModel.Services.PriceCalculator
                 DetailPrices = new List<DetailPrice>()
             };
 
-            return this.windowsData.Aggregate(price, (Func<PriceInfo, WindowsData, PriceInfo>)((acc, x) =>
+            return windowsData.Aggregate(price, (Func<PriceInfo, WindowsData, PriceInfo>)((acc, x) =>
             {
                 const int sqm_price = 985;
                 var area_sqm = decimal.Divide(x.Height * x.Width, 1e6M);

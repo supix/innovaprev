@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DomainModel", "DomainModel\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PdfQuote", "PdfQuote\PdfQuote.csproj", "{F419C287-A8D7-420B-9C5A-41A3755A8CC3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CompositionRoot", "CompositionRoot\CompositionRoot.csproj", "{1E2084AD-1442-4CA0-AFA2-7CB0B53EA1CF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{F419C287-A8D7-420B-9C5A-41A3755A8CC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F419C287-A8D7-420B-9C5A-41A3755A8CC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F419C287-A8D7-420B-9C5A-41A3755A8CC3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1E2084AD-1442-4CA0-AFA2-7CB0B53EA1CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E2084AD-1442-4CA0-AFA2-7CB0B53EA1CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E2084AD-1442-4CA0-AFA2-7CB0B53EA1CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E2084AD-1442-4CA0-AFA2-7CB0B53EA1CF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

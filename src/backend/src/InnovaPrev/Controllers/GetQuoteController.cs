@@ -8,13 +8,18 @@ namespace InnovaPrev.Controllers
     [ApiController]
     public class GetQuoteController : ControllerBase
     {
+        private readonly IPriceCalculator priceCalculator;
+
+        public GetQuoteController(IPriceCalculator priceCalculator)
+        {
+            this.priceCalculator = priceCalculator ?? throw new ArgumentNullException(nameof(priceCalculator));
+        }
+
         // POST api/<GetQuoteController>
         [HttpPost]
         public GetQuoteOutputDto Post([FromBody] Dto dto)
         {
-            var priceCalculator = new PriceCalculator(dto.ProductData, dto.WindowsData);
-
-            PriceInfo prices = priceCalculator.getPrices();
+            PriceInfo prices = priceCalculator.getPrices(dto.ProductData, dto.WindowsData);
             return new GetQuoteOutputDto()
             {
                 Quotation = new Quotation()

@@ -1,4 +1,5 @@
 ﻿using DomainModel.Classes;
+using DomainModel.Services;
 using Microsoft.AspNetCore.Mvc;
 using PdfQuote;
 
@@ -8,12 +9,18 @@ namespace InnovaPrev.Controllers
     [ApiController]
     public class PdfController : ControllerBase
     {
+        private readonly IPdfReportGenerator pdfReportGenerator;
+
+        public PdfController(IPdfReportGenerator pdfReportGenerator)
+        {
+            this.pdfReportGenerator = pdfReportGenerator ?? throw new ArgumentNullException(nameof(pdfReportGenerator));
+        }
+
         // POST api/<PdfController>
         [HttpPost]
         public IActionResult Post([FromBody] Project project)
         {
-            var pdfGenerator = new Generator();
-            var buffer = pdfGenerator.Generate(project);
+            var buffer = this.pdfReportGenerator.Generate(project);
             var streamResult = new MemoryStream(buffer);
             return File(streamResult, "application/pdf", $"preventivo{ DateTime.Now.ToString("_yyyyMMdd_HHmmss") }.pdf");
         }
