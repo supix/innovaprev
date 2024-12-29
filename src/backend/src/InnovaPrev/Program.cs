@@ -1,4 +1,7 @@
+using Microsoft.AspNetCore.Localization;
+using System.Globalization;
 using SimpleInjector;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +11,19 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddLocalization();
+builder.Services.Configure<RequestLocalizationOptions>(
+    options =>
+    {
+        var supportedCultures = new List<CultureInfo>
+        {
+            new CultureInfo("it-IT"),
+        };
+
+        options.DefaultRequestCulture = new RequestCulture(culture: "it-IT", uiCulture: "it-IT");
+        options.SupportedCultures = supportedCultures;
+        options.SupportedUICultures = supportedCultures;
+    });
 
 // Sets up the basic configuration that for integrating Simple Injector with
 // ASP.NET Core by setting the DefaultScopedLifestyle, and setting up auto
@@ -45,6 +61,9 @@ if (app.Environment.IsDevelopment())
 app.UseAuthorization();
 
 app.MapControllers();
+
+var localizeOptions = app.Services.GetService<IOptions<RequestLocalizationOptions>>();
+app.UseRequestLocalization(localizeOptions.Value);
 
 // Always verify the container
 container.Verify();
