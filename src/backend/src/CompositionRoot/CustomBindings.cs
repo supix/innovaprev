@@ -1,4 +1,5 @@
 ﻿using DomainModel.Services;
+using DomainModel.Services.CollectionsProvider;
 using DomainModel.Services.PriceCalculator;
 using PdfQuote;
 using SimpleInjector;
@@ -11,6 +12,7 @@ namespace CompositionRoot
         {
             container.Register<IPdfReportGenerator, Generator>();
             container.Register<IPriceCalculator, PriceCalculatorImpl>();
+            container.Register<ICollectionProvider, CollectionProviderImpl>();
         }
     }
 }
