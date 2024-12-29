@@ -1,5 +1,6 @@
 ﻿using System;
 using DomainModel.Classes;
+using DomainModel.Services.CollectionsProvider;
 using DomainModel.Services.PriceCalculator;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
@@ -11,11 +12,13 @@ namespace PdfQuote
     {
         private readonly Project project;
         private readonly PriceInfo priceInfo;
+        private readonly ICollectionProvider collectionProvider;
 
-        public QuoteTemplate(Project project, PriceInfo priceInfo)
+        public QuoteTemplate(Project project, PriceInfo priceInfo, ICollectionProvider collectionProvider)
         {
             this.project = project ?? throw new ArgumentNullException(nameof(project));
             this.priceInfo = priceInfo ?? throw new ArgumentNullException(nameof(priceInfo));
+            this.collectionProvider = collectionProvider ?? throw new ArgumentNullException(nameof(collectionProvider));
         }
         public void Compose(IDocumentContainer container)
         {
@@ -66,6 +69,7 @@ namespace PdfQuote
 
         private void ComposeContent(IContainer container)
         {
+            var coll = this.collectionProvider.Get();
             container.PaddingVertical(10).Column(column =>
             {
                 column.Spacing(5);
@@ -82,7 +86,7 @@ namespace PdfQuote
                 // Product
                 var pd = this.project.ProductData;
                 column.Item().Background(Colors.Grey.Lighten4).Padding(5).Column(c => {
-                    c.Item().PaddingBottom(10).Text(pd.Product).FontSize(14).AlignCenter();
+                    c.Item().PaddingBottom(10).Text(coll.Product.Single(p => p.Id == pd.Product).Desc).FontSize(14).AlignCenter();
                     c.Item().DefaultTextStyle(x => x.FontSize(9)).Row(row =>
                     {
                         row.RelativeItem(1).Column(c =>
@@ -93,11 +97,11 @@ namespace PdfQuote
                         });
                         row.RelativeItem(1).Column(c => {
                             c.Item().Text($"Colore");
-                            c.Item().PaddingLeft(5).Text($"Interno: {pd.InternalColor}");
-                            c.Item().PaddingLeft(5).Text($"Esterno: {pd.ExternalColor}");
-                            c.Item().PaddingLeft(5).Text($"Accessori: {pd.AccessoryColor}");
+                            c.Item().PaddingLeft(5).Text($"Interno: {coll.InternalColors.Single(ic => ic.Id == pd.InternalColor).Desc}");
+                            c.Item().PaddingLeft(5).Text($"Esterno: {coll.ExternalColors.Single(ec => ec.Id == pd.ExternalColor).Desc}");
+                            c.Item().PaddingLeft(5).Text($"Accessori: {coll.AccessoryColors.Single(ac => ac.Id == pd.AccessoryColor).Desc}");
                         });
-                        row.RelativeItem(1).AlignRight().Text($"Zona climatica: {pd.ClimateZone}");
+                        row.RelativeItem(1).AlignRight().Text($"Zona climatica: {coll.ClimateZones.Single(cz => cz.Id == pd.ClimateZone).Desc}");
                     });
 
                     if (!string.IsNullOrWhiteSpace(pd.Notes))
@@ -114,7 +118,7 @@ namespace PdfQuote
                         .PaddingBottom(3)
                         .BorderBottom(1)
                         .BorderColor(Colors.Grey.Lighten2)
-                        .Component(new ArticleComponent(++idx, wd, detailPrice));
+                        .Component(new ArticleComponent(++idx, wd, detailPrice, collectionProvider));
                 }
 
                 // Total

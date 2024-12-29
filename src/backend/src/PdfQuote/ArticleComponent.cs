@@ -1,4 +1,5 @@
 ﻿using DomainModel.Classes;
+using DomainModel.Services.CollectionsProvider;
 using DomainModel.Services.PriceCalculator;
 using QuestPDF.Fluent;
 using QuestPDF.Infrastructure;
@@ -9,17 +10,20 @@ namespace PdfQuote
     {
         private readonly int index;
         private readonly DetailPrice detailPrice;
+        private readonly ICollectionProvider collectionProvider;
         private readonly WindowsData windowsData;
 
-        public ArticleComponent(int index, WindowsData windowsData, DetailPrice detailPrice)
+        public ArticleComponent(int index, WindowsData windowsData, DetailPrice detailPrice, ICollectionProvider collectionProvider)
         {
             this.index = index;
             this.windowsData = windowsData ?? throw new ArgumentNullException(nameof(windowsData));
             this.detailPrice = detailPrice ?? throw new ArgumentNullException(nameof(detailPrice));
+            this.collectionProvider = collectionProvider ?? throw new ArgumentNullException(nameof(collectionProvider));
         }
 
         public void Compose(IContainer container)
         {
+            var coll = this.collectionProvider.Get();
             container.Column(c =>
             {
                 // Lengths
@@ -39,10 +43,10 @@ namespace PdfQuote
                 c.Item().DefaultTextStyle(x => x.FontSize(8)).Row(r =>
                 {
                     r.ConstantItem(25).Text(string.Empty);
-                    r.RelativeItem(3).Text($"Tipologia: {this.windowsData.WindowType}");
-                    r.RelativeItem(3).Text($"Apertura (vista interna): {this.windowsData.OpeningType}");
-                    r.RelativeItem(2).Text($"Vetro: {this.windowsData.GlassType}");
-                    r.RelativeItem(2).AlignRight().Text($"Traverso: {this.windowsData.Crosspiece}");
+                    r.RelativeItem(6).Text($"Tipol.: {coll.WindowTypes.Single(wt => wt.Id == this.windowsData.WindowType).Desc}");
+                    r.RelativeItem(3).Text($"Apert. (vista interna): {coll.OpeningTypes.Single(ot => ot.Id == this.windowsData.OpeningType).Desc}");
+                    r.RelativeItem(2).Text($"Vetro: {coll.GlassTypes.Single(gt => gt.Id == this.windowsData.GlassType).Desc}");
+                    r.RelativeItem(2).AlignRight().Text($"Trav.: {coll.Crosspieces.Single(cp => cp.Id == this.windowsData.Crosspiece).Desc}");
                 });
 
                 // Prices
