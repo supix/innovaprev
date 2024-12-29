@@ -79,7 +79,7 @@ namespace PdfQuote
                 var pd = this.project.ProductData;
                 column.Item().Background(Colors.Grey.Lighten4).Padding(5).Column(c => {
                     c.Item().PaddingBottom(10).Text(pd.Product).FontSize(14).AlignCenter();
-                    c.Item().Row(row =>
+                    c.Item().DefaultTextStyle(x => x.FontSize(9)).Row(row =>
                     {
                         row.RelativeItem(1).Column(c =>
                         {
@@ -106,7 +106,11 @@ namespace PdfQuote
                 foreach (var wd in this.project.WindowsData)
                 {
                     var detailPrice = priceInfo.DetailPrices[idx];
-                    column.Item().PaddingBottom(3).Component(new ArticleComponent(++idx, wd, detailPrice));
+                    column.Item()
+                        .PaddingBottom(3)
+                        .BorderBottom(1)
+                        .BorderColor(Colors.Grey.Lighten2)
+                        .Component(new ArticleComponent(++idx, wd, detailPrice));
                 }
 
                 // Total
