@@ -3,12 +3,12 @@ name: Build, publish and deploy backend
 on:
   workflow_dispatch:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "qa" ]
     paths:
       - 'src/backend/src/**'
       - 'src/backend/docker/'
   pull_request:
-    branches: [ "main" ]
+    branches: [ "main", "qa" ]
     paths:
       - 'src/backend/src/**'
       - 'src/backend/docker/'
@@ -37,12 +37,14 @@ jobs:
           docker push supix/innovaprev_be:latest
       - name: Pull newly published image and restart the container
         uses: appleboy/ssh-action@v1.2.0
+        env:
+          BE_CNT_NAME: ${{ github.ref_name == 'qa' && 'be_qa' || 'be_prod' }}
         with:
           host: ${{ secrets.HOST_ADDR }}
           username: ${{ secrets.HOST_USER }}
           key: ${{ secrets.HOST_KEY }}
           script: |
-            echo ${{ secrets.HOST_PWD }} | sudo -S docker rm -f be
+            echo ${{ secrets.HOST_PWD }} | sudo -S docker rm -f ${{ env.BE_CNT_NAME }}
             echo ${{ secrets.HOST_PWD }} | sudo -S docker pull supix/innovaprev_be:latest
             echo ${{ secrets.HOST_PWD }} | sudo -S docker network inspect be_nw >/dev/null 2>&1 || echo ${{ secrets.HOST_PWD }} | docker network create be_nw
-            echo ${{ secrets.HOST_PWD }} | sudo -S docker run -d --network=be_nw --name=be --restart=unless-stopped supix/innovaprev_be:latest
+            echo ${{ secrets.HOST_PWD }} | sudo -S docker run -d --network=be_nw --name=${{ env.BE_CNT_NAME }} --restart=unless-stopped supix/innovaprev_be:latest
