@@ -1,12 +1,8 @@
 <div *ngIf="!isPriceNull" class="price-display badge">
-  <div class="main-price">
-    {{ formattedIntegerPart }}
-    <span class="price-decimals">,{{ formattedDecimalPart }} €</span>
-  </div>
   <div class="side-details">
     <div class="labels-column">
-      <div class="detail-item">(prezzo netto)</div>
-      <div class="detail-item">(di cui IVA 22%)</div>
+      <div class="detail-item">Imponibile</div>
+      <div class="detail-item">Imposta</div>
     </div>
     <div class="details-column">
       <div class="detail-item">
@@ -18,6 +14,10 @@
         <span class="price-decimals">,{{ formattedTaxDecimalPart }} €</span>
       </div>
     </div>
+  </div>
+  <div class="main-price">
+    {{ formattedIntegerPart }}
+    <span class="price-decimals">,{{ formattedDecimalPart }} €</span>
   </div>
 </div>
 <div *ngIf="isPriceNull" class="price-display badge">Prezzo: -</div>
