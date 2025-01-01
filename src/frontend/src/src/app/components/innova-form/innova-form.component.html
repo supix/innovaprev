@@ -552,6 +552,11 @@
     </div>
   </form>
 </div>
+<div *ngIf="showFillFormButton" class="row">
+  <div class="col-12 text-center">
+    <button class="btn btn-outline-secondary mt-3" (click)="fillForm()">Fill Form</button>
+  </div>
+</div>
 <ng-template #positionInput let-tableLg="tableLg" let-form="form" let-i="index">
   <ng-container [formGroup]="form">
     <input type="text" inputmode="numeric" formControlName="position" class="form-control" autocomplete="off"

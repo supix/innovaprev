@@ -3,7 +3,14 @@ import {AbstractControl, FormArray, FormBuilder, FormGroup, ReactiveFormsModule,
 import {CommonModule} from '@angular/common';
 import {NgSelectConfig, NgSelectModule} from '@ng-select/ng-select';
 import {ApiService} from '../../services/api.service';
-import {BillingPayload, CollectionsResponse, PricePayload, Quotation, WindowsPayload} from '../../models';
+import {
+  BillingPayload,
+  CollectionBaseItem,
+  CollectionsResponse,
+  PricePayload,
+  Quotation,
+  WindowsPayload
+} from '../../models';
 import {
   combineLatest,
   debounceTime,
@@ -18,13 +25,14 @@ import {
 } from 'rxjs';
 import {PriceDisplayComponent} from '../price-display/price-display.component';
 import {
-  bankCoordinatesValidator,
+  bankCoordinatesValidator, generateValidItalianVat,
   italianVatValidator,
   minNumber,
   phoneNumberValidator
 } from '../../validators/innova.validator';
 import {catchError} from 'rxjs/operators';
 import CryptoJS from 'crypto-js';
+import {environment} from '../../../environments/environment';
 
 @Component({
   selector: 'app-innova-form',
@@ -51,6 +59,18 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
 
   currentTab: TabNames = TabNames.supplier;
   tabNames = TabNames;
+
+  maxValues: { [key: string]: number } = {
+    height: 5000,
+    width: 5000,
+    quantity: 500,
+    leftTrim: 500,
+    rightTrim: 500,
+    upperTrim: 500,
+    belowThreshold: 500
+  };
+
+  showFillFormButton = false;
 
   private calculatePriceSubject = new Subject<PricePayload | null>();
   private previousPayloadHash: string | null = null;
@@ -80,8 +100,8 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
       productData: this.fb.group({
         orderNumber: [''],
         product: [null, Validators.required],
-        glassStopper: [false],
-        windowSlide: [false],
+        glassStopper: [null],
+        windowSlide: [null],
         internalColor: [null, Validators.required],
         externalColor: [null, Validators.required],
         accessoryColor: [null, Validators.required],
@@ -103,6 +123,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
     ).subscribe(collections => this.collections = collections);
     this.setupPriceCalculationSubscription();
     this.subscribeToFormChanges();
+    this.showFillFormButton = this.determineShowFillFormButton();
   }
 
   ngAfterViewInit(): void {
@@ -253,17 +274,9 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
 
   // Handler to have limits on some form inputs
   onMaxQuantity(event: Event, controlName: string): void {
-    const maxValues: { [key: string]: number } = {
-      height: 5000,
-      width: 5000,
-      quantity: 500,
-      leftTrim: 500,
-      rightTrim: 500,
-      upperTrim: 500,
-      belowThreshold: 500
-    };
 
-    const max: number = maxValues[controlName];
+
+    const max: number = this.maxValues[controlName];
     if (max === undefined) {
       return; // Exit if no max value is defined for the control
     }
@@ -296,6 +309,82 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
       }, 0);
     }
   }
+
+  fillForm(): void {
+    const currentFormValue = this.form.value;
+
+    // Helper function to pick a random item from an array
+    const getRandomItem = <T extends CollectionBaseItem>(items: T[]): string | null => {
+      return items.length > 0 ? items[Math.floor(Math.random() * items.length)].id : null;
+    };
+
+    // Helper function to generate a random number within a range
+    const getRandomNumber = (max: number, min: number = 1): number => Math.max(min, Math.floor(Math.random() * max));
+
+    // Filter out invalid windows
+    const validWindows = this.windows.controls.filter(control => control.valid);
+    while (this.windows.length > 0) {
+      this.windows.removeAt(0);
+    }
+
+    // Add back only the valid windows
+    validWindows.forEach(validControl => this.windows.push(validControl));
+
+    // Add 5 new windows to windowsData
+    for (let i = 0; i < 5; i++) {
+      this.windows.push(
+        this.fb.group({
+          position: [this.windows.length], // Position is the index in the array
+          height: [getRandomNumber(this.maxValues['height'], 500)],
+          width: [getRandomNumber(this.maxValues['width'], 500)],
+          quantity: [getRandomNumber(5)],
+          windowType: [getRandomItem((this.collections as CollectionsResponse).windowTypes), Validators.required],
+          openingType: [getRandomItem((this.collections as CollectionsResponse).openingTypes), Validators.required],
+          glassType: [getRandomItem((this.collections as CollectionsResponse).glassTypes), Validators.required],
+          crosspiece: [getRandomItem((this.collections as CollectionsResponse).crosspieces), Validators.required],
+          leftTrim: [getRandomNumber(20)],
+          rightTrim: [getRandomNumber(20)],
+          upperTrim: [getRandomNumber(20)],
+          belowThreshold: [getRandomNumber(20)]
+        })
+      );
+    }
+
+    // Patch other form values
+    this.form.patchValue({
+      supplierData: {
+        companyName: currentFormValue.supplierData?.companyName || 'Supplier Co.',
+        address: currentFormValue.supplierData?.address || '123 Supplier Street',
+        taxCode: currentFormValue.supplierData?.taxCode || generateValidItalianVat(),
+        phone: currentFormValue.supplierData?.phone || '391234567890',
+        mail: currentFormValue.supplierData?.mail || 'supplier@example.com',
+        iban: currentFormValue.supplierData?.iban || 'IT60X0542811101000000123456'
+      },
+      customerData: {
+        companyName: currentFormValue.customerData?.companyName || 'Customer Co.',
+        address: currentFormValue.customerData?.address || '456 Customer Road',
+        taxCode: currentFormValue.customerData?.taxCode || generateValidItalianVat(),
+        phone: currentFormValue.customerData?.phone || '399876543210',
+        mail: currentFormValue.customerData?.mail || 'customer@example.com',
+        iban: currentFormValue.customerData?.iban || 'IT70X0542811101000000654321'
+      },
+      productData: {
+        orderNumber: currentFormValue.productData?.orderNumber || 'ORD123456', // Keep this field unchanged
+        product: currentFormValue.productData?.product || getRandomItem((this.collections as CollectionsResponse).product),
+        glassStopper: currentFormValue.productData?.glassStopper ?? true,
+        windowSlide: currentFormValue.productData?.windowSlide ?? true,
+        internalColor: currentFormValue.productData?.internalColor || getRandomItem((this.collections as CollectionsResponse).internalColors),
+        externalColor: currentFormValue.productData?.externalColor || getRandomItem((this.collections as CollectionsResponse).externalColors),
+        accessoryColor: currentFormValue.productData?.accessoryColor || getRandomItem((this.collections as CollectionsResponse).accessoryColors),
+        climateZone: currentFormValue.productData?.climateZone || getRandomItem((this.collections as CollectionsResponse).climateZones),
+        notes: currentFormValue.productData?.notes || 'No special notes.', // Keep this field unchanged
+      },
+      windowsData: []
+    });
+
+    this.updatePositions();
+  }
+
 
   // Handler to calculate the price based on valid rows
   private calculatePriceHandler(): void {
@@ -461,7 +550,11 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
   // Build Data payload for API
   private buildPayload(): PricePayload {
     return {
-      productData: this.form.value.productData,
+      productData: {
+        ...this.form.value.productData,
+        glassStopper: this.form.value.productData.glassStopper ?? false,
+        windowSlide: this.form.value.productData.windowSlide ?? false
+      },
       ...this.buildWindowsPayload()
     };
   }
@@ -495,6 +588,16 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
   // Function to calculate the SHA-256 hash of the payload
   private calculateHash(payload: WindowsPayload): string {
     return CryptoJS.SHA256(JSON.stringify(payload)).toString();
+  }
+
+  private determineShowFillFormButton(): boolean {
+    const isProdEnvironment = environment.production;
+
+    if (isProdEnvironment) {
+      return (window as any).variables?.showFillFormButton ?? false;
+    } else {
+      return environment.enableFillFormButton ?? false;
+    }
   }
 
 }
