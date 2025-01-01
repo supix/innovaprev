@@ -37,4 +37,4 @@ jobs:
             echo ${{ secrets.HOST_PWD }} | sudo -S docker rm -f ${{ env.FE_CNT_NAME }}
             echo ${{ secrets.HOST_PWD }} | sudo -S docker pull supix/innovaprev_fe:latest
             echo ${{ secrets.HOST_PWD }} | sudo -S docker network inspect fe_nw >/dev/null 2>&1 || echo ${{ secrets.HOST_PWD }} | docker network create fe_nw
-            echo ${{ secrets.HOST_PWD }} | sudo -S docker run -d --network=fe_nw --name=${{ env.FE_CNT_NAME }} --restart=unless-stopped supix/innovaprev_fe:latest
+            echo ${{ secrets.HOST_PWD }} | sudo -S docker run -d --network=fe_nw --name=${{ env.FE_CNT_NAME }} -eSHOW_FILL_FORM_BUTTON=true --restart=unless-stopped supix/innovaprev_fe:latest
