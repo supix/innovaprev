@@ -298,7 +298,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
   }
 
   // Handler to calculate the price based on valid rows
-  calculatePriceHandler(): void {
+  private calculatePriceHandler(): void {
     const validRows = this.getValidWindowsData();
     if (validRows.length > 0 && this.isProductDataValid()) {
       const payload: PricePayload = this.buildPayload();
