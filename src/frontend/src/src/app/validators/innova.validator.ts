@@ -110,6 +110,28 @@ export function isValidItalianVat(vat: string): boolean {
   return sum % 10 === 0;
 }
 
+export function generateValidItalianVat(): string {
+  let vat = Array(10).fill(0).map(() => Math.floor(Math.random() * 10));
+  let sum = 0;
+
+  for (let i = 0; i < 10; i++) {
+    if (i % 2 === 0) {
+      // Even positions: add the digit as is
+      sum += vat[i];
+    } else {
+      // Odd positions: double the digit and subtract 9 if the result is >= 10
+      const doubled = vat[i] * 2;
+      sum += doubled > 9 ? doubled - 9 : doubled;
+    }
+  }
+
+  const checksum = (10 - (sum % 10)) % 10;
+  vat.push(checksum);
+
+  return vat.join('');
+}
+
+
 // Validator for phone numbers
 export function phoneNumberValidator(required: boolean = false, minLength: number = 8, maxLength: number = 15): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
