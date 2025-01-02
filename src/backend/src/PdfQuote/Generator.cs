@@ -21,7 +21,7 @@ namespace PdfQuote
         public byte[] Generate(Project project)
         {
             QuestPDF.Settings.License = LicenseType.Community;
-            var priceInfo = this.priceCalculator.getPrices(project.ProductData, project.WindowsData);
+            var priceInfo = this.priceCalculator.getPrices(project.ProductData, project.WindowsData, project.CustomData);
             var doc = new QuoteTemplate(project, priceInfo, this.collectionProvider);
             return Document.Create(container => doc.Compose(container)).GeneratePdf();
         }
