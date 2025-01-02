@@ -21,8 +21,8 @@ namespace DomainModel.Services.CollectionsProvider
                     new ProductCollectionItem() { Id = "AATT", Desc = "Armonia Alluminio TT", TrimSectionVisible = false },
                     new ProductCollectionItem() { Id = "AALAM", Desc = "Armonia Alluminio/Legno anta max", TrimSectionVisible = false },
                     new ProductCollectionItem() { Id = "SALTT", Desc = "Scorrevole Alluminio/Legno TT", TrimSectionVisible = false },
-                    new ProductCollectionItem() { Id = "IPA", Desc = "Innova PVC/A", TrimSectionVisible = true },
-                    new ProductCollectionItem() { Id = "IPAAM", Desc = "Innova PVC/A Anta Max", TrimSectionVisible = true },
+                    new ProductCollectionItem() { Id = "IPC", Desc = "Innova PVC/A Classic", TrimSectionVisible = true },
+                    new ProductCollectionItem() { Id = "IPN", Desc = "Innova PVC/A New", TrimSectionVisible = true },
                     new ProductCollectionItem() { Id = "SP", Desc = "Scorrevole PVC", TrimSectionVisible = false },
                 },
                 InternalColors = new[] {
@@ -79,7 +79,6 @@ namespace DomainModel.Services.CollectionsProvider
                 GlassTypes = new[] {
                     new CollectionItem() { Id = "GT_TRASPARENTE", Desc = "Trasparente" },
                     new CollectionItem() { Id = "GT_OPACO", Desc = "Opaco" },
-                    new CollectionItem() { Id = "GT_AZZURRATO", Desc = "Azzurrato" },
                 },
                 Crosspieces = new[] {
                     new CollectionItem() { Id = "CR_A", Desc = "Alta" },
