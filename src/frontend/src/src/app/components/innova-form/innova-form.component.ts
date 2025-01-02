@@ -332,22 +332,23 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
 
     // Add 5 new windows to windowsData
     for (let i = 0; i < 5; i++) {
-      this.windows.push(
-        this.fb.group({
-          position: [this.windows.length], // Position is the index in the array
-          height: [getRandomNumber(this.maxValues['height'], 500)],
-          width: [getRandomNumber(this.maxValues['width'], 500)],
-          quantity: [getRandomNumber(5)],
-          windowType: [getRandomItem((this.collections as CollectionsResponse).windowTypes), Validators.required],
-          openingType: [getRandomItem((this.collections as CollectionsResponse).openingTypes), Validators.required],
-          glassType: [getRandomItem((this.collections as CollectionsResponse).glassTypes), Validators.required],
-          crosspiece: [getRandomItem((this.collections as CollectionsResponse).crosspieces), Validators.required],
-          leftTrim: [getRandomNumber(20)],
-          rightTrim: [getRandomNumber(20)],
-          upperTrim: [getRandomNumber(20)],
-          belowThreshold: [getRandomNumber(20)]
-        })
-      );
+      const row = this.fb.group({
+        position: [this.windows.length], // Position is the index in the array
+        height: [getRandomNumber(this.maxValues['height'], 500)],
+        width: [getRandomNumber(this.maxValues['width'], 500)],
+        quantity: [getRandomNumber(5)],
+        windowType: [getRandomItem((this.collections as CollectionsResponse).windowTypes), Validators.required],
+        openingType: [getRandomItem((this.collections as CollectionsResponse).openingTypes), Validators.required],
+        glassType: [getRandomItem((this.collections as CollectionsResponse).glassTypes), Validators.required],
+        crosspiece: [getRandomItem((this.collections as CollectionsResponse).crosspieces), Validators.required],
+        leftTrim: [getRandomNumber(20)],
+        rightTrim: [getRandomNumber(20)],
+        upperTrim: [getRandomNumber(20)],
+        belowThreshold: [getRandomNumber(20)]
+      });
+      this.windows.push(row);
+      this.updatePositions();
+      this.subscribeToRowValueChanges(row, this.windows.length - 1);
     }
 
     // Patch other form values
@@ -378,13 +379,10 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
         accessoryColor: currentFormValue.productData?.accessoryColor || getRandomItem((this.collections as CollectionsResponse).accessoryColors),
         climateZone: currentFormValue.productData?.climateZone || getRandomItem((this.collections as CollectionsResponse).climateZones),
         notes: currentFormValue.productData?.notes || 'No special notes.', // Keep this field unchanged
-      },
-      windowsData: []
+      }
     });
 
-    this.updatePositions();
   }
-
 
   // Handler to calculate the price based on valid rows
   private calculatePriceHandler(): void {
