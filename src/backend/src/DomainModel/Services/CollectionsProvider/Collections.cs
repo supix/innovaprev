@@ -8,7 +8,7 @@ namespace DomainModel.Services.CollectionsProvider
 {
     public class Collections
     {
-        public required CollectionItem[] Product { get; set; }
+        public required ProductCollectionItem[] Product { get; set; }
         public required CollectionItem[] InternalColors { get; set; }
         public required CollectionItem[] ExternalColors { get; set; }
         public required CollectionItem[] AccessoryColors { get; set; }

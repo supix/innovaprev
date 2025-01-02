@@ -15,15 +15,15 @@ namespace DomainModel.Services.CollectionsProvider
             {
                 Product = new[]
                 {
-                    new CollectionItem() { Id = "ELA", Desc = "Emblema Legno/Alluminio" },
-                    new CollectionItem() { Id = "RALT", Desc = "Review Alluminio/Legno Termico" },
-                    new CollectionItem() { Id = "AAL", Desc = "Armonia Alluminio/Legno" },
-                    new CollectionItem() { Id = "AATT", Desc = "Armonia Alluminio TT" },
-                    new CollectionItem() { Id = "AALAM", Desc = "Armonia Alluminio/Legno anta max" },
-                    new CollectionItem() { Id = "SALTT", Desc = "Scorrevole Alluminio/Legno TT" },
-                    new CollectionItem() { Id = "IPA", Desc = "Innova PVC/A" },
-                    new CollectionItem() { Id = "IPAAM", Desc = "Innova PVC/A Anta Max" },
-                    new CollectionItem() { Id = "SP", Desc = "Scorrevole PVC" },
+                    new ProductCollectionItem() { Id = "ELA", Desc = "Emblema Legno/Alluminio", TrimSectionVisible = false },
+                    new ProductCollectionItem() { Id = "RALT", Desc = "Review Alluminio/Legno Termico", TrimSectionVisible = false },
+                    new ProductCollectionItem() { Id = "AAL", Desc = "Armonia Alluminio/Legno", TrimSectionVisible = false },
+                    new ProductCollectionItem() { Id = "AATT", Desc = "Armonia Alluminio TT", TrimSectionVisible = false },
+                    new ProductCollectionItem() { Id = "AALAM", Desc = "Armonia Alluminio/Legno anta max", TrimSectionVisible = false },
+                    new ProductCollectionItem() { Id = "SALTT", Desc = "Scorrevole Alluminio/Legno TT", TrimSectionVisible = false },
+                    new ProductCollectionItem() { Id = "IPA", Desc = "Innova PVC/A", TrimSectionVisible = true },
+                    new ProductCollectionItem() { Id = "IPAAM", Desc = "Innova PVC/A Anta Max", TrimSectionVisible = true },
+                    new ProductCollectionItem() { Id = "SP", Desc = "Scorrevole PVC", TrimSectionVisible = false },
                 },
                 InternalColors = new[] {
                     new CollectionItem() { Id = "IC_ARG", Desc = "Argento" },
