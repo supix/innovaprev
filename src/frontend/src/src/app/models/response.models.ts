@@ -17,6 +17,7 @@ export interface CollectionBaseItem {
 }
 
 export interface Product extends CollectionBaseItem {
+  trimSectionVisible: boolean;
 }
 
 export interface InternalColor extends CollectionBaseItem {

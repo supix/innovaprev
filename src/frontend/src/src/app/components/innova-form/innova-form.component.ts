@@ -1,12 +1,13 @@
-import {AfterViewInit, Component, ElementRef, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {AbstractControl, FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
-import {CommonModule} from '@angular/common';
+import {CommonModule, NgOptimizedImage} from '@angular/common';
 import {NgSelectConfig, NgSelectModule} from '@ng-select/ng-select';
 import {ApiService} from '../../services/api.service';
 import {
   BillingPayload,
   CollectionBaseItem,
   CollectionsResponse,
+  CustomPayload,
   PricePayload,
   Quotation,
   WindowsPayload
@@ -25,7 +26,8 @@ import {
 } from 'rxjs';
 import {PriceDisplayComponent} from '../price-display/price-display.component';
 import {
-  bankCoordinatesValidator, generateValidItalianVat,
+  bankCoordinatesValidator,
+  generateValidItalianVat,
   italianVatValidator,
   minNumber,
   phoneNumberValidator
@@ -37,12 +39,12 @@ import {environment} from '../../../environments/environment';
 @Component({
   selector: 'app-innova-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, NgSelectModule, PriceDisplayComponent],
+  imports: [CommonModule, ReactiveFormsModule, NgSelectModule, PriceDisplayComponent, NgOptimizedImage],
   templateUrl: './innova-form.component.html',
   styleUrls: ['./innova-form.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class InnovaFormComponent implements OnInit, AfterViewInit {
+export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChild('tab', {static: true}) tabElement!: ElementRef;
 
@@ -51,10 +53,12 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
   collections: CollectionsResponse | null = null;
   isCollectionsLoading: boolean = false;
 
-  subscriptions: Subscription[] = [];
+  windowSubscriptions: Subscription[] = [];
+  customSubscriptions: Subscription[] = [];
 
   submitted: boolean = false;
-  hasTriggeredValidation: boolean = false;
+  hasTriggeredWindowsValidation: boolean = false;
+  hasTriggeredCustomValidation: boolean = false;
   isLoading: boolean = false;
 
   currentTab: TabNames = TabNames.supplier;
@@ -100,8 +104,6 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
       productData: this.fb.group({
         orderNumber: [''],
         product: [null, Validators.required],
-        glassStopper: [null],
-        windowSlide: [null],
         internalColor: [null, Validators.required],
         externalColor: [null, Validators.required],
         accessoryColor: [null, Validators.required],
@@ -109,10 +111,14 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
         notes: ['']
       }),
       windowsData: this.fb.array([]), // Contains the rows for the window estimates
+      customData: this.fb.array([]), // Contains the rows for the custom data
     });
 
     // Add an initial row for windows
-    this.addRow(true);
+    this.addWindowRow(true);
+
+    // Add an initial row for custom
+    this.addCustomRow(true);
   }
 
   ngOnInit(): void {
@@ -133,7 +139,22 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
     });
   }
 
-  // Getter for the windows FormGroup
+  ngOnDestroy(): void {
+    this.windowSubscriptions.forEach(subscription => subscription.unsubscribe());
+    this.customSubscriptions.forEach(subscription => subscription.unsubscribe());
+  }
+
+  // Getter for the supplier FormGroup
+  get supplierData(): FormGroup {
+    return this.form.get('supplierData') as FormGroup;
+  }
+
+  // Getter for the customer FormGroup
+  get customerData(): FormGroup {
+    return this.form.get('customerData') as FormGroup;
+  }
+
+  // Getter for the product FormGroup
   get productData(): FormGroup {
     return this.form.get('productData') as FormGroup;
   }
@@ -143,30 +164,43 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
     return this.form.get('windowsData') as FormArray;
   }
 
+  // Getter for the windows FormArray
+  get customData(): FormArray {
+    return this.form.get('customData') as FormArray;
+  }
 
-  // Check if the 'productData' form is valid
-  private isProductDataValid(): boolean {
-    return this.productData.valid;
+  isTrimSectionVisible(): boolean {
+    const currentProduct = this.productData.value['product'];
+    return this.collections?.product.some(p => p.id === currentProduct && p.trimSectionVisible) || false;
   }
 
   // Helper function to check validity of a specific row by index
-  isRowValid(index: number): boolean {
+  isWindowRowValid(index: number): boolean {
     const row = this.windows.at(index);
     return row ? row.valid : false;
   }
 
+  // Helper function to check validity of a specific row by index
+  isCustomRowValid(index: number): boolean {
+    const row = this.customData.at(index);
+    return row ? row.valid : false;
+  }
 
-  addRowCheck(): boolean {
-    return this.hasTriggeredValidation;
+  addWindowRowCheck(): boolean {
+    return this.hasTriggeredWindowsValidation;
+  }
+
+  addCustomRowCheck(): boolean {
+    return this.hasTriggeredCustomValidation;
   }
 
   hasErrorsInSupplierData(): boolean {
-    const supplierDataGroup = this.form.get('supplierData');
+    const supplierDataGroup = this.supplierData;
     return this.currentTab !== TabNames.supplier && this.submitted && this.hasErrors(supplierDataGroup);
   }
 
   hasErrorsInCustomerData(): boolean {
-    const customerDataGroup = this.form.get('customerData');
+    const customerDataGroup = this.customerData;
     return this.currentTab !== TabNames.customer && this.submitted && this.hasErrors(customerDataGroup);
   }
 
@@ -176,11 +210,19 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
   }
 
   hasErrorsInWindowsData(): boolean {
-    return this.currentTab !== TabNames.measurements && this.hasTriggeredValidation && !this.areAllRowsValid();
+    return this.currentTab !== TabNames.measurements && this.hasTriggeredWindowsValidation && !this.areAllWindowRowsValid();
   }
 
-  areAllRowsValid(): boolean {
+  hasErrorsInCustomData(): boolean {
+    return this.currentTab !== TabNames.customData && this.hasTriggeredCustomValidation && !this.areAllCustomRowsValid();
+  }
+
+  areAllWindowRowsValid(): boolean {
     return this.windows.controls.every((row) => row.valid);
+  }
+
+  areAllCustomRowsValid(): boolean {
+    return this.customData.controls.every((row) => row.valid);
   }
 
   hasErrorsAndNotLoading(): boolean {
@@ -191,26 +233,32 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
       return true;
     }
 
-    const supplierDataGroup = this.form.get('supplierData');
+    const supplierDataGroup = this.supplierData;
     const hasErrorsInSupplier = supplierDataGroup ? this.hasErrors(supplierDataGroup) : false;
 
-    const customerDataGroup = this.form.get('customerData');
+    const customerDataGroup = this.customerData;
     const hasErrorsInCustomer = customerDataGroup ? this.hasErrors(customerDataGroup) : false;
 
     const productDataGroup = this.productData;
     const hasErrorsInProduct = productDataGroup ? this.hasErrors(productDataGroup) : false;
 
-    const hasErrorsInWindows = !this.areAllRowsValid();
+    const hasErrorsInWindows = !this.areAllWindowRowsValid();
 
-    return (hasErrorsInSupplier || hasErrorsInCustomer || hasErrorsInProduct || hasErrorsInWindows);
+    const hasErrorsInCustomData = !this.areAllCustomRowsValid();
+
+    return (hasErrorsInSupplier || hasErrorsInCustomer || hasErrorsInProduct || hasErrorsInWindows || hasErrorsInCustomData);
+  }
+
+  onImageError(event: Event) {
+    (event.target as HTMLImageElement).src = 'assets/photos/thumb/no-image.jpg';
   }
 
   // Add a new row to the windows FormArray
-  addRow(skipFirst?: boolean): void {
+  addWindowRow(skipFirst?: boolean): void {
     if (!skipFirst) {
-      this.hasTriggeredValidation = true;
+      this.hasTriggeredWindowsValidation = true;
     }
-    if (this.areAllRowsValid()) {
+    if (this.areAllWindowRowsValid()) {
       const row = this.fb.group({
         position: [0],
         height: [null, minNumber(1, true, 'f')],
@@ -219,38 +267,74 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
         windowType: [null, Validators.required],
         openingType: [null, Validators.required],
         glassType: [null, Validators.required],
-        crosspiece: [null, Validators.required],
+        crosspiece: [null],
         leftTrim: [null, minNumber(0)],
         rightTrim: [null, minNumber(0)],
         upperTrim: [null, minNumber(0)],
         belowThreshold: [null, minNumber(0)],
       });
       this.windows.push(row);
-      this.updatePositions();
-      this.subscribeToRowValueChanges(row, this.windows.length - 1);
+      this.updateWindowPositions();
+      this.subscribeToWindowRowValueChanges(row, this.windows.length - 1);
     }
   }
 
   // Remove a specific row from the windows FormArray
-  removeRow(index: number): void {
+  removeWindowRow(index: number): void {
     this.windows.removeAt(index);
-    this.subscriptions[index]?.unsubscribe();
-    this.subscriptions.splice(index, 1);
-    this.updatePositions();
+    this.windowSubscriptions[index]?.unsubscribe();
+    this.windowSubscriptions.splice(index, 1);
+    this.updateWindowPositions();
     if (this.windows.length === 0) {
-      this.addRow(true);
+      this.addWindowRow(true);
     }
   }
 
   // Updates the value of the `position` field for each row in the FormArray.
-  updatePositions(): void {
+  updateWindowPositions(): void {
     this.windows.controls.forEach((group, index) => {
       group.get('position')?.setValue(index + 1);
     });
   }
 
+  // Add a new row to the windows FormArray
+  addCustomRow(skipFirst?: boolean): void {
+    if (!skipFirst) {
+      this.hasTriggeredCustomValidation = true;
+    }
+    if (this.areAllCustomRowsValid()) {
+      const row = this.fb.group({
+        position: [0],
+        description: ['', Validators.required],
+        quantity: ['', Validators.required],
+        price: [null, minNumber(1, true, 'm')]
+      });
+      this.customData.push(row);
+      this.updateCustomPositions();
+      this.subscribeToCustomRowValueChanges(row, this.customData.length - 1);
+    }
+  }
+
+  // Remove a specific row from the windows FormArray
+  removeCustomRow(index: number): void {
+    this.customData.removeAt(index);
+    this.customSubscriptions[index]?.unsubscribe();
+    this.customSubscriptions.splice(index, 1);
+    this.updateCustomPositions();
+    if (this.customData.length === 0) {
+      this.addCustomRow(true);
+    }
+  }
+
+  // Updates the value of the `position` field for each row in the FormArray.
+  updateCustomPositions(): void {
+    this.customData.controls.forEach((group, index) => {
+      group.get('position')?.setValue(index + 1);
+    });
+  }
+
   // Filters non-numeric characters from the input and updates the corresponding FormControl.
-  onRowInputNumber(event: Event, index: number, controlName: string): void {
+  onWindowsRowInputNumber(event: Event, index: number, controlName: string): void {
     const input = event.target as HTMLInputElement;
     const value = input.value.replace(/[^0-9]/g, ''); // Remove all non-numeric characters
     const control = this.windows.at(index).get(controlName);
@@ -262,6 +346,41 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
   }
 
   // Filters non-numeric characters from the input and updates the corresponding FormControl.
+  onWindowsRowClearInput(index: number, controlName: string): void {
+    const control = this.windows.at(index).get(controlName);
+
+    if (control) {
+      control.setValue(null);
+    }
+  }
+
+  // Handles numeric input with support for up to two decimals and proper FormControl updates.
+  onPriceInputNumber(event: Event, index: number, controlName: string): void {
+    const input = event.target as HTMLInputElement;
+    let value = input.value;
+
+    // Allow numbers, one comma or dot as a decimal separator, and limit to two decimals
+    const validValue = value.match(/^\d*[.,]?\d{0,2}$/) ? value : input.dataset['previousValue'] || '';
+
+    // Save the valid value as the last valid state
+    input.dataset['previousValue'] = validValue;
+
+    // Replace commas with dots for consistency in decimal values
+    const numericValue = validValue.replace(',', '.');
+
+    // Update the FormControl if the numericValue is valid
+    const control = this.customData.at(index).get(controlName);
+    if (control) {
+      const parsedValue = parseFloat(numericValue);
+      control.setValue(!isNaN(parsedValue) ? parsedValue : null); // Set null for invalid input
+    }
+
+    // Update the input value to reflect the current valid value
+    input.value = validValue;
+  }
+
+
+  // Filters non-numeric characters from the input and updates the corresponding FormControl.
   onInputNumber(event: Event, controlName: string): void {
     const input = event.target as HTMLInputElement;
     const value = input.value.replace(/[^0-9]/g, ''); // Remove all non-numeric characters
@@ -269,31 +388,6 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
 
     if (control) {
       control.setValue(value); // Update the FormControl with the filtered value
-    }
-  }
-
-  // Handler to have limits on some form inputs
-  onMaxQuantity(event: Event, controlName: string): void {
-
-
-    const max: number = this.maxValues[controlName];
-    if (max === undefined) {
-      return; // Exit if no max value is defined for the control
-    }
-
-    const input = event.target as HTMLInputElement;
-    const value = parseInt(input.value, 10); // Parse the input value as an integer
-
-    if (isNaN(value)) {
-      return; // Exit if the input value is not a number
-    }
-
-    if (value > max) {
-      input.value = max.toString(); // Update the input field value to the maximum allowed value
-      const control = this.form.get(controlName);
-      if (control) {
-        control.setValue(max); // Update the FormControl with the maximum allowed value
-      }
     }
   }
 
@@ -309,133 +403,6 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
       }, 0);
     }
   }
-
-  fillForm(): void {
-    const currentFormValue = this.form.value;
-
-    // Helper function to pick a random item from an array
-    const getRandomItem = <T extends CollectionBaseItem>(items: T[]): string | null => {
-      return items.length > 0 ? items[Math.floor(Math.random() * items.length)].id : null;
-    };
-
-    // Helper function to generate a random number within a range
-    const getRandomNumber = (max: number, min: number = 1): number => Math.max(min, Math.floor(Math.random() * max));
-
-    // Filter out invalid windows
-    const validWindows = this.windows.controls.filter(control => control.valid);
-    while (this.windows.length > 0) {
-      this.windows.removeAt(0);
-    }
-
-    // Add back only the valid windows
-    validWindows.forEach(validControl => this.windows.push(validControl));
-
-    // Add 5 new windows to windowsData
-    for (let i = 0; i < 5; i++) {
-      const row = this.fb.group({
-        position: [this.windows.length], // Position is the index in the array
-        height: [getRandomNumber(this.maxValues['height'], 500)],
-        width: [getRandomNumber(this.maxValues['width'], 500)],
-        quantity: [getRandomNumber(5)],
-        windowType: [getRandomItem((this.collections as CollectionsResponse).windowTypes), Validators.required],
-        openingType: [getRandomItem((this.collections as CollectionsResponse).openingTypes), Validators.required],
-        glassType: [getRandomItem((this.collections as CollectionsResponse).glassTypes), Validators.required],
-        crosspiece: [getRandomItem((this.collections as CollectionsResponse).crosspieces), Validators.required],
-        leftTrim: [getRandomNumber(20)],
-        rightTrim: [getRandomNumber(20)],
-        upperTrim: [getRandomNumber(20)],
-        belowThreshold: [getRandomNumber(20)]
-      });
-      this.windows.push(row);
-      this.updatePositions();
-      this.subscribeToRowValueChanges(row, this.windows.length - 1);
-    }
-
-    // Patch other form values
-    this.form.patchValue({
-      supplierData: {
-        companyName: currentFormValue.supplierData?.companyName || 'Supplier Co.',
-        address: currentFormValue.supplierData?.address || '123 Supplier Street',
-        taxCode: currentFormValue.supplierData?.taxCode || generateValidItalianVat(),
-        phone: currentFormValue.supplierData?.phone || '391234567890',
-        mail: currentFormValue.supplierData?.mail || 'supplier@example.com',
-        iban: currentFormValue.supplierData?.iban || 'IT60X0542811101000000123456'
-      },
-      customerData: {
-        companyName: currentFormValue.customerData?.companyName || 'Customer Co.',
-        address: currentFormValue.customerData?.address || '456 Customer Road',
-        taxCode: currentFormValue.customerData?.taxCode || generateValidItalianVat(),
-        phone: currentFormValue.customerData?.phone || '399876543210',
-        mail: currentFormValue.customerData?.mail || 'customer@example.com',
-        iban: currentFormValue.customerData?.iban || 'IT70X0542811101000000654321'
-      },
-      productData: {
-        orderNumber: currentFormValue.productData?.orderNumber || 'ORD123456', // Keep this field unchanged
-        product: currentFormValue.productData?.product || getRandomItem((this.collections as CollectionsResponse).product),
-        glassStopper: currentFormValue.productData?.glassStopper ?? true,
-        windowSlide: currentFormValue.productData?.windowSlide ?? true,
-        internalColor: currentFormValue.productData?.internalColor || getRandomItem((this.collections as CollectionsResponse).internalColors),
-        externalColor: currentFormValue.productData?.externalColor || getRandomItem((this.collections as CollectionsResponse).externalColors),
-        accessoryColor: currentFormValue.productData?.accessoryColor || getRandomItem((this.collections as CollectionsResponse).accessoryColors),
-        climateZone: currentFormValue.productData?.climateZone || getRandomItem((this.collections as CollectionsResponse).climateZones),
-        notes: currentFormValue.productData?.notes || 'No special notes.', // Keep this field unchanged
-      }
-    });
-
-  }
-
-  // Handler to calculate the price based on valid rows
-  private calculatePriceHandler(): void {
-    const validRows = this.getValidWindowsData();
-    if (validRows.length > 0 && this.isProductDataValid()) {
-      const payload: PricePayload = this.buildPayload();
-      this.calculatePriceSubject.next(payload);
-    } else {
-      this.calculatePriceSubject.next(null);
-    }
-  }
-
-  // Setup subscription to calculate price
-  private setupPriceCalculationSubscription(): void {
-    this.calculatePriceSubject.pipe(
-      debounceTime(300), // Delay to avoid frequent calls
-      filter((payload) => {
-        if (payload === null) {
-          this.previousPayloadHash = null; // Reset hash if payload is null
-          return true; // Allow null payload to pass through
-        }
-
-        const currentPayloadHash = this.calculateHash(payload);
-
-        if (this.previousPayloadHash === currentPayloadHash) {
-          return false; // Payload has not changed, skipping calculation.
-        }
-
-        this.previousPayloadHash = currentPayloadHash;
-        return true; // Allow new payload to pass through
-      }),
-      switchMap((payload) => {
-        if (payload === null) {
-          this.quotation = null;
-          return EMPTY;
-        }
-        this.isLoading = true;
-        return this.apiService.getPrice(payload).pipe(
-          finalize(() => {
-            this.isLoading = false;
-          }),
-          catchError((error) => {
-            console.error('Error fetching price:', error);
-            this.quotation = null; // Reset price in case of error
-            return EMPTY;
-          })
-        );
-      })
-    ).subscribe(({quotation}) => {
-      this.quotation = quotation;
-    });
-  }
-
 
   // Download the PDF
   downloadPdf(): void {
@@ -488,20 +455,250 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
     }
   }
 
-  // Subscribes to `valueChanges` for a specific row
-  private subscribeToRowValueChanges(row: FormGroup, index: number): void {
-    const subscription = row.valueChanges.subscribe(() => {
-      this.onRowValueChanged(index);
+  fillForm(): void {
+    if (!this.collections) {
+      console.error('Collections data is not loaded');
+      return;
+    }
+
+    const currentFormValue = this.form.value;
+
+    // Helper function to pick a random item from an array
+    const getRandomItem = <T extends CollectionBaseItem>(items: T[], defaultValue: string | null = null): string | null => {
+      return items?.length > 0 ? items[Math.floor(Math.random() * items.length)].id : defaultValue;
+    };
+
+    // Helper function to generate a random number within a range
+    const getRandomNumber = (max: number, min: number = 1): number => Math.max(min, Math.floor(Math.random() * max));
+
+    // Filter out invalid windows
+    const validWindows = this.windows.controls.filter(control => control.valid);
+    while (this.windows.length > 0) {
+      const index = this.windows.length - 1;
+      this.windows.removeAt(index);
+      this.windowSubscriptions[index]?.unsubscribe();
+      this.windowSubscriptions.splice(index, 1);
+    }
+
+    // Add back only the valid windows
+    validWindows.forEach(validControl => {
+      this.windows.push(validControl);
+      this.subscribeToWindowRowValueChanges(validControl as FormGroup, this.windows.length - 1);
     });
-    this.subscriptions.push(subscription);
+
+    // Add 5 new windows to windowsData
+    for (let i = 0; i < 5; i++) {
+      const row = this.fb.group({
+        position: [0], // Updated later by updateWindowPositions
+        height: [getRandomNumber(this.maxValues['height'], 500)],
+        width: [getRandomNumber(this.maxValues['width'], 500)],
+        quantity: [getRandomNumber(5)],
+        windowType: [getRandomItem(this.collections.windowTypes, 'defaultType'), Validators.required],
+        openingType: [getRandomItem(this.collections.openingTypes, 'defaultOpening'), Validators.required],
+        glassType: [getRandomItem(this.collections.glassTypes, 'defaultGlass'), Validators.required],
+        crosspiece: [getRandomItem(this.collections.crosspieces, null)],
+        leftTrim: [getRandomNumber(20)],
+        rightTrim: [getRandomNumber(20)],
+        upperTrim: [getRandomNumber(20)],
+        belowThreshold: [getRandomNumber(20)]
+      });
+      this.windows.push(row);
+      this.subscribeToWindowRowValueChanges(row, this.windows.length - 1);
+    }
+    this.updateWindowPositions();
+
+    // Filter out invalid components
+    const validCustomData = this.customData.controls.filter(control => control.valid);
+    while (this.customData.length > 0) {
+      const index = this.customData.length - 1;
+      this.customData.removeAt(index);
+      this.customSubscriptions[index]?.unsubscribe();
+      this.customSubscriptions.splice(index, 1);
+    }
+
+    // Add back only the valid components
+    validCustomData.forEach(validControl => {
+      this.customData.push(validControl);
+      this.subscribeToCustomRowValueChanges(validControl as FormGroup, this.customData.length - 1);
+    });
+    // Add 5 new components to customData
+    for (let i = 0; i < 5; i++) {
+      const row = this.fb.group({
+        position: [0], // Updated later by updateCustomPositions
+        quantity: ['n. ' + getRandomNumber(5)],
+        description: ['Lorem ipsum dolor sit amet, consectetur adipiscing elit'],
+        price: [getRandomNumber(500), Validators.required],
+      });
+      this.customData.push(row);
+      this.subscribeToCustomRowValueChanges(row, this.customData.length - 1);
+    }
+    this.updateCustomPositions();
+
+    // Patch other form values
+    this.form.patchValue({
+      supplierData: {
+        companyName: currentFormValue.supplierData?.companyName || 'Supplier Co.',
+        address: currentFormValue.supplierData?.address || '123 Supplier Street',
+        taxCode: currentFormValue.supplierData?.taxCode || generateValidItalianVat(),
+        phone: currentFormValue.supplierData?.phone || '391234567890',
+        mail: currentFormValue.supplierData?.mail || 'supplier@example.com',
+        iban: currentFormValue.supplierData?.iban || 'IT60X0542811101000000123456'
+      },
+      customerData: {
+        companyName: currentFormValue.customerData?.companyName || 'Customer Co.',
+        address: currentFormValue.customerData?.address || '456 Customer Road',
+        taxCode: currentFormValue.customerData?.taxCode || generateValidItalianVat(),
+        phone: currentFormValue.customerData?.phone || '399876543210',
+        mail: currentFormValue.customerData?.mail || 'customer@example.com',
+        iban: currentFormValue.customerData?.iban || 'IT70X0542811101000000654321'
+      },
+      productData: {
+        orderNumber: currentFormValue.productData?.orderNumber || 'ORD123456',
+        product: currentFormValue.productData?.product || getRandomItem(this.collections.product, 'defaultProduct'),
+        internalColor: currentFormValue.productData?.internalColor || getRandomItem(this.collections.internalColors, 'defaultInternalColor'),
+        externalColor: currentFormValue.productData?.externalColor || getRandomItem(this.collections.externalColors, 'defaultExternalColor'),
+        accessoryColor: currentFormValue.productData?.accessoryColor || getRandomItem(this.collections.accessoryColors, 'defaultAccessoryColor'),
+        climateZone: currentFormValue.productData?.climateZone || getRandomItem(this.collections.climateZones, 'defaultClimateZone'),
+        notes: currentFormValue.productData?.notes || 'No special notes.'
+      }
+    });
+
+    this.hasTriggeredWindowsValidation = false;
+    this.hasTriggeredCustomValidation = false;
+  }
+
+  onReset(): void {
+    this.form.reset();
+
+    while (this.windows.length > 0) {
+      this.windows.removeAt(0);
+    }
+
+    while (this.customData.length > 0) {
+      this.customData.removeAt(0);
+    }
+
+    this.addWindowRow(true);
+    this.addCustomRow(true);
+    this.hasTriggeredWindowsValidation = false;
+    this.hasTriggeredCustomValidation = false;
+    this.submitted = false;
+
+    this.calculatePriceSubject.next(null);
+  }
+
+  // Handler to calculate the price based on valid rows
+  private calculatePriceHandler(): void {
+    const validWindowRows = this.getValidWindowsData();
+    const validCustomRows = this.getValidCustomData();
+    if ((validWindowRows.length + validCustomRows.length) > 0 && this.isProductDataValid()) {
+      const payload: PricePayload = this.buildPayload();
+      this.calculatePriceSubject.next(payload);
+    } else {
+      this.calculatePriceSubject.next(null);
+    }
+  }
+
+  // Handler to have limits on some form inputs
+  private onMaxQuantity(event: Event, controlName: string): void {
+    const max: number = this.maxValues[controlName];
+    if (max === undefined) {
+      return; // Exit if no max value is defined for the control
+    }
+
+    const input = event.target as HTMLInputElement;
+    const value = parseInt(input.value, 10); // Parse the input value as an integer
+
+    if (isNaN(value)) {
+      return; // Exit if the input value is not a number
+    }
+
+    if (value > max) {
+      input.value = max.toString(); // Update the input field value to the maximum allowed value
+      const control = this.form.get(controlName);
+      if (control) {
+        control.setValue(max); // Update the FormControl with the maximum allowed value
+      }
+    }
+  }
+
+  // Check if the 'productData' form is valid
+  private isProductDataValid(): boolean {
+    return this.productData.valid;
+  }
+
+  // Setup subscription to calculate price
+  private setupPriceCalculationSubscription(): void {
+    this.calculatePriceSubject.pipe(
+      debounceTime(300), // Delay to avoid frequent calls
+      filter((payload) => {
+        if (payload === null) {
+          this.previousPayloadHash = null; // Reset hash if payload is null
+          return true; // Allow null payload to pass through
+        }
+
+        const currentPayloadHash = this.calculateHash(payload);
+
+        if (this.previousPayloadHash === currentPayloadHash) {
+          return false; // Payload has not changed, skipping calculation.
+        }
+
+        this.previousPayloadHash = currentPayloadHash;
+        return true; // Allow new payload to pass through
+      }),
+      switchMap((payload) => {
+        if (payload === null) {
+          this.quotation = null;
+          return EMPTY;
+        }
+        this.isLoading = true;
+        return this.apiService.getPrice(payload).pipe(
+          finalize(() => {
+            this.isLoading = false;
+          }),
+          catchError((error) => {
+            console.error('Error fetching price:', error);
+            this.quotation = null; // Reset price in case of error
+            return EMPTY;
+          })
+        );
+      })
+    ).subscribe(({quotation}) => {
+      this.quotation = quotation;
+    });
+  }
+
+  // Subscribes to `valueChanges` for a specific row
+  private subscribeToWindowRowValueChanges(row: FormGroup, index: number): void {
+    const subscription = row.valueChanges.subscribe(() => {
+      this.onWindowRowValueChanged(index);
+    });
+    this.windowSubscriptions.push(subscription);
   }
 
   // Function executed whenever the values in a row change.
-  private onRowValueChanged(index: number): void {
+  private onWindowRowValueChanged(index: number): void {
     const row = this.windows.at(index);
 
-    if (row && row.valid && this.hasTriggeredValidation) {
-      this.hasTriggeredValidation = false;
+    if (row && row.valid && this.hasTriggeredWindowsValidation) {
+      this.hasTriggeredWindowsValidation = false;
+    }
+  }
+
+  // Subscribes to `valueChanges` for a specific row
+  private subscribeToCustomRowValueChanges(row: FormGroup, index: number): void {
+    const subscription = row.valueChanges.subscribe(() => {
+      this.onCustomRowValueChanged(index);
+    });
+    this.customSubscriptions.push(subscription);
+  }
+
+  // Function executed whenever the values in a row change.
+  private onCustomRowValueChanged(index: number): void {
+    const row = this.customData.at(index);
+
+    if (row && row.valid && this.hasTriggeredCustomValidation) {
+      this.hasTriggeredCustomValidation = false;
     }
   }
 
@@ -518,21 +715,35 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
     return false;
   }
 
-// Helper function to get valid rows from the FormArray
+  // Helper function to get valid rows from the FormArray
   private getValidWindowsData(): any[] {
+    // List of keys to process
+    const keysToProcess = ['leftTrim', 'rightTrim', 'upperTrim', 'belowThreshold'];
+
+    // Filter valid rows and process their values
     return this.windows.controls
-      .filter(row => row.valid)
+      .filter(row => row.valid) // Keep only valid rows
       .map(row => {
+        // Create a copy of the row's value
         const processedRow = {...row.value};
 
-        // Cast null or undefined values to 0
-        for (const key in processedRow) {
+        // Cast null or undefined values to 0 for specified keys
+        for (const key of keysToProcess) {
           if (processedRow[key] === null || processedRow[key] === undefined) {
             processedRow[key] = 0;
           }
         }
 
         return processedRow;
+      });
+  }
+
+  // Helper function to get valid rows from the FormArray
+  private getValidCustomData(): any[] {
+    return this.customData.controls
+      .filter(row => row.valid)
+      .map(row => {
+        return {...row.value};
       });
   }
 
@@ -549,11 +760,10 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
   private buildPayload(): PricePayload {
     return {
       productData: {
-        ...this.form.value.productData,
-        glassStopper: this.form.value.productData.glassStopper ?? false,
-        windowSlide: this.form.value.productData.windowSlide ?? false
+        ...this.form.value.productData
       },
-      ...this.buildWindowsPayload()
+      ...this.buildWindowsPayload(),
+      ...this.buildCustomPayload()
     };
   }
 
@@ -565,11 +775,22 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
     };
   }
 
+  // Build Custom payload for API using valid rows from the form
+  private buildCustomPayload(): CustomPayload {
+    const validRows = this.getValidCustomData();
+    return {
+      customData: validRows
+    };
+  }
+
   // Mark all fields as touched to show validation errors
   private markAllTouchedAndValidate(): void {
     this.form.markAllAsTouched();
-    if (!this.areAllRowsValid()) {
-      this.hasTriggeredValidation = true;
+    if (!this.areAllWindowRowsValid()) {
+      this.hasTriggeredWindowsValidation = true;
+    }
+    if (!this.areAllCustomRowsValid()) {
+      this.hasTriggeredCustomValidation = true;
     }
   }
 
@@ -577,6 +798,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
   private subscribeToFormChanges(): void {
     combineLatest([
       this.windows.valueChanges,
+      this.customData.valueChanges,
       this.productData.valueChanges
     ]).pipe(debounceTime(300)).subscribe(() => {
       this.calculatePriceHandler();
@@ -584,7 +806,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit {
   }
 
   // Function to calculate the SHA-256 hash of the payload
-  private calculateHash(payload: WindowsPayload): string {
+  private calculateHash(payload: PricePayload): string {
     return CryptoJS.SHA256(JSON.stringify(payload)).toString();
   }
 
@@ -604,5 +826,6 @@ enum TabNames {
   supplier = 'supplier-tab',
   customer = 'personal-tab',
   product = 'product-tab',
-  measurements = 'measurements-tab'
+  measurements = 'measurements-tab',
+  customData = 'custom-data-tab'
 }

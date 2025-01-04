@@ -99,9 +99,9 @@ function validatePayload(payload: any): string[] {
 // Function to generate mock collections data
 const getMockCollections = (): CollectionsResponse => ({
   product: [
-    {id: 'PRO_GIALLO', desc: 'Giallo'},
-    {id: 'PRO_VERDE', desc: 'Verde'},
-    {id: 'PRO_ROSSO', desc: 'Rosso'},
+    {id: 'PRO_GIALLO', desc: 'Giallo', trimSectionVisible: false},
+    {id: 'PRO_VERDE', desc: 'Verde', trimSectionVisible: false},
+    {id: 'PRO_ROSSO', desc: 'Rosso', trimSectionVisible: false},
   ],
   internalColors: [
     {id: 'IC_GIALLO', desc: 'Giallo'},
