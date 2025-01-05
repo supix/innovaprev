@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using DomainModel.Classes;
 using DomainModel.Services.CollectionsProvider;
 using DomainModel.Services.PriceCalculator;
@@ -39,7 +40,6 @@ namespace PdfQuote
                     });
                 });
         }
-
         private void ComposeHeader(IContainer container)
         {
             container.Row(row =>
@@ -85,21 +85,11 @@ namespace PdfQuote
 
                 // Product
                 var pd = this.project.ProductData;
-                column.Item().Background(Colors.Grey.Lighten4).Padding(5).Column(c => {
-                    c.Item().PaddingBottom(10).Text(coll.Product.Single(p => p.Id == pd.Product).Desc).FontSize(14).AlignCenter();
-                    c.Item().DefaultTextStyle(x => x.FontSize(9)).Row(row =>
-                    {
-                        row.RelativeItem(1).Column(c => {
-                            c.Item().Text($"Colore");
-                            c.Item().PaddingLeft(5).Text($"Interno: {coll.InternalColors.Single(ic => ic.Id == pd.InternalColor).Desc}");
-                            c.Item().PaddingLeft(5).Text($"Esterno: {coll.ExternalColors.Single(ec => ec.Id == pd.ExternalColor).Desc}");
-                            c.Item().PaddingLeft(5).Text($"Accessori: {coll.AccessoryColors.Single(ac => ac.Id == pd.AccessoryColor).Desc}");
-                        });
-                        row.RelativeItem(1).AlignRight().Text($"Zona climatica: {coll.ClimateZones.Single(cz => cz.Id == pd.ClimateZone).Desc}");
-                    });
 
-                    if (!string.IsNullOrWhiteSpace(pd.Notes))
-                        c.Item().PaddingTop(10).Text($"Note: {pd.Notes}").FontSize(9);
+                column.Item().Background(Colors.Grey.Lighten4).Padding(10).Row(row =>
+                {
+                    row.RelativeItem(2).PaddingRight(10).Component(new ProductDescriptionComponent(pd, coll));
+                    row.RelativeItem(1).Placeholder();
                 });
 
                 // Measures
