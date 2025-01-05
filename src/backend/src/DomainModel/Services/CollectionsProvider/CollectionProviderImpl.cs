@@ -15,15 +15,15 @@ namespace DomainModel.Services.CollectionsProvider
             {
                 Product = new[]
                 {
-                    new ProductCollectionItem() { Id = "ELA", Desc = "Emblema Legno/Alluminio", TrimSectionVisible = false },
-                    new ProductCollectionItem() { Id = "RALT", Desc = "Review Alluminio/Legno Termico", TrimSectionVisible = false },
-                    new ProductCollectionItem() { Id = "AAL", Desc = "Armonia Alluminio/Legno", TrimSectionVisible = false },
-                    new ProductCollectionItem() { Id = "AATT", Desc = "Armonia Alluminio TT", TrimSectionVisible = false },
-                    new ProductCollectionItem() { Id = "AALAM", Desc = "Armonia Alluminio/Legno anta max", TrimSectionVisible = false },
-                    new ProductCollectionItem() { Id = "SALTT", Desc = "Scorrevole Alluminio/Legno TT", TrimSectionVisible = false },
-                    new ProductCollectionItem() { Id = "IPC", Desc = "Innova PVC/A Classic", TrimSectionVisible = true },
-                    new ProductCollectionItem() { Id = "IPN", Desc = "Innova PVC/A New", TrimSectionVisible = true },
-                    new ProductCollectionItem() { Id = "SP", Desc = "Scorrevole PVC", TrimSectionVisible = false },
+                    new ProductCollectionItem() { Id = "ELA", Desc = "Emblema Legno/Alluminio", TrimSectionVisible = false, ImageFile = "RH36Y.jpg", ThumbImageFile = "thumb/RH36Y.jpg", ExtDesc = string.Empty },
+                    new ProductCollectionItem() { Id = "RALT", Desc = "Review Alluminio/Legno Termico", TrimSectionVisible = false, ImageFile = "no-image.jpg", ThumbImageFile = "thumb/no-image.jpg", ExtDesc = string.Empty  },
+                    new ProductCollectionItem() { Id = "AAL", Desc = "Armonia Alluminio/Legno", TrimSectionVisible = false, ImageFile = "T2S3W.jpg", ThumbImageFile = "thumb/T2S3W.jpg", ExtDesc = string.Empty  },
+                    new ProductCollectionItem() { Id = "AATT", Desc = "Armonia Alluminio TT", TrimSectionVisible = false, ImageFile = "YHX21.jpg", ThumbImageFile = "thumb/YHX21.jpg", ExtDesc = string.Empty  },
+                    new ProductCollectionItem() { Id = "AALAM", Desc = "Armonia Alluminio/Legno anta max", TrimSectionVisible = false, ImageFile = "T2S3W.jpg", ThumbImageFile = "thumb/T2S3W.jpg", ExtDesc = string.Empty  },
+                    new ProductCollectionItem() { Id = "SALTT", Desc = "Scorrevole Alluminio/Legno TT", TrimSectionVisible = false, ImageFile = "no-image.jpg", ThumbImageFile = "thumb/no-image.jpg", ExtDesc = string.Empty  },
+                    new ProductCollectionItem() { Id = "IPC", Desc = "Innova PVC/A Classic", TrimSectionVisible = true, ImageFile = "U651R.jpg", ThumbImageFile = "thumb/U651R.jpg", ExtDesc = string.Empty  },
+                    new ProductCollectionItem() { Id = "IPN", Desc = "Innova PVC/A New", TrimSectionVisible = true, ImageFile = "H2G71.jpg", ThumbImageFile = "thumb/H2G71.jpg", ExtDesc = string.Empty  },
+                    new ProductCollectionItem() { Id = "SP", Desc = "Scorrevole PVC", TrimSectionVisible = false, ImageFile = "no-image.jpg", ThumbImageFile = "thumb/no-image.jpg", ExtDesc = string.Empty  },
                 },
                 InternalColors = new[] {
                     new CollectionItem() { Id = "IC_ARG", Desc = "Argento" },
