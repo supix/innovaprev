@@ -89,12 +89,6 @@ namespace PdfQuote
                     c.Item().PaddingBottom(10).Text(coll.Product.Single(p => p.Id == pd.Product).Desc).FontSize(14).AlignCenter();
                     c.Item().DefaultTextStyle(x => x.FontSize(9)).Row(row =>
                     {
-                        row.RelativeItem(1).Column(c =>
-                        {
-                            c.Item().Text($"Tipo Anta");
-                            c.Item().PaddingLeft(5).Text($"Fermavetro: {(pd.GlassStopper ? "SI" : "NO")}");
-                            c.Item().PaddingLeft(5).Text($"Infilo: {(pd.WindowSlide ? "SI" : "NO")}");
-                        });
                         row.RelativeItem(1).Column(c => {
                             c.Item().Text($"Colore");
                             c.Item().PaddingLeft(5).Text($"Interno: {coll.InternalColors.Single(ic => ic.Id == pd.InternalColor).Desc}");
