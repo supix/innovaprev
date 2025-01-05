@@ -15,7 +15,7 @@ namespace DomainModel.Services.CollectionsProvider
             {
                 Product = new[]
                 {
-                    new ProductCollectionItem() { Id = "ELA", Desc = "Emblema Legno/Alluminio", TrimSectionVisible = false, ImageFile = "RH36Y.jpg", ThumbImageFile = "thumb/RH36Y.jpg", ExtDesc = string.Empty },
+                    new ProductCollectionItem() { Id = "ELA", Desc = "Emblema Legno/Alluminio", TrimSectionVisible = false, ImageFile = "RH36Y.jpg", ThumbImageFile = "thumb/RH36Y.jpg", ExtDesc = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum." },
                     new ProductCollectionItem() { Id = "RALT", Desc = "Review Alluminio/Legno Termico", TrimSectionVisible = false, ImageFile = "no-image.jpg", ThumbImageFile = "thumb/no-image.jpg", ExtDesc = string.Empty  },
                     new ProductCollectionItem() { Id = "AAL", Desc = "Armonia Alluminio/Legno", TrimSectionVisible = false, ImageFile = "T2S3W.jpg", ThumbImageFile = "thumb/T2S3W.jpg", ExtDesc = string.Empty  },
                     new ProductCollectionItem() { Id = "AATT", Desc = "Armonia Alluminio TT", TrimSectionVisible = false, ImageFile = "YHX21.jpg", ThumbImageFile = "thumb/YHX21.jpg", ExtDesc = string.Empty  },
