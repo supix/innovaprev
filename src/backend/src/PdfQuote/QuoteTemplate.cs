@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using DomainModel.Classes;
+using DomainModel.Services;
 using DomainModel.Services.CollectionsProvider;
 using DomainModel.Services.PriceCalculator;
 using QuestPDF.Fluent;
@@ -14,12 +15,14 @@ namespace PdfQuote
         private readonly Project project;
         private readonly PriceInfo priceInfo;
         private readonly ICollectionProvider collectionProvider;
+        private readonly IImageProvider imageProvider;
 
-        public QuoteTemplate(Project project, PriceInfo priceInfo, ICollectionProvider collectionProvider)
+        public QuoteTemplate(Project project, PriceInfo priceInfo, ICollectionProvider collectionProvider, IImageProvider imageProvider)
         {
             this.project = project ?? throw new ArgumentNullException(nameof(project));
             this.priceInfo = priceInfo ?? throw new ArgumentNullException(nameof(priceInfo));
             this.collectionProvider = collectionProvider ?? throw new ArgumentNullException(nameof(collectionProvider));
+            this.imageProvider = imageProvider ?? throw new ArgumentNullException(nameof(imageProvider));
         }
         public void Compose(IDocumentContainer container)
         {
@@ -89,7 +92,7 @@ namespace PdfQuote
                 column.Item().Background(Colors.Grey.Lighten4).Padding(10).Row(row =>
                 {
                     row.RelativeItem(2).PaddingRight(10).Component(new ProductDescriptionComponent(pd, coll));
-                    row.RelativeItem(1).Placeholder();
+                    row.RelativeItem(1).Image(this.imageProvider.Get("fake"));
                 });
 
                 // Measures
