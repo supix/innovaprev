@@ -7,6 +7,7 @@ namespace InnovaPrev.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [ResponseCache(NoStore = false, Duration = 600)]
     public class ProductImageController : ControllerBase
     {
         private readonly IProductImageProvider productImageProvider;
