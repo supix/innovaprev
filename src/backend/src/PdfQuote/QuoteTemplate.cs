@@ -92,7 +92,7 @@ namespace PdfQuote
                 column.Item().Background(Colors.Grey.Lighten4).Padding(10).Row(row =>
                 {
                     row.RelativeItem(2).PaddingRight(10).Component(new ProductDescriptionComponent(pd, coll));
-                    row.RelativeItem(1).Image(this.imageProvider.Get("fake"));
+                    row.RelativeItem(1).Image(this.imageProvider.Get("IPN.jpg"));
                 });
 
                 // Measures
