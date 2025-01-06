@@ -10,4 +10,19 @@
     <ProjectReference Include="..\DomainModel\DomainModel.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="ProductImages.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ProductImages.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="ProductImages.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ProductImages.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
 </Project>

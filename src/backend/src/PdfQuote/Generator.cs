@@ -11,9 +11,9 @@ namespace PdfQuote
     {
         private readonly IPriceCalculator priceCalculator;
         private readonly ICollectionProvider collectionProvider;
-        private readonly IImageProvider imageProvider;
+        private readonly IProductImageProvider imageProvider;
 
-        public Generator(IPriceCalculator priceCalculator, ICollectionProvider collectionProvider, IImageProvider imageProvider)
+        public Generator(IPriceCalculator priceCalculator, ICollectionProvider collectionProvider, IProductImageProvider imageProvider)
         {
             this.priceCalculator = priceCalculator ?? throw new ArgumentNullException(nameof(priceCalculator));
             this.collectionProvider = collectionProvider ?? throw new ArgumentNullException(nameof(collectionProvider));

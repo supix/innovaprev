@@ -1,13 +1,12 @@
-﻿using System.Net;
-using DomainModel.Services;
+﻿using DomainModel.Services;
 
 namespace ProductImages
 {
-    internal class ImageProvider_FromUrl : IImageProvider
+    internal class FromUrl : IProductImageProvider
     {
         private readonly string baseUrl;
 
-        public ImageProvider_FromUrl(string baseUrl)
+        public FromUrl(string baseUrl)
         {
             if (string.IsNullOrWhiteSpace(baseUrl))
             {
@@ -17,7 +16,7 @@ namespace ProductImages
             this.baseUrl = baseUrl;
         }
 
-        public byte[] Get(string name)
+        public byte[] Get(string name, bool isThumb)
         {
             var baseUri = new Uri(this.baseUrl);
             var fullUri = new Uri(baseUri, name);

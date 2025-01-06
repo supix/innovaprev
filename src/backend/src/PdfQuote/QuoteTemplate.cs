@@ -15,9 +15,9 @@ namespace PdfQuote
         private readonly Project project;
         private readonly PriceInfo priceInfo;
         private readonly ICollectionProvider collectionProvider;
-        private readonly IImageProvider imageProvider;
+        private readonly IProductImageProvider imageProvider;
 
-        public QuoteTemplate(Project project, PriceInfo priceInfo, ICollectionProvider collectionProvider, IImageProvider imageProvider)
+        public QuoteTemplate(Project project, PriceInfo priceInfo, ICollectionProvider collectionProvider, IProductImageProvider imageProvider)
         {
             this.project = project ?? throw new ArgumentNullException(nameof(project));
             this.priceInfo = priceInfo ?? throw new ArgumentNullException(nameof(priceInfo));
@@ -92,7 +92,7 @@ namespace PdfQuote
                 column.Item().Background(Colors.Grey.Lighten4).Padding(10).Row(row =>
                 {
                     row.RelativeItem(2).PaddingRight(10).Component(new ProductDescriptionComponent(pd, coll));
-                    row.RelativeItem(1).Image(this.imageProvider.Get("IPN.jpg"));
+                    row.RelativeItem(1).Image(this.imageProvider.Get(pd.Product, false));
                 });
 
                 // Measures

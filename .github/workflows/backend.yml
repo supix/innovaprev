@@ -39,8 +39,6 @@ jobs:
         uses: appleboy/ssh-action@v1.2.0
         env:
           BE_CNT_NAME: ${{ github.ref_name == 'qa' && 'be_qa' || 'be_prod' }}
-          IMAGES_BASE_URL: ${{ github.ref_name == 'qa' && secrets.IMAGES_BASE_URL_QA || secrets.IMAGES_BASE_URL_PROD }}
-          STAGE: ${{ github.ref_name == 'qa' && 'qa' || 'prod' }}
         with:
           host: ${{ secrets.HOST_ADDR }}
           username: ${{ secrets.HOST_USER }}
@@ -52,7 +50,5 @@ jobs:
             echo ${{ secrets.HOST_PWD }} | sudo -S docker run -d \
               --network=be_nw \
               --name=${{ env.BE_CNT_NAME }} \
-              -e IMAGES_BASE_URL=${{ env.IMAGES_BASE_URL }} \
-              -e STAGE=${{ env.STAGE }} \
               --restart=unless-stopped \
               supix/innovaprev_be:latest
