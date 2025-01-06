@@ -21,7 +21,10 @@ namespace PdfQuote
         public void Compose(IContainer container)
         {
             container.Column(c => {
-                c.Item().PaddingBottom(10).Text(coll.Product.Single(p => p.Id == pd.Product).Desc).FontSize(14).AlignCenter();
+                var theProduct = coll.Product.Single(p => p.Id == pd.Product);
+                c.Item().PaddingBottom(10).Text(theProduct.Desc).FontSize(14).AlignCenter();
+                if (!string.IsNullOrWhiteSpace(theProduct.ExtDesc))
+                    c.Item().PaddingBottom(10).Text(theProduct.ExtDesc).FontSize(8).Justify();
                 c.Item().DefaultTextStyle(x => x.FontSize(9)).Row(row =>
                 {
                     row.RelativeItem(1).Column(c => {
@@ -34,7 +37,10 @@ namespace PdfQuote
                 });
 
                 if (!string.IsNullOrWhiteSpace(pd.Notes))
-                    c.Item().PaddingTop(10).Text($"Note: {pd.Notes}").FontSize(9);
+                {
+                    c.Item().PaddingTop(10).Text($"NOTE").FontSize(8).Underline();
+                    c.Item().Text($"{pd.Notes}").FontSize(8).Justify();
+                }
             });
         }
     }
