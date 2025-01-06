@@ -5,6 +5,7 @@ export const sharedEnvironment = {
       getQuote: 'getQuote',
       downloadPdf: 'pdf',
       collections: 'collections',
+      productImage: 'ProductImage'
     }
   }
 };
