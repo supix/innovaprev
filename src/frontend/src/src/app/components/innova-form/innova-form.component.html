@@ -254,14 +254,14 @@
                         <p class="card-text text-content text-muted">{{ item.extDesc }}</p>
                       </div>
                       <div class="image-container p-2">
-                        <img src="assets/photos/{{ item.thumbImageFile }}" height="150" (error)="onImageError($event)"
+                        <img [src]="getUrl(item.id)" height="150"
                              [alt]="item.desc" class="rounded" />
                       </div>
                     </div>
                   </div>
                   <div class="visible-sm">
                     <div class="card product-card-sm" style="width: 18rem;">
-                      <img src="assets/photos/{{ item.thumbImageFile }}" height="150" (error)="onImageError($event)"
+                      <img [src]="getUrl(item.id)" height="150"
                            [alt]="item.desc" class="card-img-top" style="height: 18rem;" />
                       <div class="card-body content">
                         <h5 class="card-title">{{ item.desc }}</h5>

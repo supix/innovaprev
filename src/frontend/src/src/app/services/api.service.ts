@@ -29,4 +29,8 @@ export class ApiService {
     return this.http.get<CollectionsResponse>(`${this.baseUrl}${this.endpoints.collections}`);
   }
 
+  getImageUrl(productCode: string, isThumb: boolean = true): string {
+    return `${this.baseUrl}${this.endpoints.productImage}/${productCode}?isThumb=${isThumb}`;
+  }
+
 }

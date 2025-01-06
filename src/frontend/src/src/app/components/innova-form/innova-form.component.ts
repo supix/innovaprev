@@ -1,6 +1,6 @@
 import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {AbstractControl, FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
-import {CommonModule, NgOptimizedImage} from '@angular/common';
+import {CommonModule} from '@angular/common';
 import {NgSelectConfig, NgSelectModule} from '@ng-select/ng-select';
 import {ApiService} from '../../services/api.service';
 import {
@@ -39,7 +39,7 @@ import {environment} from '../../../environments/environment';
 @Component({
   selector: 'app-innova-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, NgSelectModule, PriceDisplayComponent, NgOptimizedImage],
+  imports: [CommonModule, ReactiveFormsModule, NgSelectModule, PriceDisplayComponent],
   templateUrl: './innova-form.component.html',
   styleUrls: ['./innova-form.component.scss'],
   encapsulation: ViewEncapsulation.None
@@ -453,6 +453,10 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
     if (tooltip) {
       tooltip.style.opacity = '0';
     }
+  }
+
+  getUrl(productCode: string, isThumb: boolean = true): string {
+    return this.apiService.getImageUrl(productCode, isThumb);
   }
 
   fillForm(): void {

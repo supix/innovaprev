@@ -18,8 +18,6 @@ export interface CollectionBaseItem {
 
 export interface Product extends CollectionBaseItem {
   trimSectionVisible: boolean;
-  imageFile: string;
-  thumbImageFile: string;
   extDesc: string;
 }
 
