@@ -6,37 +6,39 @@ using QuestPDF.Infrastructure;
 
 namespace PdfQuote
 {
-    internal class ArticleComponent : IComponent
+    internal class StandardProductComponent : IComponent
     {
         private readonly int index;
         private readonly DetailPrice detailPrice;
-        private readonly ICollectionProvider collectionProvider;
+        private readonly Collections coll;
+        private readonly bool trimSectionVisible;
         private readonly WindowsData windowsData;
 
-        public ArticleComponent(int index, WindowsData windowsData, DetailPrice detailPrice, ICollectionProvider collectionProvider)
+        public StandardProductComponent(int index, WindowsData windowsData, DetailPrice detailPrice, Collections coll, bool trimSectionVisible)
         {
             this.index = index;
             this.windowsData = windowsData ?? throw new ArgumentNullException(nameof(windowsData));
             this.detailPrice = detailPrice ?? throw new ArgumentNullException(nameof(detailPrice));
-            this.collectionProvider = collectionProvider ?? throw new ArgumentNullException(nameof(collectionProvider));
+            this.coll = coll ?? throw new ArgumentNullException(nameof(coll));
+            this.trimSectionVisible = trimSectionVisible;
         }
 
         public void Compose(IContainer container)
         {
-            var coll = this.collectionProvider.Get();
             container.Column(c =>
             {
+                c.Spacing(3);
                 // Lengths
                 c.Item().Row(r =>
                 {
-                    r.ConstantItem(25).Text($"#{index.ToString()}").Bold();
+                    r.ConstantItem(25).Text($"#{this.index.ToString()}");
+                    r.RelativeItem(2).Text($"q.tà: {this.windowsData.Quantity}");
                     r.RelativeItem(3).Text($"L (mm): {this.windowsData.Width}");
                     r.RelativeItem(3).Text($"H (mm): {this.windowsData.Height}");
-                    r.RelativeItem(2).Text($"Q.tà: {this.windowsData.Quantity}");
-                    r.RelativeItem(1).AlignRight().Text($"sx: {this.windowsData.LeftTrim}");
-                    r.RelativeItem(1).AlignRight().Text($"dx: {this.windowsData.RightTrim}");
-                    r.RelativeItem(1).AlignRight().Text($"sop: {this.windowsData.UpperTrim}");
-                    r.RelativeItem(1).AlignRight().Text($"sot: {this.windowsData.BelowThreshold}");
+                    r.RelativeItem(1).ShowIf(this.trimSectionVisible).AlignRight().Text($"sx: {this.windowsData.LeftTrim}");
+                    r.RelativeItem(1).ShowIf(this.trimSectionVisible).AlignRight().Text($"dx: {this.windowsData.RightTrim}");
+                    r.RelativeItem(1).ShowIf(this.trimSectionVisible).AlignRight().Text($"sop: {this.windowsData.UpperTrim}");
+                    r.RelativeItem(1).ShowIf(this.trimSectionVisible).AlignRight().Text($"sot: {this.windowsData.BelowThreshold}");
                 });
 
                 // Types
@@ -54,7 +56,7 @@ namespace PdfQuote
                 {
                     r.RelativeItem(4).Text(string.Empty);
                     r.RelativeItem(2).AlignRight().Text($"Prezzo mq: {this.detailPrice.UnitPrice:c}");
-                    r.RelativeItem(2).AlignRight().Text($"Tot.: {this.detailPrice.NetPrice:c}").Bold();
+                    r.RelativeItem(2).AlignRight().Text($"{this.detailPrice.NetPrice:c}").Bold();
                 });
             });
         }

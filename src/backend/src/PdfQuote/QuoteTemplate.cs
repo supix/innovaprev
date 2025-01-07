@@ -82,7 +82,7 @@ namespace PdfQuote
                 {
                     row.RelativeItem().Text(string.Empty);
                     row.RelativeItem()
-                        .PaddingBottom(10)
+                        .PaddingBottom(30)
                         .Component(new AddressComponent("DATI CLIENTE", project.CustomerData));
                 });
 
@@ -95,17 +95,27 @@ namespace PdfQuote
                     row.RelativeItem(1).Image(this.imageProvider.Get(pd.Product, false));
                 });
 
-                // Measures
+                // Details
                 column.Item().PaddingTop(10).Background(Colors.Grey.Lighten2).Padding(2).AlignCenter().DefaultTextStyle(x => x.FontSize(8)).Text("MISURE");
+                // windows data
                 var idx = 0;
                 foreach (var wd in this.project.WindowsData)
                 {
                     var detailPrice = priceInfo.DetailPrices[idx];
                     column.Item()
-                        .PaddingBottom(3)
                         .BorderBottom(1)
                         .BorderColor(Colors.Grey.Lighten2)
-                        .Component(new ArticleComponent(++idx, wd, detailPrice, collectionProvider));
+                        .PaddingBottom(7)
+                        .Component(new StandardProductComponent(++idx, wd, detailPrice, coll, coll.Product.Single(p => p.Id == pd.Product).TrimSectionVisible));
+                }
+                // custom data
+                foreach (var cd in this.project.CustomData)
+                {
+                    column.Item()
+                        .BorderBottom(1)
+                        .BorderColor(Colors.Grey.Lighten2)
+                        .PaddingBottom(5)
+                        .Component(new CustomProductComponent(++idx, cd));
                 }
 
                 // Total
