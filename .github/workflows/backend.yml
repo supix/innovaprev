@@ -52,7 +52,7 @@ jobs:
               --name=${{ env.BE_CNT_NAME }}1 \
               --restart=unless-stopped \
               supix/innovaprev_be:latest
-            sleep 10
+            sleep 15
             echo ${{ secrets.HOST_PWD }} | sudo -S docker rm -f ${{ env.BE_CNT_NAME }}2
             echo ${{ secrets.HOST_PWD }} | sudo -S docker run -d \
               --network=be_nw \
