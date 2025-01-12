@@ -45,10 +45,18 @@ jobs:
           key: ${{ secrets.HOST_KEY }}
           script: |
             echo ${{ secrets.HOST_PWD }} | sudo -S docker rm -f ${{ env.BE_CNT_NAME }}
+            echo ${{ secrets.HOST_PWD }} | sudo -S docker rm -f ${{ env.BE_CNT_NAME }}1
             echo ${{ secrets.HOST_PWD }} | sudo -S docker pull supix/innovaprev_be:latest
             echo ${{ secrets.HOST_PWD }} | sudo -S docker network inspect be_nw >/dev/null 2>&1 || echo ${{ secrets.HOST_PWD }} | docker network create be_nw
             echo ${{ secrets.HOST_PWD }} | sudo -S docker run -d \
               --network=be_nw \
-              --name=${{ env.BE_CNT_NAME }} \
+              --name=${{ env.BE_CNT_NAME }}1 \
+              --restart=unless-stopped \
+              supix/innovaprev_be:latest
+            pause 10
+            echo ${{ secrets.HOST_PWD }} | sudo -S docker rm -f ${{ env.BE_CNT_NAME }}2
+            echo ${{ secrets.HOST_PWD }} | sudo -S docker run -d \
+              --network=be_nw \
+              --name=${{ env.BE_CNT_NAME }}2 \
               --restart=unless-stopped \
               supix/innovaprev_be:latest
