@@ -7,7 +7,6 @@
         public required string InternalColor { get; set; }
         public required string ExternalColor { get; set; }
         public required string AccessoryColor { get; set; }
-        public required string ClimateZone { get; set; }
         public string? Notes { get; set; }
     }
 }
