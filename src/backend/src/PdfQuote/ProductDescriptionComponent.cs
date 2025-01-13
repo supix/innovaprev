@@ -25,15 +25,12 @@ namespace PdfQuote
                 c.Item().PaddingBottom(10).Text(theProduct.Desc).FontSize(14).AlignCenter();
                 if (!string.IsNullOrWhiteSpace(theProduct.ExtDesc))
                     c.Item().PaddingBottom(10).Text(theProduct.ExtDesc).FontSize(8).Justify();
-                c.Item().DefaultTextStyle(x => x.FontSize(9)).Row(row =>
+                c.Item().DefaultTextStyle(x => x.FontSize(9)).Column(c =>
                 {
-                    row.RelativeItem(1).Column(c => {
-                        c.Item().Text($"Colore");
-                        c.Item().PaddingLeft(5).Text($"Interno: {coll.InternalColors.Single(ic => ic.Id == pd.InternalColor).Desc}");
-                        c.Item().PaddingLeft(5).Text($"Esterno: {coll.ExternalColors.Single(ec => ec.Id == pd.ExternalColor).Desc}");
-                        c.Item().PaddingLeft(5).Text($"Accessori: {coll.AccessoryColors.Single(ac => ac.Id == pd.AccessoryColor).Desc}");
-                    });
-                    row.RelativeItem(1).AlignRight().Text($"Zona climatica: {coll.ClimateZones.Single(cz => cz.Id == pd.ClimateZone).Desc}");
+                    c.Item().Text($"Colore");
+                    c.Item().PaddingLeft(5).Text($"Interno: {coll.InternalColors.Single(ic => ic.Id == pd.InternalColor).Desc}");
+                    c.Item().PaddingLeft(5).Text($"Esterno: {coll.ExternalColors.Single(ec => ec.Id == pd.ExternalColor).Desc}");
+                    c.Item().PaddingLeft(5).Text($"Accessori: {coll.AccessoryColors.Single(ac => ac.Id == pd.AccessoryColor).Desc}");
                 });
 
                 if (!string.IsNullOrWhiteSpace(pd.Notes))

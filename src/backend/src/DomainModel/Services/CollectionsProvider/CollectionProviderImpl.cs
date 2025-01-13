@@ -44,11 +44,6 @@ namespace DomainModel.Services.CollectionsProvider
                     new CollectionItem() { Id = "AC_RAF", Desc = "Raffaello/Altri colori Ral" },
                     new CollectionItem() { Id = "AC_EL", Desc = "Effetto legno" },
                 },
-                ClimateZones = new[] {
-                    new CollectionItem() { Id = "CZ_F", Desc = "Fredda" },
-                    new CollectionItem() { Id = "CZ_M", Desc = "Mite" },
-                    new CollectionItem() { Id = "CZ_C", Desc = "Calda" },
-                },
                 WindowTypes = new[] {
                     new CollectionItem() { Id = "FIX", Desc = "Fisso con fermavetro" },
                     new CollectionItem() { Id = "F1A", Desc = "Finestra 1 Anta" },

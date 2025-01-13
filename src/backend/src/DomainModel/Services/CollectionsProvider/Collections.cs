@@ -12,7 +12,6 @@ namespace DomainModel.Services.CollectionsProvider
         public required CollectionItem[] InternalColors { get; set; }
         public required CollectionItem[] ExternalColors { get; set; }
         public required CollectionItem[] AccessoryColors { get; set; }
-        public required CollectionItem[] ClimateZones { get; set; }
         public required CollectionItem[] WindowTypes { get; set; }
         public required CollectionItem[] OpeningTypes { get; set; }
         public required CollectionItem[] GlassTypes { get; set; }
