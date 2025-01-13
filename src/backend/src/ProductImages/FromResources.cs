@@ -13,14 +13,10 @@ namespace ProductImages
                     return isThumb ? ProductImages.RH36Y_thumb : ProductImages.RH36Y;
                 case "RALT":
                     return isThumb ? ProductImages.no_image_thumb : ProductImages.no_image;
-                case "AAL":
-                    return isThumb ? ProductImages.T2S3W_thumb : ProductImages.T2S3W;
                 case "AATT":
-                    return isThumb ? ProductImages.YHX21_thumb : ProductImages.YHX21;
+                    return isThumb ? ProductImages.T2S3W_thumb : ProductImages.T2S3W;
                 case "AALAM":
                     return isThumb ? ProductImages.T2S3W_thumb : ProductImages.T2S3W;
-                case "SALTT":
-                    return isThumb ? ProductImages.no_image_thumb : ProductImages.no_image;
                 case "IPC":
                     return isThumb ? ProductImages.U651R_thumb : ProductImages.U651R;
                 case "IPN":
