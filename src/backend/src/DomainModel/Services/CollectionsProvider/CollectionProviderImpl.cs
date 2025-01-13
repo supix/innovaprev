@@ -28,18 +28,21 @@ namespace DomainModel.Services.CollectionsProvider
                     new CollectionItem() { Id = "IC_BRO", Desc = "Bronzo" },
                     new CollectionItem() { Id = "IC_RAM", Desc = "Ramato" },
                     new CollectionItem() { Id = "IC_RAF", Desc = "Raffaello/Altri colori Ral" },
+                    new CollectionItem() { Id = "AC_EL", Desc = "Effetto legno" },
                 },
                 ExternalColors = new[] {
                     new CollectionItem() { Id = "EC_ARG", Desc = "Argento" },
                     new CollectionItem() { Id = "EC_BRO", Desc = "Bronzo" },
                     new CollectionItem() { Id = "EC_RAM", Desc = "Ramato" },
                     new CollectionItem() { Id = "EC_RAF", Desc = "Raffaello/Altri colori Ral" },
+                    new CollectionItem() { Id = "AC_EL", Desc = "Effetto legno" },
                 },
                 AccessoryColors = new[] {
                     new CollectionItem() { Id = "AC_ARG", Desc = "Argento" },
                     new CollectionItem() { Id = "AC_BRO", Desc = "Bronzo" },
                     new CollectionItem() { Id = "AC_RAM", Desc = "Ramato" },
                     new CollectionItem() { Id = "AC_RAF", Desc = "Raffaello/Altri colori Ral" },
+                    new CollectionItem() { Id = "AC_EL", Desc = "Effetto legno" },
                 },
                 ClimateZones = new[] {
                     new CollectionItem() { Id = "CZ_F", Desc = "Fredda" },
