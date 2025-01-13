@@ -148,10 +148,4 @@
   <data name="U651R_thumb" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\U651R_thumb.jpg;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="YHX21" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\YHX21.jpg;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="YHX21_thumb" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\YHX21_thumb.jpg;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
 </root>

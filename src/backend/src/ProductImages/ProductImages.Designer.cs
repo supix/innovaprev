@@ -159,25 +159,5 @@ namespace ProductImages {
                 return ((byte[])(obj));
             }
         }
-        
-        /// <summary>
-        ///   Cerca una risorsa localizzata di tipo System.Byte[].
-        /// </summary>
-        internal static byte[] YHX21 {
-            get {
-                object obj = ResourceManager.GetObject("YHX21", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Cerca una risorsa localizzata di tipo System.Byte[].
-        /// </summary>
-        internal static byte[] YHX21_thumb {
-            get {
-                object obj = ResourceManager.GetObject("YHX21_thumb", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
     }
 }
