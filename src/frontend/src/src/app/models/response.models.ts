@@ -30,9 +30,6 @@ export interface ExternalColor extends CollectionBaseItem {
 export interface AccessoryColor extends CollectionBaseItem {
 }
 
-export interface ClimateZone extends CollectionBaseItem {
-}
-
 export interface WindowType extends CollectionBaseItem {
 }
 
@@ -51,7 +48,6 @@ export interface CollectionsResponse {
   internalColors: InternalColor[];
   externalColors: ExternalColor[];
   accessoryColors: AccessoryColor[];
-  climateZones: ClimateZone[];
   windowTypes: WindowType[];
   openingTypes: OpeningType[];
   glassTypes: GlassType[];

@@ -35,6 +35,7 @@ import {
 import {catchError} from 'rxjs/operators';
 import CryptoJS from 'crypto-js';
 import {environment} from '../../../environments/environment';
+import {DomSanitizer, SafeHtml} from '@angular/platform-browser';
 
 @Component({
   selector: 'app-innova-form',
@@ -79,7 +80,8 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
   private calculatePriceSubject = new Subject<PricePayload | null>();
   private previousPayloadHash: string | null = null;
 
-  constructor(private fb: FormBuilder, private config: NgSelectConfig, private apiService: ApiService) {
+  constructor(private sanitizer: DomSanitizer, private fb: FormBuilder,
+              private config: NgSelectConfig, private apiService: ApiService) {
     this.config.bindLabel = 'desc';
     this.config.bindValue = 'id';
     this.config.notFoundText = 'Nessun elemento trovato';
@@ -107,7 +109,6 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
         internalColor: [null, Validators.required],
         externalColor: [null, Validators.required],
         accessoryColor: [null, Validators.required],
-        climateZone: [null, Validators.required],
         notes: ['']
       }),
       windowsData: this.fb.array([]), // Contains the rows for the window estimates
@@ -167,6 +168,11 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
   // Getter for the windows FormArray
   get customData(): FormArray {
     return this.form.get('customData') as FormArray;
+  }
+
+  sanitizeHtml(text: string): SafeHtml {
+    const htmlContent = text.replace(/\n/g, '<br>');
+    return this.sanitizer.bypassSecurityTrustHtml(htmlContent);
   }
 
   isTrimSectionVisible(): boolean {
@@ -392,10 +398,9 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   // Needed to work around a ng-select issue
-  ngSelectHandleFocus(enabled: boolean): void {
+  ngSelectHandleFocus(enabled: boolean, myCustomClass: string = "custom-table-lg"): void {
     if (enabled) {
       setTimeout(() => {
-        const myCustomClass: string = "custom-table-lg"
         const panel = document.querySelector('.ng-dropdown-panel');
         if (panel) {
           panel.classList.add(myCustomClass);
@@ -562,7 +567,6 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
         internalColor: currentFormValue.productData?.internalColor || getRandomItem(this.collections.internalColors, 'defaultInternalColor'),
         externalColor: currentFormValue.productData?.externalColor || getRandomItem(this.collections.externalColors, 'defaultExternalColor'),
         accessoryColor: currentFormValue.productData?.accessoryColor || getRandomItem(this.collections.accessoryColors, 'defaultAccessoryColor'),
-        climateZone: currentFormValue.productData?.climateZone || getRandomItem(this.collections.climateZones, 'defaultClimateZone'),
         notes: currentFormValue.productData?.notes || 'No special notes.'
       }
     });

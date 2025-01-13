@@ -49,37 +49,19 @@ function calculatePrice(payload: any): number {
 function validatePayload(payload: any): string[] {
   const errors: string[] = [];
 
-  // if (!payload.personalData) {
-  //   errors.push('Missing personalData object.');
-  // } else {
-  //   const {companyName, address, vat, phone, mail, orderNumber} = payload.personalData;
-  //   if (!companyName) errors.push('personalData.companyName is required.');
-  //   if (!address) errors.push('personalData.address is required.');
-  //   if (!vat) errors.push('personalData.vat is required.');
-  //   if (!phone) errors.push('personalData.phone is required.');
-  //   if (!mail) errors.push('personalData.mail is required.');
-  //   if (!orderNumber) errors.push('personalData.orderNumber is required.');
-  // }
-
   if (!payload.productData) {
     errors.push('Missing productData object.');
   } else {
     const {
       product,
-      // glassStopper,
-      // windowSlide,
       internalColor,
       externalColor,
-      accessoryColor,
-      climateZone
+      accessoryColor
     } = payload.productData;
     if (!product) errors.push('productData.product is required.');
-    // if (glassStopper === undefined) errors.push('productData.glassStopper is required.');
-    // if (windowSlide === undefined) errors.push('productData.windowSlide is required.');
     if (!internalColor) errors.push('productData.internalColor is required.');
     if (!externalColor) errors.push('productData.externalColor is required.');
     if (!accessoryColor) errors.push('productData.accessoryColor is required.');
-    if (!climateZone) errors.push('productData.climateZone is required.');
   }
 
   if (!payload.windowsData || !Array.isArray(payload.windowsData) || payload.windowsData.length === 0) {
@@ -117,11 +99,6 @@ const getMockCollections = (): CollectionsResponse => ({
     {id: 'AC_GIALLO', desc: 'Giallo'},
     {id: 'AC_VERDE', desc: 'Verde'},
     {id: 'AC_ROSSO', desc: 'Rosso'},
-  ],
-  climateZones: [
-    {id: 'CZ_GIALLO', desc: 'Giallo'},
-    {id: 'CZ_VERDE', desc: 'Verde'},
-    {id: 'CZ_ROSSO', desc: 'Rosso'},
   ],
   windowTypes: [
     {id: 'WT_GRANDE', desc: 'Grande'},

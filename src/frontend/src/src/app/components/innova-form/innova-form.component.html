@@ -251,7 +251,7 @@
                     <div class="card product-card d-flex flex-row" style="margin: 10px 0">
                       <div class="content flex-grow-1 p-3">
                         <h5 class="card-title">{{ item.desc }}</h5>
-                        <p class="card-text text-content text-muted">{{ item.extDesc }}</p>
+                        <p class="card-text text-content text-muted" [innerHTML]="sanitizeHtml(item.extDesc)"></p>
                       </div>
                       <div class="image-container p-2">
                         <img [src]="getUrl(item.id)" height="150"
@@ -265,7 +265,7 @@
                            [alt]="item.desc" class="card-img-top" style="height: 18rem;" />
                       <div class="card-body content">
                         <h5 class="card-title">{{ item.desc }}</h5>
-                        <p class="card-text text-content text-muted">{{ item.extDesc }}</p>
+                        <p class="card-text text-content text-muted" [innerHTML]="sanitizeHtml(item.extDesc)"></p>
                       </div>
                     </div>
                   </div>
@@ -279,7 +279,7 @@
           </div>
 
           <!-- Colore Interno -->
-          <div class="col-md-3">
+          <div class="col-md-4">
             <label class="form-label">Colore Interno</label>
             <ng-container *ngIf="productData?.get('internalColor') as internalColorControl">
               <ng-select
@@ -301,7 +301,7 @@
           </div>
 
           <!-- Colore Esterno -->
-          <div class="col-md-3">
+          <div class="col-md-4">
             <label class="form-label">Colore Esterno</label>
             <ng-container *ngIf="productData?.get('externalColor') as externalColorControl">
               <ng-select
@@ -323,7 +323,7 @@
           </div>
 
           <!-- Colore Accessori -->
-          <div class="col-md-3">
+          <div class="col-md-4">
             <label class="form-label">Colore Accessori</label>
             <ng-container *ngIf="productData?.get('accessoryColor') as accessoryColorControl">
               <ng-select
@@ -343,28 +343,6 @@
               </div>
             </ng-container>
           </div>
-
-          <!-- Zona Climatica -->
-          <div class="col-md-3">
-            <label class="form-label">Zona Climatica</label>
-            <ng-container *ngIf="productData?.get('climateZone') as climateZoneControl">
-              <ng-select
-                [items]="collections?.climateZones || []"
-                [searchable]="true"
-                [clearable]="false"
-                formControlName="climateZone"
-                [class.ng-invalid]="false"
-                [ngClass]="{ 'is-invalid': (submitted || climateZoneControl.touched) && climateZoneControl.invalid }"
-                [loading]="isCollectionsLoading"
-                placeholder="Seleziona una zona">
-              </ng-select>
-              <div *ngIf="submitted && climateZoneControl.touched && climateZoneControl.invalid"
-                   class="invalid-feedback">
-                La zona climatica è obbligatoria.
-              </div>
-            </ng-container>
-          </div>
-
           <!-- Note -->
           <div class="col-md-12">
             <label for="notes" class="form-label">Note</label>
