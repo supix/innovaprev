@@ -130,11 +130,23 @@
   <data name="no_image_thumb" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\no_image_thumb.jpg;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="Review" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\Review.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="Review_thumb" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\Review_thumb.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="RH36Y" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\RH36Y.jpg;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="RH36Y_thumb" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\RH36Y_thumb.jpg;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="Scorrevole" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\Scorrevole.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="Scorrevole_thumb" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\Scorrevole_thumb.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="T2S3W" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\T2S3W.jpg;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>

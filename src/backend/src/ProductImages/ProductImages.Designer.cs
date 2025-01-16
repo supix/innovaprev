@@ -103,6 +103,26 @@ namespace ProductImages {
         /// <summary>
         ///   Cerca una risorsa localizzata di tipo System.Byte[].
         /// </summary>
+        internal static byte[] Review {
+            get {
+                object obj = ResourceManager.GetObject("Review", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una risorsa localizzata di tipo System.Byte[].
+        /// </summary>
+        internal static byte[] Review_thumb {
+            get {
+                object obj = ResourceManager.GetObject("Review_thumb", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una risorsa localizzata di tipo System.Byte[].
+        /// </summary>
         internal static byte[] RH36Y {
             get {
                 object obj = ResourceManager.GetObject("RH36Y", resourceCulture);
@@ -116,6 +136,26 @@ namespace ProductImages {
         internal static byte[] RH36Y_thumb {
             get {
                 object obj = ResourceManager.GetObject("RH36Y_thumb", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una risorsa localizzata di tipo System.Byte[].
+        /// </summary>
+        internal static byte[] Scorrevole {
+            get {
+                object obj = ResourceManager.GetObject("Scorrevole", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una risorsa localizzata di tipo System.Byte[].
+        /// </summary>
+        internal static byte[] Scorrevole_thumb {
+            get {
+                object obj = ResourceManager.GetObject("Scorrevole_thumb", resourceCulture);
                 return ((byte[])(obj));
             }
         }
