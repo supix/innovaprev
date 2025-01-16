@@ -66,6 +66,7 @@ app-innova-form {
 
         font-size: 0.9rem;
         vertical-align: middle;
+
         input {
           font-size: 0.85rem;
         }
@@ -259,10 +260,12 @@ ng-dropdown-panel {
     word-wrap: break-word;
     overflow-wrap: break-word;
   }
+
   .image-container {
     display: flex;
     align-items: center;
     padding: 0.5rem;
+
     img {
       height: auto;
       max-height: 150px;
@@ -287,22 +290,23 @@ ng-dropdown-panel {
     word-wrap: break-word;
     overflow-wrap: break-word;
   }
+
   overflow: hidden;
 }
 
 .hidden-sm {
-  display: none!important;
+  display: none !important;
 
   @media (min-width: 768px) {
-    display: block!important;
+    display: block !important;
   }
 }
 
 .visible-sm {
-  display: block!important;
+  display: block !important;
 
   @media (min-width: 768px) {
-    display: none!important;
+    display: none !important;
   }
 }
 
