@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using DomainModel.Classes.Materials;
+using DomainModel.Classes.Materials.ConcreteMaterials;
 
 namespace DomainModel.Services.CollectionsProvider
 {
@@ -44,30 +47,30 @@ namespace DomainModel.Services.CollectionsProvider
                     new CollectionItem() { Id = "AC_RAF", Desc = "Raffaello/Altri colori Ral" },
                     new CollectionItem() { Id = "AC_EL", Desc = "Effetto legno" },
                 },
-                WindowTypes = new[] {
-                    new CollectionItem() { Id = "FIX", Desc = "Fisso con fermavetro" },
-                    new CollectionItem() { Id = "F1A", Desc = "Finestra 1 Anta" },
-                    new CollectionItem() { Id = "PF1A", Desc = "Portafinestra 1 Anta" },
-                    new CollectionItem() { Id = "SIL", Desc = "Scorrevole in linea" },
-                    new CollectionItem() { Id = "FIXA", Desc = "Fisso con anta fissa" },
-                    new CollectionItem() { Id = "VAS", Desc = "Vasistas" },
-                    new CollectionItem() { Id = "F2A", Desc = "Finestra 2 Ante" },
-                    new CollectionItem() { Id = "PF2A", Desc = "Portafinestra 2 Ante" },
-                    new CollectionItem() { Id = "SRAF", Desc = "Scorrevole Ribalta con anta fissa" },
-                    new CollectionItem() { Id = "SRLA", Desc = "Scorrevole Ribalta con laterale apribile" },
-                    new CollectionItem() { Id = "SCA", Desc = "Scorrevole alzante" },
-                    new CollectionItem() { Id = "PRT1A", Desc = "Portoncino 1 anta" },
-                    new CollectionItem() { Id = "PRT2A", Desc = "Portoncino 2 ante" },
-                    new CollectionItem() { Id = "SLF", Desc = "Sopraluce fisso" },
-                    new CollectionItem() { Id = "SLA", Desc = "Sopraluce apribile" },
-                    new CollectionItem() { Id = "FLD", Desc = "Fisso laterale dx" },
-                    new CollectionItem() { Id = "FLS", Desc = "Fisso laterale sx" },
-                    new CollectionItem() { Id = "AD", Desc = "A Disegno allegato" },
-                    new CollectionItem() { Id = "PIA", Desc = "Piatte" },
-                    new CollectionItem() { Id = "LIS", Desc = "Listelli" },
-                    new CollectionItem() { Id = "CAS", Desc = "Cassonetti" },
-                    new CollectionItem() { Id = "CEL", Desc = "Celetti" },
-                },
+                WindowTypes = [
+                    this.GetMatCollItem("FIX"),
+                    this.GetMatCollItem("F1A"),
+                    this.GetMatCollItem("PF1A"),
+                    this.GetMatCollItem("SIL"),
+                    this.GetMatCollItem("FIXA"),
+                    this.GetMatCollItem("VAS"),
+                    this.GetMatCollItem("F2A"),
+                    this.GetMatCollItem("PF2A"),
+                    this.GetMatCollItem("SRAF"),
+                    this.GetMatCollItem("SRLA"),
+                    this.GetMatCollItem("SCA"),
+                    this.GetMatCollItem("PRT1A"),
+                    this.GetMatCollItem("PRT2A"),
+                    this.GetMatCollItem("SLF"),
+                    this.GetMatCollItem("SLA"),
+                    this.GetMatCollItem("FLD"),
+                    this.GetMatCollItem("FLS"),
+                    this.GetMatCollItem("AD"),
+                    this.GetMatCollItem("PIA"),
+                    this.GetMatCollItem("LIS"),
+                    this.GetMatCollItem("CAS"),
+                    this.GetMatCollItem("CEL"),
+                ],
                 OpeningTypes = new[] {
                     new CollectionItem() { Id = "OT_DX", Desc = "SX" },
                     new CollectionItem() { Id = "OT_SX", Desc = "DX" },
@@ -82,6 +85,12 @@ namespace DomainModel.Services.CollectionsProvider
                     new CollectionItem() { Id = "CR_B", Desc = "Bassa" },
                 },
             };
+        }
+
+        private MaterialCollectionItem GetMatCollItem(string materialCode)
+        {
+            var material = MaterialFactory.CreateByCode(materialCode);
+            return new MaterialCollectionItem() { Id = materialCode, Desc = material.Description, NumOfDims = material.NumberOfDimensions };
         }
     }
 }

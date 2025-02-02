@@ -5,6 +5,7 @@
         public long Position { get; set; }
         public long Height { get; set; }
         public long Width { get; set; }
+        public long Length { get; set; }
         public long Quantity { get; set; }
         public required string WindowType { get; set; }
         public required string OpeningType { get; set; }
