@@ -1,5 +1,4 @@
-﻿using System.Net;
-using DomainModel.Services;
+﻿using DomainModel.Services;
 
 namespace ProductImages
 {

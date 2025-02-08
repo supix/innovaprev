@@ -1,6 +1,4 @@
 ﻿using DomainModel.Classes;
-using DomainModel.Services.CollectionsProvider;
-using DomainModel.Services.PriceCalculator;
 using QuestPDF.Fluent;
 using QuestPDF.Infrastructure;
 
@@ -21,10 +19,10 @@ namespace PdfQuote
         {
             container.Row(r =>
             {
-                r.ConstantItem(25).Text($"#{this.index.ToString()}");
+                r.ConstantItem(25).Text($"#{index.ToString()}");
                 r.RelativeItem(2).Text(customData.Quantity);
                 r.RelativeItem(3).Text(customData.Description);
-                r.RelativeItem(2).AlignRight().Text($"{this.customData.Price:c}").Bold();
+                r.RelativeItem(2).AlignRight().Text($"{customData.Price:c}").Bold();
             });
         }
     }

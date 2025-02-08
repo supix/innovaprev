@@ -4,11 +4,11 @@
     {
         protected SingleDimMaterial(long length_mm)
         {
-            this.Length_mm = length_mm;
+            Length_mm = length_mm;
         }
 
         public override int NumberOfDimensions => 1;
         public long Length_mm { get; set; }
-        public override sealed long DimensionToQuote => this.Length_mm >= this.ClampMinValue ? this.Length_mm : this.ClampMinValue;
+        public override sealed long DimensionToQuote => Length_mm >= ClampMinValue ? Length_mm : ClampMinValue;
     }
 }

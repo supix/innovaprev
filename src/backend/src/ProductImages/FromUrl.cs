@@ -18,7 +18,7 @@ namespace ProductImages
 
         public byte[] Get(string name, bool isThumb)
         {
-            var baseUri = new Uri(this.baseUrl);
+            var baseUri = new Uri(baseUrl);
             var fullUri = new Uri(baseUri, name);
             using (var client = new HttpClient())
             {

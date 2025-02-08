@@ -1,8 +1,6 @@
-﻿using System.Data.Common;
-using DomainModel.Classes;
+﻿using DomainModel.Classes;
 using DomainModel.Services.CollectionsProvider;
 using QuestPDF.Fluent;
-using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
 
 namespace PdfQuote
@@ -20,7 +18,8 @@ namespace PdfQuote
 
         public void Compose(IContainer container)
         {
-            container.Column(c => {
+            container.Column(c =>
+            {
                 var theProduct = coll.Product.Single(p => p.Id == pd.Product);
                 c.Item().PaddingBottom(10).Text(theProduct.Desc).FontSize(14).AlignCenter();
                 if (!string.IsNullOrWhiteSpace(theProduct.ExtDesc))

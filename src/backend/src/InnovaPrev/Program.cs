@@ -1,7 +1,5 @@
-using Microsoft.AspNetCore.Localization;
-using System.Globalization;
-using SimpleInjector;
 using Microsoft.Extensions.Options;
+using SimpleInjector;
 
 var builder = WebApplication.CreateBuilder(args);
 

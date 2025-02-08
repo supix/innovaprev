@@ -14,7 +14,7 @@ namespace DomainModel.Classes.Materials
             {
                 throw new InvalidOperationException($"Single dimension material must be created with a single measure. Material code: {code}");
             }
-            
+
             if (m_type.IsSubclassOf(typeof(DoubleDimMaterial)) && measures.Length != 2)
             {
                 throw new InvalidOperationException($"Double dimension material must be created with just two measures. Material code: {code}");

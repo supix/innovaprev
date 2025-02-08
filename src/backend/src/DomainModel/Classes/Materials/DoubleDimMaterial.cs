@@ -4,8 +4,8 @@
     {
         protected DoubleDimMaterial(long height_mm, long width_mm)
         {
-            this.Height_mm = height_mm;
-            this.Width_mm = width_mm;
+            Height_mm = height_mm;
+            Width_mm = width_mm;
         }
 
         public override int NumberOfDimensions => 2;
@@ -16,7 +16,7 @@
             get
             {
                 var area_smm = Height_mm * Width_mm;
-                return area_smm >= this.ClampMinValue ? area_smm : this.ClampMinValue;
+                return area_smm >= ClampMinValue ? area_smm : ClampMinValue;
             }
         }
     }

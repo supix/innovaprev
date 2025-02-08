@@ -21,7 +21,7 @@ namespace InnovaPrev.Controllers
         [HttpGet("{id}")]
         public IActionResult Get(string id, bool isThumb)
         {
-            return File(this.productImageProvider.Get(id, isThumb), "image/jpeg");
+            return File(productImageProvider.Get(id, isThumb), "image/jpeg");
         }
     }
 }

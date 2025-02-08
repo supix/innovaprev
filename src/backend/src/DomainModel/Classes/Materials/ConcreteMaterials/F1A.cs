@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DomainModel.Classes.Materials.ConcreteMaterials
+﻿namespace DomainModel.Classes.Materials.ConcreteMaterials
 {
     public class F1A : DoubleDimMaterial
     {

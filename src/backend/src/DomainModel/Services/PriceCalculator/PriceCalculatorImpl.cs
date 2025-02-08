@@ -1,5 +1,4 @@
-﻿using System;
-using DomainModel.Classes;
+﻿using DomainModel.Classes;
 
 namespace DomainModel.Services.PriceCalculator
 {

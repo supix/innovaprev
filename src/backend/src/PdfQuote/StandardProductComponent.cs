@@ -31,32 +31,32 @@ namespace PdfQuote
                 // Lengths
                 c.Item().Row(r =>
                 {
-                    r.ConstantItem(25).Text($"#{this.index.ToString()}");
-                    r.RelativeItem(2).Text($"q.tà: {this.windowsData.Quantity}");
-                    r.RelativeItem(3).Text($"L (mm): {this.windowsData.Width}");
-                    r.RelativeItem(3).Text($"H (mm): {this.windowsData.Height}");
-                    r.RelativeItem(1).ShowIf(this.trimSectionVisible).AlignRight().Text($"sx: {this.windowsData.LeftTrim}");
-                    r.RelativeItem(1).ShowIf(this.trimSectionVisible).AlignRight().Text($"dx: {this.windowsData.RightTrim}");
-                    r.RelativeItem(1).ShowIf(this.trimSectionVisible).AlignRight().Text($"sop: {this.windowsData.UpperTrim}");
-                    r.RelativeItem(1).ShowIf(this.trimSectionVisible).AlignRight().Text($"sot: {this.windowsData.BelowThreshold}");
+                    r.ConstantItem(25).Text($"#{index.ToString()}");
+                    r.RelativeItem(2).Text($"q.tà: {windowsData.Quantity}");
+                    r.RelativeItem(3).Text($"L (mm): {windowsData.Width}");
+                    r.RelativeItem(3).Text($"H (mm): {windowsData.Height}");
+                    r.RelativeItem(1).ShowIf(trimSectionVisible).AlignRight().Text($"sx: {windowsData.LeftTrim}");
+                    r.RelativeItem(1).ShowIf(trimSectionVisible).AlignRight().Text($"dx: {windowsData.RightTrim}");
+                    r.RelativeItem(1).ShowIf(trimSectionVisible).AlignRight().Text($"sop: {windowsData.UpperTrim}");
+                    r.RelativeItem(1).ShowIf(trimSectionVisible).AlignRight().Text($"sot: {windowsData.BelowThreshold}");
                 });
 
                 // Types
                 c.Item().DefaultTextStyle(x => x.FontSize(8)).Row(r =>
                 {
                     r.ConstantItem(25).Text(string.Empty);
-                    r.RelativeItem(6).Text($"Tipol.: {coll.WindowTypes.Single(wt => wt.Id == this.windowsData.WindowType).Desc}");
-                    r.RelativeItem(3).Text($"Apert. (vista interna): {coll.OpeningTypes.Single(ot => ot.Id == this.windowsData.OpeningType).Desc}");
-                    r.RelativeItem(2).Text($"Vetro: {coll.GlassTypes.Single(gt => gt.Id == this.windowsData.GlassType).Desc}");
-                    r.RelativeItem(2).AlignRight().Text($"Trav.: {coll.Crosspieces.Single(cp => cp.Id == this.windowsData.Crosspiece).Desc}");
+                    r.RelativeItem(6).Text($"Tipol.: {coll.WindowTypes.Single(wt => wt.Id == windowsData.WindowType).Desc}");
+                    r.RelativeItem(3).Text($"Apert. (vista interna): {coll.OpeningTypes.Single(ot => ot.Id == windowsData.OpeningType).Desc}");
+                    r.RelativeItem(2).Text($"Vetro: {coll.GlassTypes.Single(gt => gt.Id == windowsData.GlassType).Desc}");
+                    r.RelativeItem(2).AlignRight().Text($"Trav.: {coll.Crosspieces.Single(cp => cp.Id == windowsData.Crosspiece).Desc}");
                 });
 
                 // Prices
                 c.Item().Row(r =>
                 {
                     r.RelativeItem(4).Text(string.Empty);
-                    r.RelativeItem(2).AlignRight().Text($"Prezzo mq: {this.detailPrice.UnitPrice:c}");
-                    r.RelativeItem(2).AlignRight().Text($"{this.detailPrice.NetPrice:c}").Bold();
+                    r.RelativeItem(2).AlignRight().Text($"Prezzo mq: {detailPrice.UnitPrice:c}");
+                    r.RelativeItem(2).AlignRight().Text($"{detailPrice.NetPrice:c}").Bold();
                 });
             });
         }
