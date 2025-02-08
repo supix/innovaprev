@@ -6,11 +6,10 @@
         {
         }
 
-        public override string Code => "CEL";
-
         public override string Description => "Celetti";
 
         protected override long ClampMinValue => 1000000;
+        public override int Order => 210;
     }
 
 }

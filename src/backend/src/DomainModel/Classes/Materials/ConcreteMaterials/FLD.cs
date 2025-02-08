@@ -6,11 +6,9 @@
         {
         }
 
-        public override string Code => "FLD";
-
         public override string Description => "Fisso laterale dx";
-
         protected override long ClampMinValue => 1500000;
+        public override int Order => 150;
     }
 
 }

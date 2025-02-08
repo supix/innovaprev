@@ -1,11 +1,12 @@
 ﻿namespace DomainModel.Classes.Materials
 {
-    public abstract class Material : IMaterial
+    public abstract class AbstractMaterial : IMaterial
     {
-        public abstract string Code { get; }
+        public string Code => this.GetType().Name;
         public abstract string Description { get; }
         public abstract int NumberOfDimensions { get; }
         protected abstract long ClampMinValue { get; }
         public abstract long DimensionToQuote { get; }
+        public abstract int Order { get; }
     }
 }

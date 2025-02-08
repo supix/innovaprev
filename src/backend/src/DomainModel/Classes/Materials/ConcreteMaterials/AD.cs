@@ -6,11 +6,9 @@
         {
         }
 
-        public override string Code => "AD";
-
         public override string Description => "A Disegno allegato";
-
         protected override long ClampMinValue => 1500000;
+        public override int Order => 170;
     }
 
 }

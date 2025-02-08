@@ -6,11 +6,10 @@
         {
         }
 
-        public override string Code => "CAS";
-
         public override string Description => "Cassonetti";
 
         protected override long ClampMinValue => 1000000;
+        public override int Order => 200;
     }
 
 }

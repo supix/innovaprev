@@ -5,12 +5,9 @@
         public LIS(long length_mm) : base(length_mm)
         {
         }
-
-        public override string Code => "LIS";
-
         public override string Description => "Listelli";
-
         protected override long ClampMinValue => 1000000;
+        public override int Order => 190;
     }
 
 }

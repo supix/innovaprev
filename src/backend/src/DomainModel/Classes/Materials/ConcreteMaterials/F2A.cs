@@ -6,10 +6,9 @@
         {
         }
 
-        public override string Code => "F2A";
-
         public override string Description => "Finestra 2 Ante";
 
         protected override long ClampMinValue => 1800000;
+        public override int Order => 60;
     }
 }

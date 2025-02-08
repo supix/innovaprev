@@ -1,6 +1,6 @@
 ﻿namespace DomainModel.Classes.Materials
 {
-    public abstract class DoubleDimMaterial : Material
+    public abstract class DoubleDimMaterial : AbstractMaterial
     {
         protected DoubleDimMaterial(long height_mm, long width_mm)
         {
