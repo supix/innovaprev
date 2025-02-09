@@ -6,7 +6,7 @@
         {
         }
         public override string Description => "Sopraluce apribile";
-        protected override long ClampMinValue => 1500000;
+        protected override long? ClampMinValue => 1500000;
         public override int Order => 140;
     }
 

@@ -6,7 +6,7 @@
         {
         }
         public override string Description => "Portoncino 2 ante";
-        protected override long ClampMinValue => 1800000;
+        protected override long? ClampMinValue => 1800000;
         public override int Order => 120;
     }
 }

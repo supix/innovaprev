@@ -16,7 +16,9 @@
             get
             {
                 var area_smm = Height_mm * Width_mm;
-                return area_smm >= ClampMinValue ? area_smm : ClampMinValue;
+                if (!ClampMinValue.HasValue)
+                    return area_smm;
+                return area_smm >= ClampMinValue.Value ? area_smm : ClampMinValue.Value;
             }
         }
     }

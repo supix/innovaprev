@@ -8,7 +8,7 @@
 
         public override string Description => "Finestra 1 Anta";
 
-        protected override long ClampMinValue => 1500000;
+        protected override long? ClampMinValue => 1500000;
         public override int Order => 10;
     }
 }

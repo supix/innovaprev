@@ -7,7 +7,7 @@
         }
 
         public override string Description => "A Disegno allegato";
-        protected override long ClampMinValue => 1500000;
+        protected override long? ClampMinValue => null;
         public override int Order => 170;
     }
 

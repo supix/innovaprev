@@ -1,4 +1,6 @@
 ﻿using DomainModel.Classes;
+using DomainModel.Classes.Materials;
+using DomainModel.Classes.Products;
 
 namespace DomainModel.Services.PriceCalculator
 {
@@ -6,27 +8,31 @@ namespace DomainModel.Services.PriceCalculator
     {
         public PriceInfo getPrices(ProductData productData, WindowsData[] windowsData, CustomData[] customData)
         {
-            var price = new PriceInfo
-            {
-                GrandTotal = 0M,
-                DetailPrices = new List<DetailPrice>()
-            };
+            var product = ProductFactory.CreateByCode(productData.Product);
+            const decimal sqm_glassPrice = 38M;
+            var sqm_price = product.StandardPrice + sqm_glassPrice;
 
-            var productPriceInfo = windowsData.Aggregate(price, (Func<PriceInfo, WindowsData, PriceInfo>)((acc, x) =>
-            {
-                const int sqm_price = 985;
-                var area_sqm = decimal.Divide(x.Height * x.Width, 1e6M);
-                if (area_sqm < 1.5M)
-                    area_sqm = 1.5M;
-                var total_area = area_sqm * x.Quantity;
-                decimal netPrice = sqm_price * total_area;
-                var detailPrice = new DetailPrice() { UnitPrice = sqm_price, NetPrice = netPrice, Vat = 0.22M };
-                acc.DetailPrices.Add(detailPrice);
-                acc.Total += detailPrice.NetPrice;
-                acc.Tax += detailPrice.Tax;
-                acc.GrandTotal += detailPrice.TotalPrice;
-                return acc;
-            }));
+            var productPriceInfo = windowsData.Aggregate(
+                new PriceInfo
+                {
+                    GrandTotal = 0M,
+                    DetailPrices = new List<DetailPrice>()
+                }, 
+                (Func<PriceInfo, WindowsData, PriceInfo>)((acc, x) =>
+                {
+                    var material = MaterialFactory.CreateByCode(x.WindowType, x.Length != 0 ? [x.Length] : [x.Height, x.Width]);
+                    var numOfDims = material.NumberOfDimensions;
+                    throw new NotImplementedException();
+                    //var total_measure = material.EffectiveArea * x.Quantity;
+                    //decimal netPrice = sqm_price * total_area;
+                    //var detailPrice = new DetailPrice() { UnitPrice = sqm_price, NetPrice = netPrice, Vat = 0.22M };
+                    //acc.DetailPrices.Add(detailPrice);
+                    //acc.Total += detailPrice.NetPrice;
+                    //acc.Tax += detailPrice.Tax;
+                    //acc.GrandTotal += detailPrice.TotalPrice;
+                    //return acc;
+                })
+            );
 
             return customData.Aggregate(productPriceInfo, ((acc, x) =>
             {

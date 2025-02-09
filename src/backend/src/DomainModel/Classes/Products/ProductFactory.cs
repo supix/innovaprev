@@ -14,7 +14,7 @@
                 .OrderBy(m => m.Order);
         }
 
-        public static IProduct GetByCode(string code)
+        public static IProduct CreateByCode(string code)
         {
             var t = AppDomain.CurrentDomain.GetAssemblies()
                 .SelectMany(domainAssembly => domainAssembly.GetTypes())

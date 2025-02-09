@@ -6,7 +6,7 @@
         {
         }
         public override string Description => "Scorrevole alzante";
-        protected override long ClampMinValue => 2500000;
+        protected override long? ClampMinValue => 2500000;
         public override int Order => 100;
     }
 }

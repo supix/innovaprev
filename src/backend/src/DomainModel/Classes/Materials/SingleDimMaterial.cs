@@ -9,6 +9,14 @@
 
         public override int NumberOfDimensions => 1;
         public long Length_mm { get; set; }
-        public override sealed long DimensionToQuote => Length_mm >= ClampMinValue ? Length_mm : ClampMinValue;
+        public override sealed long DimensionToQuote
+        {
+            get
+            {
+                if (!ClampMinValue.HasValue)
+                    return Length_mm;
+                return Length_mm >= ClampMinValue.Value ? Length_mm : ClampMinValue.Value;
+            }
+        }
     }
 }
