@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CompositionRoot", "Composit
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductImages", "ProductImages\ProductImages.csproj", "{861F2507-35F3-4A4C-BBF1-051827247CC3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DomainModel_Test", "DomainModel_Test\DomainModel_Test.csproj", "{9D9236B4-4926-4BB7-A3F7-26D5E718C1A3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,9 @@ Global
 		{861F2507-35F3-4A4C-BBF1-051827247CC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{861F2507-35F3-4A4C-BBF1-051827247CC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{861F2507-35F3-4A4C-BBF1-051827247CC3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9D9236B4-4926-4BB7-A3F7-26D5E718C1A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D9236B4-4926-4BB7-A3F7-26D5E718C1A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D9236B4-4926-4BB7-A3F7-26D5E718C1A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,4 +1,6 @@
-﻿namespace DomainModel.Classes.Products
+﻿using DomainModel.Classes.Materials;
+
+namespace DomainModel.Classes.Products
 {
     public interface IProduct
     {
@@ -8,5 +10,6 @@
         string ExtendedDescriptionTitle { get; }
         string ExtendedDescription { get; }
         decimal StandardPrice { get; }
+        decimal getMaterialPrice(IMaterial material);
     }
 }

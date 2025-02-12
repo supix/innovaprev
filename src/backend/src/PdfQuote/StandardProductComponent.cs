@@ -55,7 +55,7 @@ namespace PdfQuote
                 c.Item().Row(r =>
                 {
                     r.RelativeItem(4).Text(string.Empty);
-                    r.RelativeItem(2).AlignRight().Text($"Prezzo mq: {detailPrice.UnitPrice:c}");
+                    // r.RelativeItem(2).AlignRight().Text($"Prezzo mq: {detailPrice.UnitPrice:c}");
                     r.RelativeItem(2).AlignRight().Text($"{detailPrice.NetPrice:c}").Bold();
                 });
             });

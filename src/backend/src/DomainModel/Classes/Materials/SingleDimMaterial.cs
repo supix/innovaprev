@@ -2,7 +2,7 @@
 {
     public abstract class SingleDimMaterial : AbstractMaterial
     {
-        protected SingleDimMaterial(long length_mm)
+        public SingleDimMaterial(long length_mm)
         {
             Length_mm = length_mm;
         }
@@ -18,5 +18,7 @@
                 return Length_mm >= ClampMinValue.Value ? Length_mm : ClampMinValue.Value;
             }
         }
+        public override sealed decimal GetArea_sqm => throw new InvalidOperationException($"Cannot compute area for a single dimension material. Code: {Code}");
+        public override sealed decimal GetLength_m => Length_mm / 1e3M;
     }
 }

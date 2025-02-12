@@ -1,6 +1,6 @@
 ﻿namespace DomainModel.Classes.Products.ConcreteProducts
 {
-    public class ELA : AbstractProduct
+    public class ELA : WoodAbstractProduct
     {
         public override string Description => "Emblema Legno/Alluminio";
 

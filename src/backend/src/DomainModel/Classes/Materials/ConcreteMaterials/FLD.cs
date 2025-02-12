@@ -10,5 +10,4 @@
         protected override long? ClampMinValue => 1500000;
         public override int Order => 150;
     }
-
 }

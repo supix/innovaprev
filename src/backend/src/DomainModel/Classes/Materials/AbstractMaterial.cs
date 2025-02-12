@@ -8,5 +8,7 @@
         protected abstract long? ClampMinValue { get; }
         public abstract long DimensionToQuote { get; }
         public abstract int Order { get; }
+        public abstract decimal GetArea_sqm { get; }
+        public abstract decimal GetLength_m { get; }
     }
 }

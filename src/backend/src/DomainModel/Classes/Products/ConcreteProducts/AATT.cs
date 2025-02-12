@@ -1,6 +1,6 @@
 ﻿namespace DomainModel.Classes.Products.ConcreteProducts
 {
-    public class AATT : AbstractProduct
+    public class AATT : WoodAbstractProduct
     {
         public override string Description => "Armonia Alluminio/Legno";
 

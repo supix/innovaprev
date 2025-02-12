@@ -1,6 +1,6 @@
 ﻿namespace DomainModel.Classes.Products.ConcreteProducts
 {
-    public class RALT : AbstractProduct
+    public class RALT : WoodAbstractProduct
     {
         public override string Description => "Review Alluminio/Legno Termico";
 

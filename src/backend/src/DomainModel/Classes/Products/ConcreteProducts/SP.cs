@@ -1,6 +1,6 @@
 ﻿namespace DomainModel.Classes.Products.ConcreteProducts
 {
-    public class SP : AbstractProduct
+    public class SP : PvcAbstractProduct
     {
         public override string Description => "Scorrevole PVC";
 

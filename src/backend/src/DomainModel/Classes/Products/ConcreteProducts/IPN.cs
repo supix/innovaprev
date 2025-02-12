@@ -1,6 +1,6 @@
 ﻿namespace DomainModel.Classes.Products.ConcreteProducts
 {
-    public class IPN : AbstractProduct
+    public class IPN : PvcAbstractProduct
     {
         public override string Description => "Innova PVC/A New";
 
