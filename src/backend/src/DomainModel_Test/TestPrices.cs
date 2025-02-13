@@ -117,5 +117,14 @@ namespace DomainModel_Test
             var price = p.getMaterialPrice(m);
             Assert.That(price, Is.EqualTo((528 + 38) * 5 * 4));
         }
+
+        [Test]
+        public void Test_SPWithFIXALowLength_PriceIsCorrect()
+        {
+            var p = ProductFactory.CreateByCode("SP");
+            var m = MaterialFactory.CreateByCode("F1A", 1500L, 1200L);
+            var price = p.getMaterialPrice(m);
+            Assert.That(price, Is.EqualTo((635 + 38) * 1.2 * 1.5));
+        }
     }
 }
