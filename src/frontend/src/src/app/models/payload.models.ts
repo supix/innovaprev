@@ -23,6 +23,7 @@ export interface WindowRow {
   position: string;
   height: number;
   width: number;
+  length: number;
   quantity: number;
   windowType: string;
   openingType: string;

@@ -359,20 +359,21 @@
               <thead>
               <tr>
                 <th [attr.rowspan]="isTrimSectionVisible() ? '2' : '1'" style="width: 6%;">Pos.</th>
+                <th [attr.rowspan]="isTrimSectionVisible() ? '2' : '1'"
+                    [ngStyle]="{ width: isTrimSectionVisible() ? '8%' : '12%' }">Tipologia
+                </th>
                 <th [attr.rowspan]="isTrimSectionVisible() ? '2' : '1'" style="width: 8%;">Largh.</th>
                 <th [attr.rowspan]="isTrimSectionVisible() ? '2' : '1'" style="width: 8%;">Alt.</th>
+                <th [attr.rowspan]="isTrimSectionVisible() ? '2' : '1'" style="width: 8%;">Lungh.</th>
                 <th [attr.rowspan]="isTrimSectionVisible() ? '2' : '1'" style="width: 8%;">Q.tà</th>
                 <th [attr.rowspan]="isTrimSectionVisible() ? '2' : '1'"
-                    [ngStyle]="{ width: isTrimSectionVisible() ? '10%' : '14%' }">Tipologia
+                    [ngStyle]="{ width: isTrimSectionVisible() ? '8%' : '12%' }">Apertura
                 </th>
                 <th [attr.rowspan]="isTrimSectionVisible() ? '2' : '1'"
-                    [ngStyle]="{ width: isTrimSectionVisible() ? '10%' : '14%' }">Apertura
+                    [ngStyle]="{ width: isTrimSectionVisible() ? '8%' : '12%' }">Vetro
                 </th>
                 <th [attr.rowspan]="isTrimSectionVisible() ? '2' : '1'"
-                    [ngStyle]="{ width: isTrimSectionVisible() ? '10%' : '14%' }">Vetro
-                </th>
-                <th [attr.rowspan]="isTrimSectionVisible() ? '2' : '1'"
-                    [ngStyle]="{ width: isTrimSectionVisible() ? '10%' : '14%' }">Traversa
+                    [ngStyle]="{ width: isTrimSectionVisible() ? '8%' : '12%' }">Traversa
                 </th>
                 <th *ngIf="isTrimSectionVisible()" colspan="4" style="width: 24%;">Rifilo Battuta</th>
                 <th [attr.rowspan]="isTrimSectionVisible() ? '2' : '1'" style="width: 6%;"></th>
@@ -393,6 +394,12 @@
                     *ngTemplateOutlet="positionInput; context: { index: i, form: row, tableLg: true }"></ng-container>
                 </td>
 
+                <!-- Tipologia -->
+                <td>
+                  <ng-container
+                    *ngTemplateOutlet="windowTypeInput; context: { index: i, form: row, tableLg: true }"></ng-container>
+                </td>
+
                 <!-- Larghezza -->
                 <td>
                   <ng-container
@@ -405,16 +412,16 @@
                     *ngTemplateOutlet="heightInput; context: { index: i, form: row, tableLg: true }"></ng-container>
                 </td>
 
+                <!-- Lunghezza -->
+                <td>
+                  <ng-container
+                    *ngTemplateOutlet="lengthInput; context: { index: i, form: row, tableLg: true }"></ng-container>
+                </td>
+
                 <!-- Quantità -->
                 <td>
                   <ng-container
                     *ngTemplateOutlet="quantityInput; context: { index: i, form: row, tableLg: true }"></ng-container>
-                </td>
-
-                <!-- Tipologia -->
-                <td>
-                  <ng-container
-                    *ngTemplateOutlet="windowTypeInput; context: { index: i, form: row, tableLg: true }"></ng-container>
                 </td>
 
                 <!-- Apertura -->
@@ -481,6 +488,10 @@
                 <ng-container *ngTemplateOutlet="positionInput; context: { index: i, form: row }"></ng-container>
               </div>
               <div class="mb-2">
+                <label class="form-label">Tipologia</label>
+                <ng-container *ngTemplateOutlet="windowTypeInput; context: { index: i, form: row }"></ng-container>
+              </div>
+              <div class="mb-2">
                 <label class="form-label">Larghezza</label>
                 <ng-container *ngTemplateOutlet="widthInput; context: { index: i, form: row }"></ng-container>
               </div>
@@ -489,12 +500,12 @@
                 <ng-container *ngTemplateOutlet="heightInput; context: { index: i, form: row }"></ng-container>
               </div>
               <div class="mb-2">
-                <label class="form-label">Quantità</label>
-                <ng-container *ngTemplateOutlet="quantityInput; context: { index: i, form: row }"></ng-container>
+                <label class="form-label">Lunghezza</label>
+                <ng-container *ngTemplateOutlet="lengthInput; context: { index: i, form: row }"></ng-container>
               </div>
               <div class="mb-2">
-                <label class="form-label">Tipologia</label>
-                <ng-container *ngTemplateOutlet="windowTypeInput; context: { index: i, form: row }"></ng-container>
+                <label class="form-label">Quantità</label>
+                <ng-container *ngTemplateOutlet="quantityInput; context: { index: i, form: row }"></ng-container>
               </div>
               <div class="mb-2">
                 <label class="form-label">Apertura</label>
@@ -696,6 +707,24 @@
       <div *ngIf="(heightControl.touched || hasTriggeredWindowsValidation) && heightControl.invalid && tableLg"
            class="tooltip danger" [id]="'tooltip-height-' + i">
         L'altezza{{ heightControl.getError('invalidValue')?.reason }}.
+      </div>
+    </ng-container>
+  </ng-container>
+</ng-template>
+<ng-template #lengthInput let-tableLg="tableLg" let-i="index" let-form="form">
+  <ng-container [formGroup]="form">
+    <ng-container *ngIf="form.get('length') as lengthControl">
+      <input type="text" inputmode="numeric" formControlName="length" class="form-control" autocomplete="off"
+             (mouseenter)="onEnterTooltip($event, 'tooltip-length-' + i)"
+             (mouseleave)="onLeaveTooltip('tooltip-length-' + i)"
+             [ngClass]="{ 'is-invalid': (lengthControl.touched || hasTriggeredWindowsValidation) && lengthControl.invalid }"
+             (input)="onWindowsRowInputNumber($event, i, 'length')"/>
+      <div *ngIf="(lengthControl.touched || hasTriggeredWindowsValidation) && lengthControl.invalid && !tableLg"
+           class="invalid-feedback">La lunghezza{{ lengthControl.getError('invalidValue')?.reason }}.
+      </div>
+      <div *ngIf="(lengthControl.touched || hasTriggeredWindowsValidation) && lengthControl.invalid && tableLg"
+           class="tooltip danger" [id]="'tooltip-length-' + i">La
+        lunghezza{{ lengthControl.getError('invalidValue')?.reason }}.
       </div>
     </ng-container>
   </ng-container>

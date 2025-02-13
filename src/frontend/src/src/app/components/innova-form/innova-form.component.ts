@@ -1,8 +1,8 @@
-import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
-import {AbstractControl, FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
-import {CommonModule} from '@angular/common';
-import {NgSelectConfig, NgSelectModule} from '@ng-select/ng-select';
-import {ApiService} from '../../services/api.service';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { NgSelectConfig, NgSelectModule } from '@ng-select/ng-select';
+import { ApiService } from '../../services/api.service';
 import {
   BillingPayload,
   CollectionBaseItem,
@@ -24,7 +24,7 @@ import {
   switchMap,
   tap
 } from 'rxjs';
-import {PriceDisplayComponent} from '../price-display/price-display.component';
+import { PriceDisplayComponent } from '../price-display/price-display.component';
 import {
   bankCoordinatesValidator,
   generateValidItalianVat,
@@ -32,10 +32,10 @@ import {
   minNumber,
   phoneNumberValidator
 } from '../../validators/innova.validator';
-import {catchError} from 'rxjs/operators';
+import { catchError } from 'rxjs/operators';
 import CryptoJS from 'crypto-js';
-import {environment} from '../../../environments/environment';
-import {DomSanitizer, SafeHtml} from '@angular/platform-browser';
+import { environment } from '../../../environments/environment';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-innova-form',
@@ -68,6 +68,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
   maxValues: { [key: string]: number } = {
     height: 5000,
     width: 5000,
+    length: 5000,
     quantity: 500,
     leftTrim: 500,
     rightTrim: 500,
@@ -267,8 +268,9 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.areAllWindowRowsValid()) {
       const row = this.fb.group({
         position: [0],
-        height: [null, minNumber(1, true, 'f')],
-        width: [null, minNumber(1, true, 'f')],
+        height: [{value: null, disabled: true}, minNumber(1, true, 'f')],
+        width: [{value: null, disabled: true}, minNumber(1, true, 'f')],
+        length: [{value: null, disabled: true}, minNumber(1, true, 'f')],
         quantity: [1, minNumber(1, true, 'f')],
         windowType: [null, Validators.required],
         openingType: [null, Validators.required],
@@ -501,6 +503,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
         position: [0], // Updated later by updateWindowPositions
         height: [getRandomNumber(this.maxValues['height'], 500)],
         width: [getRandomNumber(this.maxValues['width'], 500)],
+        length: [getRandomNumber(this.maxValues['width'], 500)],
         quantity: [getRandomNumber(5)],
         windowType: [getRandomItem(this.collections.windowTypes, 'defaultType'), Validators.required],
         openingType: [getRandomItem(this.collections.openingTypes, 'defaultOpening'), Validators.required],
@@ -688,8 +691,43 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
   private onWindowRowValueChanged(index: number): void {
     const row = this.windows.at(index);
 
-    if (row && row.valid && this.hasTriggeredWindowsValidation) {
-      this.hasTriggeredWindowsValidation = false;
+    if (row) {
+      const windowType = row.get('windowType')?.value;
+
+      if (windowType) {
+        const numOfDims = this.collections?.windowTypes.find(value => value.id === windowType)?.numOfDims;
+
+        if (numOfDims === 2) {
+          row.get('height')?.setValidators([minNumber(1, true, 'f')]);
+          row.get('width')?.setValidators([minNumber(1, true, 'f')]);
+          row.get('length')?.setValidators(null);
+
+          row.get('height')?.enable({ emitEvent: false });
+          row.get('width')?.enable({ emitEvent: false });
+          row.get('length')?.disable({ emitEvent: false });
+
+          row.patchValue({ length: null }, { emitEvent: false });
+        } else if (numOfDims === 1) {
+          row.get('height')?.setValidators(null);
+          row.get('width')?.setValidators(null);
+          row.get('length')?.setValidators([minNumber(1, true, 'f')]);
+
+          row.get('height')?.disable({ emitEvent: false });
+          row.get('width')?.disable({ emitEvent: false });
+          row.get('length')?.enable({ emitEvent: false });
+
+          row.patchValue({ height: null, width: null }, { emitEvent: false });
+        }
+
+        row.get('height')?.updateValueAndValidity({ emitEvent: false });
+        row.get('width')?.updateValueAndValidity({ emitEvent: false });
+        row.get('length')?.updateValueAndValidity({ emitEvent: false });
+
+      }
+
+      if (row.valid && this.hasTriggeredWindowsValidation) {
+        this.hasTriggeredWindowsValidation = false;
+      }
     }
   }
 

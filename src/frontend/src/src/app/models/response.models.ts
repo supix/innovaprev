@@ -31,6 +31,7 @@ export interface AccessoryColor extends CollectionBaseItem {
 }
 
 export interface WindowType extends CollectionBaseItem {
+  numOfDims: number;
 }
 
 export interface OpeningType extends CollectionBaseItem {

@@ -101,9 +101,9 @@ const getMockCollections = (): CollectionsResponse => ({
     {id: 'AC_ROSSO', desc: 'Rosso'},
   ],
   windowTypes: [
-    {id: 'WT_GRANDE', desc: 'Grande'},
-    {id: 'WT_MEDIA', desc: 'Media'},
-    {id: 'WT_PICCOLA', desc: 'Piccola'},
+    {id: 'WT_GRANDE', desc: 'Grande', numOfDims: 1},
+    {id: 'WT_MEDIA', desc: 'Media', numOfDims: 2},
+    {id: 'WT_PICCOLA', desc: 'Piccola', numOfDims: 1},
   ],
   openingTypes: [
     {id: 'OT_DX', desc: 'SX'},
