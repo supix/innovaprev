@@ -575,73 +575,91 @@
 
               </thead>
               <tbody>
-              <tr *ngFor="let row of customData.controls; let i = index" [formGroupName]="i">
+              <ng-container *ngIf="customData.controls.length > 0; else noDataRow">
+                <tr *ngFor="let row of customData.controls; let i = index" [formGroupName]="i">
 
-                <!-- Posizione -->
-                <td>
-                  <ng-container
-                    *ngTemplateOutlet="positionCustomInput; context: { index: i, form: row, tableLg: true }"></ng-container>
-                </td>
+                  <!-- Posizione -->
+                  <td>
+                    <ng-container
+                      *ngTemplateOutlet="positionCustomInput; context: { index: i, form: row, tableLg: true }"></ng-container>
+                  </td>
 
-                <!-- Quantità -->
-                <td>
-                  <ng-container
-                    *ngTemplateOutlet="quantityCustomInput; context: { index: i, form: row, tableLg: true }"></ng-container>
-                </td>
+                  <!-- Quantità -->
+                  <td>
+                    <ng-container
+                      *ngTemplateOutlet="quantityCustomInput; context: { index: i, form: row, tableLg: true }"></ng-container>
+                  </td>
 
-                <!-- Descrizione -->
-                <td>
-                  <ng-container
-                    *ngTemplateOutlet="descriptionCustomInput; context: { index: i, form: row, tableLg: true }"></ng-container>
-                </td>
+                  <!-- Descrizione -->
+                  <td>
+                    <ng-container
+                      *ngTemplateOutlet="descriptionCustomInput; context: { index: i, form: row, tableLg: true }"></ng-container>
+                  </td>
 
-                <!-- Prezzo -->
-                <td>
-                  <ng-container
-                    *ngTemplateOutlet="priceCustomInput; context: { index: i, form: row, tableLg: true }"></ng-container>
-                </td>
+                  <!-- Prezzo -->
+                  <td>
+                    <ng-container
+                      *ngTemplateOutlet="priceCustomInput; context: { index: i, form: row, tableLg: true }"></ng-container>
+                  </td>
 
-                <td class="text-center align-middle">
-                  <button type="button" class="btn btn-danger btn-sm"
-                          (mouseenter)="onEnterTooltip($event, 'tooltip-custom-remove-' + i)"
-                          (mouseleave)="onLeaveTooltip('tooltip-custom-remove-' + i)" (click)="removeCustomRow(i)">
-                    <svg class="icon-trash">
-                      <use xlink:href="#icon-trash"></use>
-                    </svg>
-                  </button>
-                  <div class="tooltip danger" [id]="'tooltip-custom-remove-' + i">Rimuovi Pos. #{{ i + 1 }}</div>
-                </td>
-              </tr>
+                  <td class="text-center align-middle">
+                    <button type="button" class="btn btn-danger btn-sm"
+                            (mouseenter)="onEnterTooltip($event, 'tooltip-custom-remove-' + i)"
+                            (mouseleave)="onLeaveTooltip('tooltip-custom-remove-' + i)" (click)="removeCustomRow(i)">
+                      <svg class="icon-trash">
+                        <use xlink:href="#icon-trash"></use>
+                      </svg>
+                    </button>
+                    <div class="tooltip danger" [id]="'tooltip-custom-remove-' + i">Rimuovi Pos. #{{ i + 1 }}</div>
+                  </td>
+                </tr>
+
+              </ng-container>
+              <ng-template #noDataRow>
+                <tr>
+                  <td colspan="5" class="text-center text-muted py-3">
+                    Nessun componente aggiuntivo presente.
+                  </td>
+                </tr>
+              </ng-template>
               </tbody>
             </table>
           </div>
           <!-- Responsive Layout -->
           <div class="d-block d-lg-none">
-            <div *ngFor="let row of customData.controls; let i = index" [formGroupName]="i" class="card mb-3 p-3">
-              <div class="mb-2">
-                <label class="form-label">Posizione</label>
-                <ng-container *ngTemplateOutlet="positionCustomInput; context: { index: i, form: row }"></ng-container>
+            <ng-container *ngIf="customData.controls.length > 0; else noDataTemplate">
+              <div *ngFor="let row of customData.controls; let i = index" [formGroupName]="i" class="card mb-3 p-3">
+                <div class="mb-2">
+                  <label class="form-label">Posizione</label>
+                  <ng-container *ngTemplateOutlet="positionCustomInput; context: { index: i, form: row }"></ng-container>
+                </div>
+                <div class="mb-2">
+                  <label class="form-label">Quantità</label>
+                  <ng-container *ngTemplateOutlet="quantityCustomInput; context: { index: i, form: row }"></ng-container>
+                </div>
+                <div class="mb-2">
+                  <label class="form-label">Descrizione</label>
+                  <ng-container
+                    *ngTemplateOutlet="descriptionCustomInput; context: { index: i, form: row }"></ng-container>
+                </div>
+                <div class="mb-2">
+                  <label class="form-label">Prezzo</label>
+                  <ng-container *ngTemplateOutlet="priceCustomInput; context: { index: i, form: row }"></ng-container>
+                </div>
+                <button type="button" class="btn btn-danger btn-sm" (click)="removeCustomRow(i)">Rimuovi<span
+                  class="ms-1">Componente #{{ row.get('position')?.value }}</span>
+                </button>
               </div>
-              <div class="mb-2">
-                <label class="form-label">Quantità</label>
-                <ng-container *ngTemplateOutlet="quantityCustomInput; context: { index: i, form: row }"></ng-container>
+            </ng-container>
+
+            <ng-template #noDataTemplate>
+              <div class="alert alert-warning text-center">
+                Nessun componente aggiuntivo presente.
               </div>
-              <div class="mb-2">
-                <label class="form-label">Descrizione</label>
-                <ng-container
-                  *ngTemplateOutlet="descriptionCustomInput; context: { index: i, form: row }"></ng-container>
-              </div>
-              <div class="mb-2">
-                <label class="form-label">Prezzo</label>
-                <ng-container *ngTemplateOutlet="priceCustomInput; context: { index: i, form: row }"></ng-container>
-              </div>
-              <button type="button" class="btn btn-danger btn-sm" (click)="removeCustomRow(i)">Rimuovi<span
-                class="ms-1">Componente #{{ row.get('position')?.value }}</span>
-              </button>
-            </div>
+            </ng-template>
           </div>
           <button type="button" class="btn btn-primary mt-3"
-                  (click)="addCustomRow()"
+                  (click)="addCustomRow(customData.length === 0)"
                   [disabled]="addCustomRowCheck()">
             Aggiungi Componente
           </button>

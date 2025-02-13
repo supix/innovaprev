@@ -119,8 +119,6 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
     // Add an initial row for windows
     this.addWindowRow(true);
 
-    // Add an initial row for custom
-    this.addCustomRow(true);
   }
 
   ngOnInit(): void {
@@ -329,9 +327,6 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
     this.customSubscriptions[index]?.unsubscribe();
     this.customSubscriptions.splice(index, 1);
     this.updateCustomPositions();
-    if (this.customData.length === 0) {
-      this.addCustomRow(true);
-    }
   }
 
   // Updates the value of the `position` field for each row in the FormArray.
@@ -590,7 +585,6 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     this.addWindowRow(true);
-    this.addCustomRow(true);
     this.hasTriggeredWindowsValidation = false;
     this.hasTriggeredCustomValidation = false;
     this.submitted = false;
