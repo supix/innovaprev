@@ -8,7 +8,7 @@ namespace DomainModel.Classes.Products
         public override decimal getMaterialPrice(IMaterial material)
         {
             if (material.Code == "CAS")
-                return material.GetLength_m * CAS_PRICE_PER_METER;
+                return material.GetAllowedLength_m * CAS_PRICE_PER_METER;
 
             return base.getMaterialPrice(material);
         }

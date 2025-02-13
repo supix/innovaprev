@@ -18,7 +18,16 @@
                 return Length_mm >= ClampMinValue.Value ? Length_mm : ClampMinValue.Value;
             }
         }
-        public override sealed decimal GetArea_sqm => throw new InvalidOperationException($"Cannot compute area for a single dimension material. Code: {Code}");
-        public override sealed decimal GetLength_m => Length_mm / 1e3M;
+        public override sealed decimal GetAllowedArea_sqm => throw new InvalidOperationException($"Cannot compute area for a single dimension material. Code: {Code}");
+        public override sealed decimal GetAllowedLength_m
+        {
+            get
+            {
+                if (ClampMinValue.HasValue && Length_mm < ClampMinValue.Value)
+                    return ClampMinValue.Value / 1e3M;
+                else
+                    return Length_mm / 1e3M;
+            }
+        }
     }
 }

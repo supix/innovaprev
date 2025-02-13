@@ -8,7 +8,7 @@
 
         public override string Description => "Cassonetti";
 
-        protected override long? ClampMinValue => null;
+        protected override long? ClampMinValue => 1000;
         public override int Order => 200;
     }
 

@@ -4,6 +4,8 @@ namespace DomainModel.Classes.Products
 {
     public abstract class AbstractProduct : IProduct
     {
+        private const decimal GLASSPRICE_SQM = 38M;
+
         public string Code => GetType().Name;
         public abstract string Description { get; }
         public abstract bool TrimSectionVisible { get; }
@@ -26,7 +28,7 @@ namespace DomainModel.Classes.Products
                 return 0;
 
             if (material.NumberOfDimensions == 2)
-                return StandardPrice * material.GetArea_sqm;
+                return (StandardPrice + GLASSPRICE_SQM) * material.GetAllowedArea_sqm;
 
             throw new InvalidOperationException($"Cannot compute material price. Code: {material.Code}");
         }
