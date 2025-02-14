@@ -10,6 +10,6 @@ namespace DomainModel.Classes.Products
         string ExtendedDescriptionTitle { get; }
         string ExtendedDescription { get; }
         decimal StandardPrice { get; }
-        decimal getMaterialPrice(IMaterial material);
+        decimal GetMaterialPrice(IMaterial material);
     }
 }

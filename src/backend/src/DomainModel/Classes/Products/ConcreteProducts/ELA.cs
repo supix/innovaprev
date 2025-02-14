@@ -1,4 +1,6 @@
-﻿namespace DomainModel.Classes.Products.ConcreteProducts
+﻿using DomainModel.Classes.Materials;
+
+namespace DomainModel.Classes.Products.ConcreteProducts
 {
     public class ELA : WoodAbstractProduct
     {
@@ -13,5 +15,15 @@
         public override decimal StandardPrice => 985M;
 
         public override int Order => 10;
+        public override decimal GetMaterialPrice(IMaterial material)
+        {
+            const decimal GLASS_PRICE_SQM = 38M;
+            const decimal FIXED_PRICE_PER_SQM = 568M + GLASS_PRICE_SQM;
+
+            if (material.IsFixed)
+                return material.GetAllowedArea_sqm * FIXED_PRICE_PER_SQM;
+
+            return base.GetMaterialPrice(material);
+        }
     }
 }

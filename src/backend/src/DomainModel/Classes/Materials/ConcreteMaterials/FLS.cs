@@ -9,6 +9,6 @@
         public override string Description => "Fisso laterale sx";
         protected override long? ClampMinValue => 1500000;
         public override int Order => 160;
+        public override bool IsFixed => true;
     }
-
 }

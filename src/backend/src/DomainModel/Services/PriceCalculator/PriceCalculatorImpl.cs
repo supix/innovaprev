@@ -19,7 +19,7 @@ namespace DomainModel.Services.PriceCalculator
                 (Func<PriceInfo, WindowsData, PriceInfo>)((acc, x) =>
                 {
                     var material = MaterialFactory.CreateByCode(x.WindowType, x.Length != 0 ? [x.Length] : [x.Height, x.Width]);
-                    var netPrice = product.getMaterialPrice(material);
+                    var netPrice = product.GetMaterialPrice(material);
                     var totalMaterialPrice = netPrice * x.Quantity;
                     var detailPrice = new DetailPrice() { NetPrice = totalMaterialPrice, Vat = 0.22M };
                     acc.DetailPrices.Add(detailPrice);

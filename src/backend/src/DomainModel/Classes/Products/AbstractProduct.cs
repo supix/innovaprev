@@ -13,7 +13,7 @@ namespace DomainModel.Classes.Products
         public abstract string ExtendedDescription { get; }
         public abstract decimal StandardPrice { get; }
         public abstract int Order { get; }
-        public virtual decimal getMaterialPrice(IMaterial material)
+        public virtual decimal GetMaterialPrice(IMaterial material)
         {
             if (material.Code == "AD")
                 return 0;

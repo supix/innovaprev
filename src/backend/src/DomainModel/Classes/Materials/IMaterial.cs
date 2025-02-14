@@ -7,5 +7,6 @@
         int NumberOfDimensions { get; }
         decimal GetAllowedArea_sqm { get; }
         decimal GetAllowedLength_m { get; }
+        bool IsFixed { get; }
     }
 }

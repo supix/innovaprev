@@ -8,5 +8,6 @@
         public override string Description => "Fisso con fermavetro";
         protected override long? ClampMinValue => 1500000;
         public override int Order => 0;
+        public override bool IsFixed => true;
     }
 }
