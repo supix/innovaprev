@@ -1,36 +1,37 @@
 ﻿using DomainModel.Classes.Materials;
+using DomainModel.Classes.Materials.ConcreteMaterials;
+using DomainModel.Classes.Products.Visitor;
 
 namespace DomainModel.Classes.Products
 {
-    public abstract class AbstractProduct : IProduct
+    public abstract class AbstractProduct : IProduct, IVisitor
     {
-        private const decimal GLASSPRICE_SQM = 38M;
-
         public string Code => GetType().Name;
         public abstract string Description { get; }
         public abstract bool TrimSectionVisible { get; }
         public abstract string ExtendedDescriptionTitle { get; }
         public abstract string ExtendedDescription { get; }
-        public abstract decimal StandardPrice { get; }
         public abstract int Order { get; }
-        public virtual decimal GetMaterialPrice(IMaterial material)
+        public virtual decimal GetMaterialPrice(string materialCode, long height, long width, long length)
         {
-            if (material.Code == "AD")
-                return 0;
+            long m1 = length != 0 ? length : height;
+            long m2 = width;
+            var material = MaterialFactory.CreateByCode(materialCode, m1, m2);
+            return material.GetPrice(this);
+        }
+        public abstract decimal GetPrice_CAS(CAS m, long length_mm);
+        public abstract decimal GetPrice_DoubleDim(DoubleDimMaterial m, long area_sqmm);
+        public abstract decimal GetPrice_DoubleDimFixed(DoubleDimFixedMaterial m, long area_sqmm);
 
-            if (material.Code == "PIA")
-                return 0;
+        protected decimal GetFullDoubleDimensionPrice(decimal price_sqm, long area_sqmm)
+        {
+            const decimal GLASS_PRICE_SQM = 38M;
+            return (price_sqm + GLASS_PRICE_SQM) * area_sqmm / 1e6M;
+        }
 
-            if (material.Code == "LIS")
-                return 0;
-
-            if (material.Code == "CEL")
-                return 0;
-
-            if (material.NumberOfDimensions == 2)
-                return (StandardPrice + GLASSPRICE_SQM) * material.GetAllowedArea_sqm;
-
-            throw new InvalidOperationException($"Cannot compute material price. Code: {material.Code}");
+        protected decimal GetFullSingleDimensionPrice(decimal price_m, long length_mm)
+        {
+            return price_m * length_mm / 1e3M;
         }
     }
 }

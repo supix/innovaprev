@@ -1,12 +1,12 @@
-﻿namespace DomainModel.Classes.Materials
+﻿using DomainModel.Classes.Products.Visitor;
+
+namespace DomainModel.Classes.Materials
 {
     public interface IMaterial
     {
         string Code { get; }
         string Description { get; }
+        decimal GetPrice(IVisitor visitor);
         int NumberOfDimensions { get; }
-        decimal GetAllowedArea_sqm { get; }
-        decimal GetAllowedLength_m { get; }
-        bool IsFixed { get; }
     }
 }

@@ -9,7 +9,6 @@ namespace DomainModel.Classes.Products
         bool TrimSectionVisible { get; }
         string ExtendedDescriptionTitle { get; }
         string ExtendedDescription { get; }
-        decimal StandardPrice { get; }
-        decimal GetMaterialPrice(IMaterial material);
+        decimal GetMaterialPrice(string materialCode, long height, long width, long length);
     }
 }

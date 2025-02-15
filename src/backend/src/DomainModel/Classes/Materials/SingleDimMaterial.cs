@@ -1,4 +1,6 @@
-﻿namespace DomainModel.Classes.Materials
+﻿using DomainModel.Classes.Products.Visitor;
+
+namespace DomainModel.Classes.Materials
 {
     public abstract class SingleDimMaterial : AbstractMaterial
     {
@@ -18,16 +20,19 @@
                 return Length_mm >= ClampMinValue.Value ? Length_mm : ClampMinValue.Value;
             }
         }
-        public override sealed decimal GetAllowedArea_sqm => throw new InvalidOperationException($"Cannot compute area for a single dimension material. Code: {Code}");
-        public override sealed decimal GetAllowedLength_m
+        public long GetAllowedLength_mm
         {
             get
             {
                 if (ClampMinValue.HasValue && Length_mm < ClampMinValue.Value)
-                    return ClampMinValue.Value / 1e3M;
+                    return ClampMinValue.Value;
                 else
-                    return Length_mm / 1e3M;
+                    return Length_mm;
             }
+        }
+        public override decimal GetPrice(IVisitor visitor)
+        {
+            return 0;
         }
     }
 }

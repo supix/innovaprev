@@ -1,4 +1,6 @@
-﻿namespace DomainModel.Classes.Materials.ConcreteMaterials
+﻿using DomainModel.Classes.Products.Visitor;
+
+namespace DomainModel.Classes.Materials.ConcreteMaterials
 {
     public class F1A : DoubleDimMaterial
     {

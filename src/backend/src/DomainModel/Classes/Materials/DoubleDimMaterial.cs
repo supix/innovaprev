@@ -1,4 +1,6 @@
-﻿namespace DomainModel.Classes.Materials
+﻿using DomainModel.Classes.Products.Visitor;
+
+namespace DomainModel.Classes.Materials
 {
     public abstract class DoubleDimMaterial : AbstractMaterial
     {
@@ -21,15 +23,20 @@
                 return area_smm >= ClampMinValue.Value ? area_smm : ClampMinValue.Value;
             }
         }
-        public override sealed decimal GetAllowedArea_sqm {
-            get {
+        public long GetAllowedArea_sqmm
+        {
+            get
+            {
                 var netArea_sqmm = Height_mm * Width_mm;
                 if (ClampMinValue.HasValue && netArea_sqmm < ClampMinValue.Value)
-                    return ClampMinValue.Value / 1e6M;
+                    return ClampMinValue.Value;
                 else
-                    return netArea_sqmm / 1e6M;
+                    return netArea_sqmm;
             }
         }
-        public override sealed decimal GetAllowedLength_m => throw new InvalidOperationException($"Cannot compute length for a double dimension material. Code: {Code}");
+        public override decimal GetPrice(IVisitor visitor)
+        {
+            return visitor.GetPrice_DoubleDim(this, GetAllowedArea_sqmm);
+        }
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace DomainModel.Classes.Materials.ConcreteMaterials
+﻿using DomainModel.Classes.Products.Visitor;
+
+namespace DomainModel.Classes.Materials.ConcreteMaterials
 {
     public class AD : DoubleDimMaterial
     {
@@ -10,5 +12,4 @@
         protected override long? ClampMinValue => null;
         public override int Order => 170;
     }
-
 }

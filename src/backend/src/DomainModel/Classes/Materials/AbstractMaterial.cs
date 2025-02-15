@@ -1,4 +1,6 @@
-﻿namespace DomainModel.Classes.Materials
+﻿using DomainModel.Classes.Products.Visitor;
+
+namespace DomainModel.Classes.Materials
 {
     public abstract class AbstractMaterial : IMaterial
     {
@@ -8,9 +10,6 @@
         protected abstract long? ClampMinValue { get; }
         public abstract long DimensionToQuote { get; }
         public abstract int Order { get; }
-        public abstract decimal GetAllowedArea_sqm { get; }
-        public abstract decimal GetAllowedLength_m { get; }
-        public virtual bool IsFixed => false;
-
+        public abstract decimal GetPrice(IVisitor visitor);
     }
 }

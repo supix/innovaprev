@@ -1,16 +1,13 @@
 ﻿using DomainModel.Classes.Materials;
+using DomainModel.Classes.Materials.ConcreteMaterials;
 
 namespace DomainModel.Classes.Products
 {
-    public abstract class  WoodAbstractProduct : AbstractProduct
+    public abstract class WoodAbstractProduct : AbstractProduct
     {
-        private const decimal CAS_PRICE_PER_METER = 285M;
-        public override decimal GetMaterialPrice(IMaterial material)
+        public override decimal GetPrice_CAS(CAS m, long length_mm)
         {
-            if (material.Code == "CAS")
-                return material.GetAllowedLength_m * CAS_PRICE_PER_METER;
-
-            return base.GetMaterialPrice(material);
+            return GetFullSingleDimensionPrice(285M, length_mm);
         }
     }
 }

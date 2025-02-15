@@ -18,10 +18,7 @@ namespace DomainModel.Services.PriceCalculator
                 }, 
                 (Func<PriceInfo, WindowsData, PriceInfo>)((acc, x) =>
                 {
-                    long m1 = x.Length != 0 ? x.Length : x.Height;
-                    long m2 = x.Width;
-                    var material = MaterialFactory.CreateByCode(x.WindowType, m1, m2);
-                    var netPrice = product.GetMaterialPrice(material);
+                    var netPrice = product.GetMaterialPrice(x.WindowType, x.Height, x.Width, x.Length);
                     var totalMaterialPrice = netPrice * x.Quantity;
                     var detailPrice = new DetailPrice() { NetPrice = totalMaterialPrice, Vat = 0.22M };
                     acc.DetailPrices.Add(detailPrice);
