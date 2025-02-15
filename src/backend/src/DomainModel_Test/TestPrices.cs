@@ -14,7 +14,7 @@ namespace DomainModel_Test
         public void Test_WoodWithCasAllowedLength_PriceIsCorrect()
         {
             var p = ProductFactory.CreateByCode("ELA");
-            var m = MaterialFactory.CreateByCode("CAS", 2500L);
+            var m = MaterialFactory.CreateByCode("CAS", 2500L, 0L);
             var price = p.GetMaterialPrice(m);
             Assert.That(Math.Abs(price - 285 * 2.5M), Is.LessThan(1e-3M));
         }
@@ -23,7 +23,7 @@ namespace DomainModel_Test
         public void Test_PvcWithCasAllowedLength_PriceIsCorrect()
         {
             var p = ProductFactory.CreateByCode("SP");
-            var m = MaterialFactory.CreateByCode("CAS", 2500L);
+            var m = MaterialFactory.CreateByCode("CAS", 2500L, 0L);
             var price = p.GetMaterialPrice(m);
             Assert.That(Math.Abs(price - 268 * 2.5M), Is.LessThan(1e-3M));
         }
@@ -32,7 +32,7 @@ namespace DomainModel_Test
         public void Test_WoodWithCasLowLength_PriceIsCorrect()
         {
             var p = ProductFactory.CreateByCode("ELA");
-            var m = MaterialFactory.CreateByCode("CAS", 500L);
+            var m = MaterialFactory.CreateByCode("CAS", 500L, 0L);
             var price = p.GetMaterialPrice(m);
             Assert.That(Math.Abs(price - 285M), Is.LessThan(1e-3M));
         }
@@ -41,7 +41,7 @@ namespace DomainModel_Test
         public void Test_PvcWithCasLowLength_PriceIsCorrect()
         {
             var p = ProductFactory.CreateByCode("IPC");
-            var m = MaterialFactory.CreateByCode("CAS", 500L);
+            var m = MaterialFactory.CreateByCode("CAS", 500L, 0L);
             var price = p.GetMaterialPrice(m);
             Assert.That(Math.Abs(price - 268M), Is.LessThan(1e-3M));
         }

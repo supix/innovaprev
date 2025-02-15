@@ -7,7 +7,7 @@
             Length_mm = length_mm;
         }
 
-        public override int NumberOfDimensions => 1;
+        public override sealed int NumberOfDimensions => 1;
         public long Length_mm { get; set; }
         public override sealed long DimensionToQuote
         {

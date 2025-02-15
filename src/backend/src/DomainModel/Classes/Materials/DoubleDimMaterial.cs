@@ -8,7 +8,7 @@
             Width_mm = width_mm;
         }
 
-        public override int NumberOfDimensions => 2;
+        public override sealed int NumberOfDimensions => 2;
         public long Height_mm { get; set; }
         public long Width_mm { get; set; }
         public override sealed long DimensionToQuote

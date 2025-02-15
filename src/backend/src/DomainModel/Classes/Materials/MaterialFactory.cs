@@ -5,24 +5,30 @@ namespace DomainModel.Classes.Materials
 {
     public static class MaterialFactory
     {
-        public static IMaterial CreateByCode(string code, params long[] measures)
+        public static IMaterial CreateByCode(string code, long m1, long m2)
         {
             var t = AppDomain.CurrentDomain.GetAssemblies()
                 .SelectMany(domainAssembly => domainAssembly.GetTypes())
                 .Where(type => type.IsSubclassOf(typeof(AbstractMaterial)) && !type.IsAbstract).Single(t => t.Name == code);
 
             // Safe guard
-            if (t.IsSubclassOf(typeof(SingleDimMaterial)) && measures.Length != 1)
+            if (t.IsSubclassOf(typeof(SingleDimMaterial)))
             {
-                throw new InvalidOperationException($"Single dimension material must be created with a single measure. Material code: {code}");
+                if (m2 != 0)
+                    throw new InvalidOperationException($"For a single dimension material m2 must be equal to zero. Material code: {code}");
+                
+                return (AbstractMaterial)Activator.CreateInstance(t, m1)!;
             }
 
-            if (t.IsSubclassOf(typeof(DoubleDimMaterial)) && measures.Length != 2)
+            if (t.IsSubclassOf(typeof(DoubleDimMaterial)))
             {
-                throw new InvalidOperationException($"Double dimension material must be created with just two measures. Material code: {code}");
+                if (m1 == 0 || m2 == 0)
+                    throw new InvalidOperationException($"For a double dimension material m1 and m2 must not be zero. Material code: {code}");
+
+                return (AbstractMaterial)Activator.CreateInstance(t, m1, m2)!;
             }
 
-            return (AbstractMaterial)Activator.CreateInstance(t, measures.Cast<Object>().ToArray())!;
+            throw new InvalidOperationException($"Unknown material. Code: {code}");
         }
 
         public static IEnumerable<IMaterial> GetAll()
