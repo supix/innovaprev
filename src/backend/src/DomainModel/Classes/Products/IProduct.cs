@@ -1,6 +1,4 @@
-﻿using DomainModel.Classes.Materials;
-
-namespace DomainModel.Classes.Products
+﻿namespace DomainModel.Classes.Products
 {
     public interface IProduct
     {

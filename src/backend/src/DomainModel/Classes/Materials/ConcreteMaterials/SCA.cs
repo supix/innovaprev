@@ -1,6 +1,4 @@
-﻿using DomainModel.Classes.Products.Visitor;
-
-namespace DomainModel.Classes.Materials.ConcreteMaterials
+﻿namespace DomainModel.Classes.Materials.ConcreteMaterials
 {
     public class SCA : DoubleDimMaterial
     {

@@ -1,4 +1,3 @@
-using DomainModel.Classes.Materials;
 using DomainModel.Classes.Products;
 
 namespace DomainModel_Test

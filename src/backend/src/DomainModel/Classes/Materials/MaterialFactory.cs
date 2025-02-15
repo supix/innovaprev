@@ -1,7 +1,4 @@
-﻿
-using System.Reflection;
-
-namespace DomainModel.Classes.Materials
+﻿namespace DomainModel.Classes.Materials
 {
     public static class MaterialFactory
     {
@@ -16,7 +13,7 @@ namespace DomainModel.Classes.Materials
             {
                 if (m2 != 0)
                     throw new InvalidOperationException($"For a single dimension material m2 must be equal to zero. Material code: {code}");
-                
+
                 return (AbstractMaterial)Activator.CreateInstance(t, m1)!;
             }
 

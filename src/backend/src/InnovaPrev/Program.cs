@@ -54,7 +54,8 @@ if (localizeOptions != null)
     localizeOptions.Value.DefaultRequestCulture.Culture.NumberFormat.CurrencyDecimalDigits = 2;
     localizeOptions.Value.DefaultRequestCulture.Culture.NumberFormat.NumberDecimalDigits = 2;
     app.UseRequestLocalization(localizeOptions.Value);
-};
+}
+;
 
 // Always verify the container
 container.Verify();

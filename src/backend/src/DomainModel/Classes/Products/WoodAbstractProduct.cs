@@ -1,5 +1,4 @@
-﻿using DomainModel.Classes.Materials;
-using DomainModel.Classes.Materials.ConcreteMaterials;
+﻿using DomainModel.Classes.Materials.ConcreteMaterials;
 
 namespace DomainModel.Classes.Products
 {
