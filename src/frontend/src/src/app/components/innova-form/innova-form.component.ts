@@ -838,7 +838,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
   private subscribeToFormChanges(): void {
     combineLatest([
       this.windows.valueChanges,
-      this.customData.valueChanges,
+      this.customData.valueChanges.pipe(startWith(this.customData.value)),
       this.productData.valueChanges
     ]).pipe(debounceTime(300)).subscribe(() => {
       this.calculatePriceHandler();
