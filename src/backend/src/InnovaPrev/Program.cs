@@ -1,7 +1,5 @@
-using Microsoft.AspNetCore.Localization;
-using System.Globalization;
-using SimpleInjector;
 using Microsoft.Extensions.Options;
+using SimpleInjector;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -50,10 +48,14 @@ app.UseAuthorization();
 app.MapControllers();
 
 var localizeOptions = app.Services.GetService<IOptions<RequestLocalizationOptions>>();
-localizeOptions.Value.SetDefaultCulture("it-IT");
-localizeOptions.Value.DefaultRequestCulture.Culture.NumberFormat.CurrencyDecimalDigits = 2;
-localizeOptions.Value.DefaultRequestCulture.Culture.NumberFormat.NumberDecimalDigits = 2;
-app.UseRequestLocalization(localizeOptions.Value);
+if (localizeOptions != null)
+{
+    localizeOptions.Value.SetDefaultCulture("it-IT");
+    localizeOptions.Value.DefaultRequestCulture.Culture.NumberFormat.CurrencyDecimalDigits = 2;
+    localizeOptions.Value.DefaultRequestCulture.Culture.NumberFormat.NumberDecimalDigits = 2;
+    app.UseRequestLocalization(localizeOptions.Value);
+}
+;
 
 // Always verify the container
 container.Verify();

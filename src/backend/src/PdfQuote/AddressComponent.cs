@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using DomainModel.Classes;
+﻿using DomainModel.Classes;
 using QuestPDF.Fluent;
 using QuestPDF.Infrastructure;
 
@@ -33,20 +27,20 @@ namespace PdfQuote
                         .BorderBottom(1)
                         .PaddingBottom(5)
                         .DefaultTextStyle(x => x.FontSize(8))
-                        .Text(this.title).SemiBold();
+                        .Text(title).SemiBold();
                 }
 
-                column.Item().Text(this.companyData.CompanyName);
-                if (!string.IsNullOrWhiteSpace(this.companyData.Address))
-                    column.Item().Text(this.companyData.Address);
-                if (!string.IsNullOrWhiteSpace(this.companyData.taxCode))
-                    column.Item().Text($"Partita IVA: {this.companyData.taxCode}");
-                if (!string.IsNullOrWhiteSpace(this.companyData.Phone))
-                    column.Item().Text($"Tel.: {this.companyData.Phone}");
-                if (!string.IsNullOrWhiteSpace(this.companyData.Mail))
-                    column.Item().Text($"Email: {this.companyData.Mail}");
-                if (!string.IsNullOrWhiteSpace(this.companyData.Iban))
-                    column.Item().Text($"IBAN: {this.companyData.Iban}");
+                column.Item().Text(companyData.CompanyName);
+                if (!string.IsNullOrWhiteSpace(companyData.Address))
+                    column.Item().Text(companyData.Address);
+                if (!string.IsNullOrWhiteSpace(companyData.taxCode))
+                    column.Item().Text($"Partita IVA: {companyData.taxCode}");
+                if (!string.IsNullOrWhiteSpace(companyData.Phone))
+                    column.Item().Text($"Tel.: {companyData.Phone}");
+                if (!string.IsNullOrWhiteSpace(companyData.Mail))
+                    column.Item().Text($"Email: {companyData.Mail}");
+                if (!string.IsNullOrWhiteSpace(companyData.Iban))
+                    column.Item().Text($"IBAN: {companyData.Iban}");
             });
         }
     }

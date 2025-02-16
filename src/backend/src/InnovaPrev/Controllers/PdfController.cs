@@ -1,7 +1,6 @@
 ﻿using DomainModel.Classes;
 using DomainModel.Services;
 using Microsoft.AspNetCore.Mvc;
-using PdfQuote;
 
 namespace InnovaPrev.Controllers
 {
@@ -20,9 +19,9 @@ namespace InnovaPrev.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] Project project)
         {
-            var buffer = this.pdfReportGenerator.Generate(project);
+            var buffer = pdfReportGenerator.Generate(project);
             var streamResult = new MemoryStream(buffer);
-            return File(streamResult, "application/pdf", $"preventivo{ DateTime.Now.ToString("_yyyyMMdd_HHmmss") }.pdf");
+            return File(streamResult, "application/pdf", $"preventivo{DateTime.Now.ToString("_yyyyMMdd_HHmmss")}.pdf");
         }
     }
 }

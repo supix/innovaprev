@@ -2,8 +2,7 @@
 {
     public class DetailPrice
     {
-        public decimal UnitPrice { get; set; }
-        public decimal NetPrice { get; set; } 
+        public decimal NetPrice { get; set; }
         public decimal Vat { get; set; }
         public decimal Tax
         {
@@ -15,9 +14,9 @@
         public decimal TotalPrice
         {
             get
-            { 
+            {
                 return NetPrice + Tax;
-            } 
+            }
         }
     }
 }

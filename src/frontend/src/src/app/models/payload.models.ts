@@ -23,6 +23,7 @@ export interface WindowRow {
   position: string;
   height: number;
   width: number;
+  length: number;
   quantity: number;
   windowType: string;
   openingType: string;
@@ -34,16 +35,26 @@ export interface WindowRow {
   belowThreshold: number;
 }
 
+export interface CustomRow {
+  description: string;
+  quantity: string;
+  price: number;
+}
+
 export interface BillingPayload extends PricePayload {
   supplierData: PersonalData;
   customerData: PersonalData;
 }
 
 // Payload for a collection of window estimate rows
-export interface PricePayload extends WindowsPayload {
+export interface PricePayload extends WindowsPayload, CustomPayload {
   productData: ProductDetails;
 }
 
 export interface WindowsPayload {
   windowsData: WindowRow[];
+}
+
+export interface CustomPayload {
+  customData: CustomRow[];
 }

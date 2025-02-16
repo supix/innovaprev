@@ -1,23 +1,15 @@
-<div *ngIf="!isPriceNull" class="price-display badge">
-  <div class="side-details">
-    <div class="labels-column">
-      <div class="detail-item">Imponibile</div>
-      <div class="detail-item">Imposta</div>
+<div class="price-container justify-content-center">
+  <ng-container *ngIf="!isPriceNull">
+    <div class="amount-box">
+      <span class="amount-label">Imponibile</span>
+      <span class="amount-value">{{ formattedAmountIntegerPart }}<span class="decimals">,{{ formattedAmountDecimalPart }}</span> €</span>
     </div>
-    <div class="details-column">
-      <div class="detail-item">
-        {{ formattedAmountIntegerPart }}
-        <span class="price-decimals">,{{ formattedAmountDecimalPart }} €</span>
-      </div>
-      <div class="detail-item">
-        {{ formattedTaxIntegerPart }}
-        <span class="price-decimals">,{{ formattedTaxDecimalPart }} €</span>
-      </div>
+    <div class="tax-box">
+      <span class="tax-label">Imposta</span>
+      <span class="tax-value">{{ formattedTaxIntegerPart }}<span class="decimals">,{{ formattedTaxDecimalPart }}</span> €</span>
     </div>
-  </div>
-  <div class="main-price">
-    {{ formattedIntegerPart }}
-    <span class="price-decimals">,{{ formattedDecimalPart }} €</span>
-  </div>
+  </ng-container>
+  <ng-container *ngIf="isPriceNull">
+    <div class="tax-box"><span class="tax-label">-</span><span class="tax-value">€</span></div>
+  </ng-container>
 </div>
-<div *ngIf="isPriceNull" class="price-display badge">- €</div>

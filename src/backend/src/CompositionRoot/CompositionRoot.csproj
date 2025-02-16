@@ -13,6 +13,7 @@
   <ItemGroup>
     <ProjectReference Include="..\DomainModel\DomainModel.csproj" />
     <ProjectReference Include="..\PdfQuote\PdfQuote.csproj" />
+    <ProjectReference Include="..\ProductImages\ProductImages.csproj" />
   </ItemGroup>
 
 </Project>

@@ -49,37 +49,19 @@ function calculatePrice(payload: any): number {
 function validatePayload(payload: any): string[] {
   const errors: string[] = [];
 
-  // if (!payload.personalData) {
-  //   errors.push('Missing personalData object.');
-  // } else {
-  //   const {companyName, address, vat, phone, mail, orderNumber} = payload.personalData;
-  //   if (!companyName) errors.push('personalData.companyName is required.');
-  //   if (!address) errors.push('personalData.address is required.');
-  //   if (!vat) errors.push('personalData.vat is required.');
-  //   if (!phone) errors.push('personalData.phone is required.');
-  //   if (!mail) errors.push('personalData.mail is required.');
-  //   if (!orderNumber) errors.push('personalData.orderNumber is required.');
-  // }
-
   if (!payload.productData) {
     errors.push('Missing productData object.');
   } else {
     const {
       product,
-      // glassStopper,
-      // windowSlide,
       internalColor,
       externalColor,
-      accessoryColor,
-      climateZone
+      accessoryColor
     } = payload.productData;
     if (!product) errors.push('productData.product is required.');
-    // if (glassStopper === undefined) errors.push('productData.glassStopper is required.');
-    // if (windowSlide === undefined) errors.push('productData.windowSlide is required.');
     if (!internalColor) errors.push('productData.internalColor is required.');
     if (!externalColor) errors.push('productData.externalColor is required.');
     if (!accessoryColor) errors.push('productData.accessoryColor is required.');
-    if (!climateZone) errors.push('productData.climateZone is required.');
   }
 
   if (!payload.windowsData || !Array.isArray(payload.windowsData) || payload.windowsData.length === 0) {
@@ -99,9 +81,9 @@ function validatePayload(payload: any): string[] {
 // Function to generate mock collections data
 const getMockCollections = (): CollectionsResponse => ({
   product: [
-    {id: 'PRO_GIALLO', desc: 'Giallo'},
-    {id: 'PRO_VERDE', desc: 'Verde'},
-    {id: 'PRO_ROSSO', desc: 'Rosso'},
+    {id: 'PRO_GIALLO', desc: 'Giallo', trimSectionVisible: false, extDesc: ''},
+    {id: 'PRO_VERDE', desc: 'Verde', trimSectionVisible: false, extDesc: ''},
+    {id: 'PRO_ROSSO', desc: 'Rosso', trimSectionVisible: false, extDesc: ''},
   ],
   internalColors: [
     {id: 'IC_GIALLO', desc: 'Giallo'},
@@ -118,15 +100,10 @@ const getMockCollections = (): CollectionsResponse => ({
     {id: 'AC_VERDE', desc: 'Verde'},
     {id: 'AC_ROSSO', desc: 'Rosso'},
   ],
-  climateZones: [
-    {id: 'CZ_GIALLO', desc: 'Giallo'},
-    {id: 'CZ_VERDE', desc: 'Verde'},
-    {id: 'CZ_ROSSO', desc: 'Rosso'},
-  ],
   windowTypes: [
-    {id: 'WT_GRANDE', desc: 'Grande'},
-    {id: 'WT_MEDIA', desc: 'Media'},
-    {id: 'WT_PICCOLA', desc: 'Piccola'},
+    {id: 'WT_GRANDE', desc: 'Grande', numOfDims: 1},
+    {id: 'WT_MEDIA', desc: 'Media', numOfDims: 2},
+    {id: 'WT_PICCOLA', desc: 'Piccola', numOfDims: 1},
   ],
   openingTypes: [
     {id: 'OT_DX', desc: 'SX'},

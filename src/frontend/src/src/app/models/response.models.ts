@@ -17,6 +17,8 @@ export interface CollectionBaseItem {
 }
 
 export interface Product extends CollectionBaseItem {
+  trimSectionVisible: boolean;
+  extDesc: string;
 }
 
 export interface InternalColor extends CollectionBaseItem {
@@ -28,10 +30,8 @@ export interface ExternalColor extends CollectionBaseItem {
 export interface AccessoryColor extends CollectionBaseItem {
 }
 
-export interface ClimateZone extends CollectionBaseItem {
-}
-
 export interface WindowType extends CollectionBaseItem {
+  numOfDims: number;
 }
 
 export interface OpeningType extends CollectionBaseItem {
@@ -49,7 +49,6 @@ export interface CollectionsResponse {
   internalColors: InternalColor[];
   externalColors: ExternalColor[];
   accessoryColors: AccessoryColor[];
-  climateZones: ClimateZone[];
   windowTypes: WindowType[];
   openingTypes: OpeningType[];
   glassTypes: GlassType[];

@@ -18,7 +18,7 @@ namespace InnovaPrev.Controllers
         [HttpGet]
         public Collections Get()
         {
-            return this.collectionProvider.Get();
+            return collectionProvider.Get();
         }
     }
 }

@@ -1,6 +1,4 @@
-﻿using System.Collections;
-
-namespace DomainModel.Services.PriceCalculator
+﻿namespace DomainModel.Services.PriceCalculator
 {
     public class PriceInfo
     {
