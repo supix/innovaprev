@@ -12,5 +12,7 @@ namespace DomainModel.Classes.Colors
         string Description { get; }
         decimal Price_mq { get; }
         int Order { get; }
+        string[] InternalColorForProducts { get; }
+        string[] ExternalColorForProducts { get; }
     }
 }

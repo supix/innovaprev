@@ -1,4 +1,5 @@
-﻿using DomainModel.Classes.Materials;
+﻿using DomainModel.Classes.Colors;
+using DomainModel.Classes.Materials;
 using DomainModel.Classes.Products;
 
 namespace DomainModel.Services.CollectionsProvider
@@ -10,20 +11,7 @@ namespace DomainModel.Services.CollectionsProvider
             return new Collections()
             {
                 Product = GetProductCollItems(),
-                InternalColors = new[] {
-                    new CollectionItem() { Id = "IC_ARG", Desc = "Argento" },
-                    new CollectionItem() { Id = "IC_BRO", Desc = "Bronzo" },
-                    new CollectionItem() { Id = "IC_RAM", Desc = "Ramato" },
-                    new CollectionItem() { Id = "IC_RAF", Desc = "Raffaello/Altri colori Ral" },
-                    new CollectionItem() { Id = "AC_EL", Desc = "Effetto legno" },
-                },
-                ExternalColors = new[] {
-                    new CollectionItem() { Id = "EC_ARG", Desc = "Argento" },
-                    new CollectionItem() { Id = "EC_BRO", Desc = "Bronzo" },
-                    new CollectionItem() { Id = "EC_RAM", Desc = "Ramato" },
-                    new CollectionItem() { Id = "EC_RAF", Desc = "Raffaello/Altri colori Ral" },
-                    new CollectionItem() { Id = "AC_EL", Desc = "Effetto legno" },
-                },
+                Colors = GetColorCollItems(),
                 AccessoryColors = new[] {
                     new CollectionItem() { Id = "AC_ARG", Desc = "Argento" },
                     new CollectionItem() { Id = "AC_BRO", Desc = "Bronzo" },
@@ -59,6 +47,12 @@ namespace DomainModel.Services.CollectionsProvider
         {
             return MaterialFactory.GetAll()
                 .Select(m => new MaterialCollectionItem() { Id = m.Code, Desc = m.Description, NumOfDims = m.NumberOfDimensions })
+                .ToArray();
+        }
+        private ColorCollectionItem[] GetColorCollItems()
+        {
+            return ColorFactory.GetAll()
+                .Select(c => new ColorCollectionItem() { Id = c.Code, Desc = c.Description, InternalColorForProduct = c.InternalColorForProducts, ExternalColorForProduct = c.ExternalColorForProducts })
                 .ToArray();
         }
     }
