@@ -5,7 +5,7 @@
         public PIA(long length_mm) : base(length_mm)
         {
         }
-        public override string Description => "Piatte";
+        public override string Description => "Coprifili"; // ex "piatte"
         protected override long? ClampMinValue => null;
         public override int Order => 180;
     }

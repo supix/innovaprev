@@ -1,6 +1,6 @@
 ﻿namespace DomainModel.Classes.Materials.ConcreteMaterials
 {
-    public class SRAF : DoubleDimFixedMaterial
+    public class SRAF : DoubleDimMaterial
     {
         public SRAF(long height_mm, long width_mm) : base(height_mm, width_mm)
         {
