@@ -20,6 +20,11 @@ namespace DomainModel.Classes.Products
             return material.GetPrice(this);
         }
         public abstract decimal GetPrice_CAS(CAS m, long length_mm);
+        public abstract decimal GetPrice_COP(COP m, long length_mm);
+        public decimal GetPrice_FRO(FRO m, long length_mm)
+        {
+            return GetFullSingleDimensionPrice(142M, length_mm);
+        }
         public abstract decimal GetPrice_DoubleDim(DoubleDimMaterial m, long area_sqmm);
         public abstract decimal GetPrice_DoubleDimFixed(DoubleDimFixedMaterial m, long area_sqmm);
 

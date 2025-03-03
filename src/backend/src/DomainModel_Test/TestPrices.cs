@@ -122,10 +122,10 @@ namespace DomainModel_Test
         }
 
         [Test]
-        public void Test_RALTWithFixed_PriceIsCorrect()
+        public void Test_SLFWithFixed_PriceIsCorrect()
         {
             var p = ProductFactory.CreateByCode("RALT");
-            var price = p.GetMaterialPrice("FIXA", 1120L, 2400L, 0L);
+            var price = p.GetMaterialPrice("SLF", 1120L, 2400L, 0L);
             Assert.That(Math.Abs(price - (526 + 38) * 1.12M * 2.4M), Is.LessThan(1e-3M));
         }
         [Test]
@@ -142,6 +142,70 @@ namespace DomainModel_Test
             var p = ProductFactory.CreateByCode("IPC");
             var price = p.GetMaterialPrice("FLS", 1300L, 1800L, 0L);
             Assert.That(Math.Abs(price - (385 + 38) * 1.3M * 1.8M), Is.LessThan(1e-3M));
+        }
+
+        [Test]
+        public void Test_CopWithPvc_PriceIsCorrect()
+        {
+            var p = ProductFactory.CreateByCode("IPC");
+            var price = p.GetMaterialPrice("COP", 0L, 0L, 3000L);
+            Assert.That(Math.Abs(price - 6 * 3M), Is.LessThan(1e-3M));
+        }
+
+        [Test]
+        public void Test_CopWithPvcLowLength_PriceIsCorrect()
+        {
+            var p = ProductFactory.CreateByCode("IPC");
+            var price = p.GetMaterialPrice("COP", 0L, 0L, 100L);
+            Assert.That(Math.Abs(price - 6 * 0.1M), Is.LessThan(1e-3M));
+        }
+
+        [Test]
+        public void Test_CopWithWood_PriceIsCorrect()
+        {
+            var p = ProductFactory.CreateByCode("AATT");
+            var price = p.GetMaterialPrice("COP", 0L, 0L, 3000L);
+            Assert.That(Math.Abs(price - 18.2M * 3M), Is.LessThan(1e-3M));
+        }
+
+        [Test]
+        public void Test_CopWithWoodLowLength_PriceIsCorrect()
+        {
+            var p = ProductFactory.CreateByCode("AATT");
+            var price = p.GetMaterialPrice("COP", 0L, 0L, 100L);
+            Assert.That(Math.Abs(price - 18.2M * 0.1M), Is.LessThan(1e-3M));
+        }
+
+        [Test]
+        public void Test_FroWithWood_PriceIsCorrect()
+        {
+            var p = ProductFactory.CreateByCode("AATT");
+            var price = p.GetMaterialPrice("FRO", 0L, 0L, 3000L);
+            Assert.That(Math.Abs(price - 142M * 3M), Is.LessThan(1e-3M));
+        }
+
+        [Test]
+        public void Test_FroWithWoodLowLength_PriceIsCorrect()
+        {
+            var p = ProductFactory.CreateByCode("AATT");
+            var price = p.GetMaterialPrice("FRO", 0L, 0L, 100L);
+            Assert.That(Math.Abs(price - 142M * 1M), Is.LessThan(1e-3M));
+        }
+
+        [Test]
+        public void Test_FroWithPvc_PriceIsCorrect()
+        {
+            var p = ProductFactory.CreateByCode("IPC");
+            var price = p.GetMaterialPrice("FRO", 0L, 0L, 3000L);
+            Assert.That(Math.Abs(price - 142M * 3M), Is.LessThan(1e-3M));
+        }
+
+        [Test]
+        public void Test_FroWithPvcLowLength_PriceIsCorrect()
+        {
+            var p = ProductFactory.CreateByCode("IPC");
+            var price = p.GetMaterialPrice("FRO", 0L, 0L, 100L);
+            Assert.That(Math.Abs(price - 142M * 1M), Is.LessThan(1e-3M));
         }
     }
 }

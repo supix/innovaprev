@@ -8,5 +8,10 @@ namespace DomainModel.Classes.Products
         {
             return GetFullSingleDimensionPrice(285M, length_mm);
         }
+
+        public override decimal GetPrice_COP(COP m, long length_mm)
+        {
+            return GetFullSingleDimensionPrice(18.2M, length_mm);
+        }
     }
 }
