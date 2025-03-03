@@ -13,11 +13,10 @@ namespace DomainModel.Services.CollectionsProvider
                 Product = GetProductCollItems(),
                 Colors = GetColorCollItems(),
                 AccessoryColors = new[] {
+                    new CollectionItem() { Id = "AC_ORO", Desc = "Oro" },
                     new CollectionItem() { Id = "AC_ARG", Desc = "Argento" },
+                    new CollectionItem() { Id = "AC_BIA", Desc = "Bianco" },
                     new CollectionItem() { Id = "AC_BRO", Desc = "Bronzo" },
-                    new CollectionItem() { Id = "AC_RAM", Desc = "Ramato" },
-                    new CollectionItem() { Id = "AC_RAF", Desc = "Raffaello/Altri colori Ral" },
-                    new CollectionItem() { Id = "AC_EL", Desc = "Effetto legno" },
                 },
                 WindowTypes = GetWindowTypesCollItems(),
                 OpeningTypes = new[] {
