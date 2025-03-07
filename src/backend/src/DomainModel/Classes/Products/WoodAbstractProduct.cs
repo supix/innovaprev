@@ -13,5 +13,7 @@ namespace DomainModel.Classes.Products
         {
             return GetFullSingleDimensionPrice(18.2M, length_mm);
         }
+
+        public override sealed bool SingleColor => false;
     }
 }

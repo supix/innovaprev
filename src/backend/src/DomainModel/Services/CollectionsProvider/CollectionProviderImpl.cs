@@ -38,7 +38,7 @@ namespace DomainModel.Services.CollectionsProvider
         private ProductCollectionItem[] GetProductCollItems()
         {
             return ProductFactory.GetAll()
-                .Select(p => new ProductCollectionItem() { Id = p.Code, Desc = p.Description, TrimSectionVisible = p.TrimSectionVisible, DescTitle = p.ExtendedDescriptionTitle, ExtDesc = p.ExtendedDescription })
+                .Select(p => new ProductCollectionItem() { Id = p.Code, Desc = p.Description, TrimSectionVisible = p.TrimSectionVisible, SingleColor = p.SingleColor, DescTitle = p.ExtendedDescriptionTitle, ExtDesc = p.ExtendedDescription })
                 .ToArray();
         }
 
