@@ -8,5 +8,6 @@ namespace DomainModel.Classes.Materials
         string Description { get; }
         decimal GetPrice(IVisitor visitor);
         int NumberOfDimensions { get; }
+        string[] MaterialForProduct { get; }
     }
 }

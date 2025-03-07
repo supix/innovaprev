@@ -1,4 +1,7 @@
-﻿namespace DomainModel.Classes.Materials.ConcreteMaterials
+﻿using System.Reflection.Metadata.Ecma335;
+using DomainModel.Classes.Products.ConcreteProducts;
+
+namespace DomainModel.Classes.Materials.ConcreteMaterials
 {
     public class SIL : DoubleDimMaterial
     {
@@ -8,5 +11,6 @@
         public override string Description => "Scorrevole in linea";
         protected override long? ClampMinValue => 2500000;
         public override int Order => 30;
+        public override string[] MaterialForProduct => new[] { new SP().Code };
     }
 }

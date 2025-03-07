@@ -2,7 +2,7 @@
 
 namespace DomainModel.Classes.Products.ConcreteProducts
 {
-    public class AALAM : WoodAbstractProduct
+    public class AALAM : WoodAbstractProduct, IAntaMaxAbstractProduct
     {
         public override string Description => "Armonia Alluminio/Legno anta max";
 

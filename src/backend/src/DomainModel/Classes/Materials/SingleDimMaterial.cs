@@ -1,4 +1,5 @@
-﻿using DomainModel.Classes.Products.Visitor;
+﻿using DomainModel.Classes.Products;
+using DomainModel.Classes.Products.Visitor;
 
 namespace DomainModel.Classes.Materials
 {
@@ -33,6 +34,12 @@ namespace DomainModel.Classes.Materials
         public override decimal GetPrice(IVisitor visitor)
         {
             return 0;
+        }
+        protected string[] GetAllProductCodes()
+        {
+            return ProductFactory.GetAll()
+                .Select(p => p.Code)
+                .ToArray();
         }
     }
 }

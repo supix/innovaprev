@@ -10,5 +10,6 @@
 
         protected override long? ClampMinValue => 1800000;
         public override int Order => 60;
+        public override string[] MaterialForProduct => base.GetNotAntaMaxAndNotScorrevoleProductCodes();
     }
 }

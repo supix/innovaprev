@@ -10,6 +10,7 @@ namespace DomainModel.Classes.Materials
         protected abstract long? ClampMinValue { get; }
         public abstract long DimensionToQuote { get; }
         public abstract int Order { get; }
+        public abstract string[] MaterialForProduct { get; }
         public abstract decimal GetPrice(IVisitor visitor);
     }
 }

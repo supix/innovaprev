@@ -1,4 +1,6 @@
-﻿using DomainModel.Classes.Products.Visitor;
+﻿using DomainModel.Classes.Products;
+using DomainModel.Classes.Products.ConcreteProducts;
+using DomainModel.Classes.Products.Visitor;
 
 namespace DomainModel.Classes.Materials
 {
@@ -37,6 +39,20 @@ namespace DomainModel.Classes.Materials
         public override decimal GetPrice(IVisitor visitor)
         {
             return visitor.GetPrice_DoubleDim(this, GetAllowedArea_sqmm);
+        }
+        protected string[] GetNotAntaMaxAndNotScorrevoleProductCodes()
+        {
+            return ProductFactory.GetAll()
+                .Where(p => !(p is IAntaMaxAbstractProduct) && !(p is SP))
+                .Select(p => p.Code)
+                .ToArray();
+        }
+        protected string[] GetAntaMaxProductCodes()
+        {
+            return ProductFactory.GetAll()
+                .Where(p => p is IAntaMaxAbstractProduct)
+                .Select(p => p.Code)
+                .ToArray();
         }
     }
 }

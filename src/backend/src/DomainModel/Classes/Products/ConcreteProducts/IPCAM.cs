@@ -2,7 +2,7 @@
 
 namespace DomainModel.Classes.Products.ConcreteProducts
 {
-    public class IPCAM : PvcAbstractProduct
+    public class IPCAM : PvcAbstractProduct, IAntaMaxAbstractProduct
     {
         public override string Description => "Innova PVC/A Classic Anta Max";
 

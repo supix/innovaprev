@@ -8,6 +8,7 @@
         public override string Description => "Sopraluce fisso";
         protected override long? ClampMinValue => 1000000;
         public override int Order => 130;
+        public override string[] MaterialForProduct => base.GetNotAntaMaxAndNotScorrevoleProductCodes();
     }
 
 }

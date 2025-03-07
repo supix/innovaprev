@@ -16,6 +16,8 @@ namespace DomainModel.Classes.Materials.ConcreteMaterials
         {
             return visitor.GetPrice_CAS(this, GetAllowedLength_mm);
         }
+        public override string[] MaterialForProduct => base.GetAllProductCodes();
+
     }
 
 }

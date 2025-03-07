@@ -9,5 +9,6 @@
         public override string Description => "Fisso laterale dx";
         protected override long? ClampMinValue => 1000000;
         public override int Order => 150;
+        public override string[] MaterialForProduct => base.GetNotAntaMaxAndNotScorrevoleProductCodes();
     }
 }
