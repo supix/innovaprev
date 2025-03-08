@@ -250,7 +250,7 @@ namespace DomainModel_Test
             var p = ProductFactory.CreateByCode("AALAM");
             var prt1a = new PRT1A(1000L, 1000L);
             var price = p.GetMaterialPrice(prt1a);
-            var expected = (876M + 38M) * 1M * 1.5M + 616M;
+            var expected = (876M + 38M) * 1.5M + 616M;
             Assert.That(Math.Abs(price - expected), Is.LessThan(1e-3M));
         }
 
@@ -270,7 +270,47 @@ namespace DomainModel_Test
             var p = ProductFactory.CreateByCode("AALAM");
             var prt2a = new PRT2A(1000L, 1000L);
             var price = p.GetMaterialPrice(prt2a);
-            var expected = (876M + 38M) * 1M * 1.8M + 616M;
+            var expected = (876M + 38M) * 1.8M + 616M;
+            Assert.That(Math.Abs(price - expected), Is.LessThan(1e-3M));
+        }
+
+        [Test]
+        public void Test_PRT1AWithPvcAntaMax_PriceIsCorrect()
+        {
+            var p = ProductFactory.CreateByCode("IPCAM");
+            var prt1a = new PRT1A(3000L, 4500L);
+            var price = p.GetMaterialPrice(prt1a);
+            var expected = (635M + 38M) * 3M * 4.5M + 616M;
+            Assert.That(Math.Abs(price - expected), Is.LessThan(1e-3M));
+        }
+
+        [Test]
+        public void Test_PRT1AWithPvcAntaMaxLowArea_PriceIsCorrect()
+        {
+            var p = ProductFactory.CreateByCode("IPCAM");
+            var prt1a = new PRT1A(1000L, 1000L);
+            var price = p.GetMaterialPrice(prt1a);
+            var expected = (635M + 38M) * 1.5M + 616M;
+            Assert.That(Math.Abs(price - expected), Is.LessThan(1e-3M));
+        }
+
+        [Test]
+        public void Test_PRT2AWithPvcAntaMax_PriceIsCorrect()
+        {
+            var p = ProductFactory.CreateByCode("IPCAM");
+            var prt2a = new PRT2A(3000L, 4500L);
+            var price = p.GetMaterialPrice(prt2a);
+            var expected = (635M + 38M) * 3M * 4.5M + 616M;
+            Assert.That(Math.Abs(price - expected), Is.LessThan(1e-3M));
+        }
+
+        [Test]
+        public void Test_PRT2AWithPvcAntaMaxLowArea_PriceIsCorrect()
+        {
+            var p = ProductFactory.CreateByCode("IPCAM");
+            var prt2a = new PRT2A(1000L, 1000L);
+            var price = p.GetMaterialPrice(prt2a);
+            var expected = (635M + 38M) * 1.8M + 616M;
             Assert.That(Math.Abs(price - expected), Is.LessThan(1e-3M));
         }
     }
