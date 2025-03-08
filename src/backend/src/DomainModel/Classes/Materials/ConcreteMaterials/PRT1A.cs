@@ -1,6 +1,6 @@
 ﻿namespace DomainModel.Classes.Materials.ConcreteMaterials
 {
-    public class PRT1A : DoubleDimMaterial
+    public class PRT1A : NeedsLockMaterial
     {
         public PRT1A(long height_mm, long width_mm) : base(height_mm, width_mm)
         {

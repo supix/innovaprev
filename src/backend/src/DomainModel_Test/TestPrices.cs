@@ -145,7 +145,7 @@ namespace DomainModel_Test
         }
 
         [Test]
-        public void Test_CopWithPvc_PriceIsCorrect()
+        public void Test_COPWithPvc_PriceIsCorrect()
         {
             var p = ProductFactory.CreateByCode("IPC");
             var price = p.GetMaterialPrice("COP", 0L, 0L, 3000L);
@@ -153,7 +153,7 @@ namespace DomainModel_Test
         }
 
         [Test]
-        public void Test_CopWithPvcLowLength_PriceIsCorrect()
+        public void Test_COPWithPvcLowLength_PriceIsCorrect()
         {
             var p = ProductFactory.CreateByCode("IPC");
             var price = p.GetMaterialPrice("COP", 0L, 0L, 100L);
@@ -161,7 +161,7 @@ namespace DomainModel_Test
         }
 
         [Test]
-        public void Test_CopWithWood_PriceIsCorrect()
+        public void Test_COPWithWood_PriceIsCorrect()
         {
             var p = ProductFactory.CreateByCode("AATT");
             var price = p.GetMaterialPrice("COP", 0L, 0L, 3000L);
@@ -169,7 +169,7 @@ namespace DomainModel_Test
         }
 
         [Test]
-        public void Test_CopWithWoodLowLength_PriceIsCorrect()
+        public void Test_COPWithWoodLowLength_PriceIsCorrect()
         {
             var p = ProductFactory.CreateByCode("AATT");
             var price = p.GetMaterialPrice("COP", 0L, 0L, 100L);
@@ -177,7 +177,7 @@ namespace DomainModel_Test
         }
 
         [Test]
-        public void Test_FroWithWood_PriceIsCorrect()
+        public void Test_FROWithWood_PriceIsCorrect()
         {
             var p = ProductFactory.CreateByCode("AATT");
             var price = p.GetMaterialPrice("FRO", 0L, 0L, 3000L);
@@ -185,7 +185,7 @@ namespace DomainModel_Test
         }
 
         [Test]
-        public void Test_FroWithWoodLowLength_PriceIsCorrect()
+        public void Test_FROWithWoodLowLength_PriceIsCorrect()
         {
             var p = ProductFactory.CreateByCode("AATT");
             var price = p.GetMaterialPrice("FRO", 0L, 0L, 100L);
@@ -193,7 +193,7 @@ namespace DomainModel_Test
         }
 
         [Test]
-        public void Test_FroWithPvc_PriceIsCorrect()
+        public void Test_FROWithPvc_PriceIsCorrect()
         {
             var p = ProductFactory.CreateByCode("IPC");
             var price = p.GetMaterialPrice("FRO", 0L, 0L, 3000L);
@@ -201,11 +201,47 @@ namespace DomainModel_Test
         }
 
         [Test]
-        public void Test_FroWithPvcLowLength_PriceIsCorrect()
+        public void Test_FROWithPvcLowLength_PriceIsCorrect()
         {
             var p = ProductFactory.CreateByCode("IPC");
             var price = p.GetMaterialPrice("FRO", 0L, 0L, 100L);
             Assert.That(Math.Abs(price - 142M * 1M), Is.LessThan(1e-3M));
+        }
+
+        [Test]
+        public void Test_PRT1AWithWoodAntaMax_PriceIsCorrect()
+        {
+            var p = ProductFactory.CreateByCode("AALAM");
+            var price = p.GetMaterialPrice("PRT1A", 3000L, 4500L, 0L);
+            var expected = (876M + 38M) * 3M * 4.5M + 616M;
+            Assert.That(Math.Abs(price - expected), Is.LessThan(1e-3M));
+        }
+
+        [Test]
+        public void Test_PRT1AWithWoodAntaMaxLowArea_PriceIsCorrect()
+        {
+            var p = ProductFactory.CreateByCode("AALAM");
+            var price = p.GetMaterialPrice("PRT1A", 1000L, 1000L, 0L);
+            var expected = (876M + 38M) * 1M * 1.5M + 616M;
+            Assert.That(Math.Abs(price - expected), Is.LessThan(1e-3M));
+        }
+
+        [Test]
+        public void Test_PRT2AWithWoodAntaMax_PriceIsCorrect()
+        {
+            var p = ProductFactory.CreateByCode("AALAM");
+            var price = p.GetMaterialPrice("PRT2A", 3000L, 4500L, 0L);
+            var expected = (876M + 38M) * 3M * 4.5M + 616M;
+            Assert.That(Math.Abs(price - expected), Is.LessThan(1e-3M));
+        }
+
+        [Test]
+        public void Test_PRT2AWithWoodAntaMaxLowArea_PriceIsCorrect()
+        {
+            var p = ProductFactory.CreateByCode("AALAM");
+            var price = p.GetMaterialPrice("PRT2A", 1000L, 1000L, 0L);
+            var expected = (876M + 38M) * 1M * 1.8M + 616M;
+            Assert.That(Math.Abs(price - expected), Is.LessThan(1e-3M));
         }
     }
 }
