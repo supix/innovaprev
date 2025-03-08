@@ -245,7 +245,7 @@
                 [class.ng-invalid]="false"
                 [ngClass]="{ 'is-invalid is-awaiting': (submitted || productControl.touched) && productControl.invalid }"
                 [loading]="isCollectionsLoading"
-                (change)="onChangeProduct($event)"
+                (change)="onChangeProduct($event?.id)"
                 placeholder="Seleziona una serie">
                 <ng-template ng-option-tmp let-item="item">
                   <div class="hidden-sm">
