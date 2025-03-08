@@ -1,4 +1,5 @@
 ﻿using DomainModel.Classes;
+using DomainModel.Classes.Materials;
 using DomainModel.Classes.Products;
 
 namespace DomainModel.Services.PriceCalculator
@@ -17,7 +18,10 @@ namespace DomainModel.Services.PriceCalculator
                 },
                 (Func<PriceInfo, WindowsData, PriceInfo>)((acc, x) =>
                 {
-                    var netPrice = product.GetMaterialPrice(x.WindowType, x.Height, x.Width, x.Length);
+                    long m1 = x.Length != 0 ? x.Length : x.Height;
+                    long m2 = x.Width;
+                    var material = MaterialFactory.CreateByCode(x.WindowType, m1, m2);
+                    var netPrice = product.GetMaterialPrice(material);
                     var totalMaterialPrice = netPrice * x.Quantity;
                     var detailPrice = new DetailPrice() { NetPrice = totalMaterialPrice, Vat = 0.22M };
                     acc.DetailPrices.Add(detailPrice);

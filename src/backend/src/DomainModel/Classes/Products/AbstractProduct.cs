@@ -13,11 +13,8 @@ namespace DomainModel.Classes.Products
         public abstract string ExtendedDescriptionTitle { get; }
         public abstract string ExtendedDescription { get; }
         public abstract int Order { get; }
-        public virtual decimal GetMaterialPrice(string materialCode, long height, long width, long length)
+        public virtual decimal GetMaterialPrice(IMaterial material)
         {
-            long m1 = length != 0 ? length : height;
-            long m2 = width;
-            var material = MaterialFactory.CreateByCode(materialCode, m1, m2);
             return material.GetPrice(this);
         }
         public abstract decimal GetPrice_CAS(CAS m, long length_mm);
