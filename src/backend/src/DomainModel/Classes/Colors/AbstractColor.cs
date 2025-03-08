@@ -8,11 +8,12 @@ namespace DomainModel.Classes.Colors
         public abstract string Description { get; }
         public abstract decimal Price_mq { get; }
         public abstract int Order { get; }
-        public string[] InternalColorForProducts {
+        public string[] InternalColorForProducts
+        {
             get
             {
                 return ProductFactory.GetAll()
-                    .Where(p => 
+                    .Where(p =>
                       (p is WoodAbstractProduct && this is WoodColor) ||
                       (p is PvcAbstractProduct && this is PvcColor)
                     )

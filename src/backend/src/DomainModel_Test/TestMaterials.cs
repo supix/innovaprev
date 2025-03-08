@@ -15,7 +15,7 @@ public class TestMaterials
         var correctProducts = new[] { "ELA", "RALT", "AATT", "IPC", "IPN" };
         var fix = new FIX(1000, 1000);
         Assert.That(fix.MaterialForProduct, Is.EquivalentTo(correctProducts));
-        
+
     }
 
     [Test]

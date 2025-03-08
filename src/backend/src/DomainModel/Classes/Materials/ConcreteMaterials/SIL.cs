@@ -1,5 +1,4 @@
-﻿using System.Reflection.Metadata.Ecma335;
-using DomainModel.Classes.Products.ConcreteProducts;
+﻿using DomainModel.Classes.Products.ConcreteProducts;
 
 namespace DomainModel.Classes.Materials.ConcreteMaterials
 {

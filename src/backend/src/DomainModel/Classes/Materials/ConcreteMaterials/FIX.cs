@@ -1,6 +1,4 @@
-﻿using System.Reflection.Metadata.Ecma335;
-
-namespace DomainModel.Classes.Materials.ConcreteMaterials
+﻿namespace DomainModel.Classes.Materials.ConcreteMaterials
 {
     public class FIX : DoubleDimFixedMaterial
     {
