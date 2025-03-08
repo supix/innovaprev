@@ -271,8 +271,8 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
     this.updateWindowsFormState();
   }
 
-  getInternalColors(): Colors[] {
-    if (!this.selectedProductId || !this.collections?.colors) {
+  getInternalColors(productId = this.selectedProductId): Colors[] {
+    if (!productId || !this.collections?.colors) {
       return [];
     }
 
@@ -280,8 +280,8 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
       .filter(color => color.internalColorForProduct.includes(this.selectedProductId as string));
   }
 
-  getExternalColors(): Colors[] {
-    if (!this.selectedProductId || !this.collections?.colors) {
+  getExternalColors(productId = this.selectedProductId): Colors[] {
+    if (!productId || !this.collections?.colors) {
       return [];
     }
 
@@ -300,8 +300,8 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
     return !!this.collections?.product.find(p => p.id === this.selectedProductId)?.singleColor;
   }
 
-  getWindowTypes(): WindowType[] {
-    if (!this.selectedProductId || !this.collections?.windowTypes) {
+  getWindowTypes(productId = this.selectedProductId): WindowType[] {
+    if (!productId || !this.collections?.windowTypes) {
       return [];
     }
 
@@ -527,6 +527,23 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
     // Helper function to generate a random number within a range
     const getRandomNumber = (max: number, min: number = 1): number => Math.max(min, Math.floor(Math.random() * max));
 
+    const getRandomWindowType = (productId: string): string => {
+      const windowTypeList = this.getWindowTypes(productId);
+      return windowTypeList?.length > 0 ? windowTypeList[Math.floor(Math.random() * windowTypeList.length)].id : 'defaultType';
+    }
+
+    const getRandomInternalColor = (productId: string): string => {
+      const internalColorList = this.getInternalColors(productId);
+      return internalColorList?.length > 0 ? internalColorList[Math.floor(Math.random() * internalColorList.length)].id : 'defaultInternalColor';
+    }
+
+    const getRandomExternalColor = (productId: string): string => {
+      const externalColorList = this.getExternalColors(productId);
+      return externalColorList?.length > 0 ? externalColorList[Math.floor(Math.random() * externalColorList.length)].id : 'defaultExternalColor';
+    }
+
+    const product = currentFormValue.productData?.product || getRandomItem(this.collections.product, 'defaultProduct');
+
     // Filter out invalid windows
     const validWindows = this.windows.controls.filter(control => control.valid);
     while (this.windows.length > 0) {
@@ -550,7 +567,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
         width: [getRandomNumber(this.maxValues['width'], 500)],
         length: [getRandomNumber(this.maxValues['width'], 500)],
         quantity: [getRandomNumber(5)],
-        windowType: [getRandomItem(this.collections.windowTypes, 'defaultType'), Validators.required],
+        windowType: [getRandomWindowType(product), Validators.required],
         openingType: [getRandomItem(this.collections.openingTypes, 'defaultOpening'), Validators.required],
         glassType: [getRandomItem(this.collections.glassTypes, 'defaultGlass'), Validators.required],
         crosspiece: [getRandomItem(this.collections.crosspieces, null)],
@@ -611,9 +628,9 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
       },
       productData: {
         orderNumber: currentFormValue.productData?.orderNumber || 'ORD123456',
-        product: currentFormValue.productData?.product || getRandomItem(this.collections.product, 'defaultProduct'),
-        internalColor: currentFormValue.productData?.internalColor || getRandomItem(this.collections.colors, 'defaultInternalColor'),
-        externalColor: currentFormValue.productData?.externalColor || getRandomItem(this.collections.colors, 'defaultExternalColor'),
+        product,
+        internalColor: currentFormValue.productData?.internalColor || getRandomInternalColor(product),
+        externalColor: currentFormValue.productData?.externalColor || getRandomExternalColor(product),
         accessoryColor: currentFormValue.productData?.accessoryColor || getRandomItem(this.collections.accessoryColors, 'defaultAccessoryColor'),
         notes: currentFormValue.productData?.notes || 'No special notes.'
       }
