@@ -81,19 +81,14 @@ function validatePayload(payload: any): string[] {
 // Function to generate mock collections data
 const getMockCollections = (): CollectionsResponse => ({
   product: [
-    {id: 'PRO_GIALLO', desc: 'Giallo', trimSectionVisible: false, extDesc: ''},
-    {id: 'PRO_VERDE', desc: 'Verde', trimSectionVisible: false, extDesc: ''},
-    {id: 'PRO_ROSSO', desc: 'Rosso', trimSectionVisible: false, extDesc: ''},
+    {id: 'PRO_GIALLO', desc: 'Giallo', trimSectionVisible: false, extDesc: 'Descrizione Giallo', singleColor: true, descTitle: ''},
+    {id: 'PRO_VERDE', desc: 'Verde', trimSectionVisible: false, extDesc: 'Descrizione Verde', singleColor: true, descTitle: ''},
+    {id: 'PRO_ROSSO', desc: 'Rosso', trimSectionVisible: false, extDesc: 'Descrizione Rosso', singleColor: false, descTitle: ''},
   ],
-  internalColors: [
-    {id: 'IC_GIALLO', desc: 'Giallo'},
-    {id: 'IC_VERDE', desc: 'Verde'},
-    {id: 'IC_ROSSO', desc: 'Rosso'},
-  ],
-  externalColors: [
-    {id: 'EC_GIALLO', desc: 'Giallo'},
-    {id: 'EC_VERDE', desc: 'Verde'},
-    {id: 'EC_ROSSO', desc: 'Rosso'},
+  colors: [
+    {id: 'IC_GIALLO', desc: 'Giallo', internalColorForProduct: ['PRO_GIALLO'], externalColorForProduct: []},
+    {id: 'IC_VERDE', desc: 'Verde', internalColorForProduct: ['PRO_VERDE'], externalColorForProduct: []},
+    {id: 'IC_ROSSO', desc: 'Rosso', internalColorForProduct: [], externalColorForProduct: ['PRO_GIALLO', 'PRO_VERDE', 'PRO_ROSSO']},
   ],
   accessoryColors: [
     {id: 'AC_GIALLO', desc: 'Giallo'},
@@ -101,9 +96,9 @@ const getMockCollections = (): CollectionsResponse => ({
     {id: 'AC_ROSSO', desc: 'Rosso'},
   ],
   windowTypes: [
-    {id: 'WT_GRANDE', desc: 'Grande', numOfDims: 1},
-    {id: 'WT_MEDIA', desc: 'Media', numOfDims: 2},
-    {id: 'WT_PICCOLA', desc: 'Piccola', numOfDims: 1},
+    {id: 'WT_GRANDE', desc: 'Grande', numOfDims: 1, materialForProduct: ['PRO_GIALLO', 'PRO_VERDE', 'PRO_ROSSO']},
+    {id: 'WT_MEDIA', desc: 'Media', numOfDims: 2, materialForProduct: ['PRO_GIALLO', 'PRO_ROSSO']},
+    {id: 'WT_PICCOLA', desc: 'Piccola', numOfDims: 1, materialForProduct: ['PRO_VERDE', 'PRO_ROSSO']},
   ],
   openingTypes: [
     {id: 'OT_DX', desc: 'SX'},

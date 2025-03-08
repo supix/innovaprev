@@ -7,10 +7,13 @@ import {
   BillingPayload,
   CollectionBaseItem,
   CollectionsResponse,
+  Colors,
   CustomPayload,
   PricePayload,
+  Product,
   Quotation,
-  WindowsPayload
+  WindowsPayload,
+  WindowType
 } from '../../models';
 import {
   combineLatest,
@@ -78,6 +81,11 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
 
   showFillFormButton = false;
 
+  externalColorList: Colors[] = [];
+  internalColorList: Colors[] = [];
+  windowTypeList: WindowType[] = [];
+
+  private selectedProductId!: string | null;
   private calculatePriceSubject = new Subject<PricePayload | null>();
   private previousPayloadHash: string | null = null;
 
@@ -107,8 +115,8 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
       productData: this.fb.group({
         orderNumber: [''],
         product: [null, Validators.required],
-        internalColor: [null, Validators.required],
-        externalColor: [null, Validators.required],
+        internalColor: [{value: null, disabled: true}, Validators.required],
+        externalColor: [{value: null, disabled: true}, Validators.required],
         accessoryColor: [null, Validators.required],
         notes: ['']
       }),
@@ -254,8 +262,51 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
     return (hasErrorsInSupplier || hasErrorsInCustomer || hasErrorsInProduct || hasErrorsInWindows || hasErrorsInCustomData);
   }
 
-  onImageError(event: Event) {
-    (event.target as HTMLImageElement).src = 'assets/photos/thumb/no-image.jpg';
+  onChangeProduct($event: Product): void {
+    this.selectedProductId = $event?.id || null;
+    this.internalColorList = this.getInternalColors();
+    this.externalColorList = this.getExternalColors();
+    this.windowTypeList = this.getWindowTypes();
+    this.updateFormState();
+    this.updateWindowsFormState();
+  }
+
+  getInternalColors(): Colors[] {
+    if (!this.selectedProductId || !this.collections?.colors) {
+      return [];
+    }
+
+    return this.collections.colors
+      .filter(color => color.internalColorForProduct.includes(this.selectedProductId as string));
+  }
+
+  getExternalColors(): Colors[] {
+    if (!this.selectedProductId || !this.collections?.colors) {
+      return [];
+    }
+
+    if (this.isSingleColor()) {
+      return [];
+    }
+
+    return this.collections.colors
+      .filter(color => color.externalColorForProduct.includes(this.selectedProductId as string));
+  }
+
+  isSingleColor(): boolean {
+    if (!this.selectedProductId || !this.collections?.product) {
+      return false;
+    }
+    return !!this.collections?.product.find(p => p.id === this.selectedProductId)?.singleColor;
+  }
+
+  getWindowTypes(): WindowType[] {
+    if (!this.selectedProductId || !this.collections?.windowTypes) {
+      return [];
+    }
+
+    return this.collections.windowTypes
+      .filter(color => color.materialForProduct.includes(this.selectedProductId as string));
   }
 
   // Add a new row to the windows FormArray
@@ -270,7 +321,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
         width: [{value: null, disabled: true}, minNumber(1, true, 'f')],
         length: [{value: null, disabled: true}, minNumber(1, true, 'f')],
         quantity: [1, minNumber(1, true, 'f')],
-        windowType: [null, Validators.required],
+        windowType: [{value: null, disabled: true}, Validators.required],
         openingType: [null, Validators.required],
         glassType: [null, Validators.required],
         crosspiece: [null],
@@ -381,7 +432,6 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
     // Update the input value to reflect the current valid value
     input.value = validValue;
   }
-
 
   // Filters non-numeric characters from the input and updates the corresponding FormControl.
   onInputNumber(event: Event, controlName: string): void {
@@ -562,8 +612,8 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
       productData: {
         orderNumber: currentFormValue.productData?.orderNumber || 'ORD123456',
         product: currentFormValue.productData?.product || getRandomItem(this.collections.product, 'defaultProduct'),
-        internalColor: currentFormValue.productData?.internalColor || getRandomItem(this.collections.internalColors, 'defaultInternalColor'),
-        externalColor: currentFormValue.productData?.externalColor || getRandomItem(this.collections.externalColors, 'defaultExternalColor'),
+        internalColor: currentFormValue.productData?.internalColor || getRandomItem(this.collections.colors, 'defaultInternalColor'),
+        externalColor: currentFormValue.productData?.externalColor || getRandomItem(this.collections.colors, 'defaultExternalColor'),
         accessoryColor: currentFormValue.productData?.accessoryColor || getRandomItem(this.collections.accessoryColors, 'defaultAccessoryColor'),
         notes: currentFormValue.productData?.notes || 'No special notes.'
       }
@@ -632,6 +682,79 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
     return this.productData.valid;
   }
 
+  private updateFormState(): void {
+    if (!this.productData) {
+      return;
+    }
+
+    const internalColorControl = this.productData.get('internalColor');
+    if (internalColorControl) {
+      const selectedInternalColor = internalColorControl.value;
+
+      if (this.internalColorList.length === 0) {
+        internalColorControl.disable();
+        internalColorControl.setValue(null, {emitEvent: false});
+        internalColorControl.clearValidators();
+      } else {
+        const isValidInternalColor = this.internalColorList.some(color => color.id === selectedInternalColor);
+        if (!isValidInternalColor) {
+          internalColorControl.setValue(null, {emitEvent: false});
+        }
+        internalColorControl.enable();
+        internalColorControl.setValidators([Validators.required]);
+      }
+      internalColorControl.updateValueAndValidity({emitEvent: false});
+    }
+
+    const externalColorControl = this.productData.get('externalColor');
+    if (externalColorControl) {
+      const selectedExternalColor = externalColorControl.value;
+
+      if (this.externalColorList.length === 0) {
+        externalColorControl.disable();
+        externalColorControl.setValue(null, {emitEvent: false});
+        externalColorControl.clearValidators();
+      } else {
+        const isValidExternalColor = this.externalColorList.some(color => color.id === selectedExternalColor);
+        if (!isValidExternalColor) {
+          externalColorControl.setValue(null, {emitEvent: false});
+        }
+        externalColorControl.enable();
+        externalColorControl.setValidators([Validators.required]);
+      }
+      externalColorControl.updateValueAndValidity({emitEvent: false});
+    }
+  }
+
+  private updateWindowsFormState(): void {
+    if (!this.windows) {
+      return;
+    }
+
+    this.windows.controls.forEach((windowGroup: AbstractControl) => {
+      const windowTypeControl = windowGroup.get('windowType');
+
+      if (windowTypeControl) {
+        const selectedWindowType = windowTypeControl.value;
+
+        if (this.windowTypeList.length === 0) {
+          windowTypeControl.disable();
+          windowTypeControl.setValue(null, { emitEvent: false });
+          windowTypeControl.clearValidators();
+        } else {
+          const isValidWindowType = this.windowTypeList.some(type => type.id === selectedWindowType);
+          if (!isValidWindowType) {
+            windowTypeControl.setValue(null, { emitEvent: false });
+          }
+          windowTypeControl.enable();
+          windowTypeControl.setValidators([Validators.required]);
+        }
+
+        windowTypeControl.updateValueAndValidity({ emitEvent: false });
+      }
+    });
+  }
+
   // Setup subscription to calculate price
   private setupPriceCalculationSubscription(): void {
     this.calculatePriceSubject.pipe(
@@ -696,26 +819,26 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
           row.get('width')?.setValidators([minNumber(1, true, 'f')]);
           row.get('length')?.setValidators(null);
 
-          row.get('height')?.enable({ emitEvent: false });
-          row.get('width')?.enable({ emitEvent: false });
-          row.get('length')?.disable({ emitEvent: false });
+          row.get('height')?.enable({emitEvent: false});
+          row.get('width')?.enable({emitEvent: false});
+          row.get('length')?.disable({emitEvent: false});
 
-          row.patchValue({ length: null }, { emitEvent: false });
+          row.patchValue({length: null}, {emitEvent: false});
         } else if (numOfDims === 1) {
           row.get('height')?.setValidators(null);
           row.get('width')?.setValidators(null);
           row.get('length')?.setValidators([minNumber(1, true, 'f')]);
 
-          row.get('height')?.disable({ emitEvent: false });
-          row.get('width')?.disable({ emitEvent: false });
-          row.get('length')?.enable({ emitEvent: false });
+          row.get('height')?.disable({emitEvent: false});
+          row.get('width')?.disable({emitEvent: false});
+          row.get('length')?.enable({emitEvent: false});
 
-          row.patchValue({ height: null, width: null }, { emitEvent: false });
+          row.patchValue({height: null, width: null}, {emitEvent: false});
         }
 
-        row.get('height')?.updateValueAndValidity({ emitEvent: false });
-        row.get('width')?.updateValueAndValidity({ emitEvent: false });
-        row.get('length')?.updateValueAndValidity({ emitEvent: false });
+        row.get('height')?.updateValueAndValidity({emitEvent: false});
+        row.get('width')?.updateValueAndValidity({emitEvent: false});
+        row.get('length')?.updateValueAndValidity({emitEvent: false});
 
       }
 

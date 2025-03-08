@@ -43,7 +43,7 @@
       <li class="nav-item" role="presentation">
         <button class="nav-link" [id]="tabNames.product" data-bs-toggle="tab" data-bs-target="#productSection"
                 [ngClass]="{ 'tab-is-invalid': hasErrorsInProductData() }" type="button" role="tab">
-          Prodotto
+          Serie
         </button>
       </li>
       <li class="nav-item" role="presentation">
@@ -233,9 +233,9 @@
               Il riferimento ordine è obbligatorio.
             </div>
           </div>
-          <!-- Prodotto -->
+          <!-- Serie -->
           <div class="col-md-9">
-            <label class="form-label">Prodotto</label>
+            <label class="form-label">Serie</label>
             <ng-container *ngIf="productData?.get('product') as productControl">
               <ng-select
                 [items]="collections?.product || []"
@@ -245,7 +245,8 @@
                 [class.ng-invalid]="false"
                 [ngClass]="{ 'is-invalid is-awaiting': (submitted || productControl.touched) && productControl.invalid }"
                 [loading]="isCollectionsLoading"
-                placeholder="Seleziona un prodotto">
+                (change)="onChangeProduct($event)"
+                placeholder="Seleziona una serie">
                 <ng-template ng-option-tmp let-item="item">
                   <div class="hidden-sm">
                     <div class="card product-card d-flex flex-row" style="margin: 10px 0">
@@ -273,7 +274,7 @@
               </ng-select>
               <div *ngIf="submitted && productControl.touched && productControl.invalid"
                    class="invalid-feedback">
-                Il prodotto è obbligatorio.
+                La serie è obbligatoria.
               </div>
             </ng-container>
           </div>
@@ -283,7 +284,7 @@
             <label class="form-label">Colore Interno</label>
             <ng-container *ngIf="productData?.get('internalColor') as internalColorControl">
               <ng-select
-                [items]="collections?.internalColors || []"
+                [items]="internalColorList"
                 [searchable]="true"
                 [clearable]="false"
                 formControlName="internalColor"
@@ -305,7 +306,7 @@
             <label class="form-label">Colore Esterno</label>
             <ng-container *ngIf="productData?.get('externalColor') as externalColorControl">
               <ng-select
-                [items]="collections?.externalColors || []"
+                [items]="externalColorList"
                 [searchable]="true"
                 [clearable]="false"
                 formControlName="externalColor"
@@ -617,7 +618,7 @@
               </ng-container>
               <ng-template #noDataRow>
                 <tr>
-                  <td colspan="5" class="text-center text-muted py-3">
+                  <td colspan="5" class="text-center text-muted py-3" style="width: 100%;">
                     Nessun componente aggiuntivo presente.
                   </td>
                 </tr>
@@ -772,7 +773,7 @@
         (mouseenter)="onEnterTooltip($event, 'tooltip-windowType-' + i)"
         (mouseleave)="onLeaveTooltip('tooltip-windowType-' + i)"
         (open)="ngSelectHandleFocus(tableLg)"
-        [items]="collections?.windowTypes || []"
+        [items]="windowTypeList"
         [searchable]="true"
         [clearable]="false"
         formControlName="windowType"

@@ -19,12 +19,13 @@ export interface CollectionBaseItem {
 export interface Product extends CollectionBaseItem {
   trimSectionVisible: boolean;
   extDesc: string;
+  descTitle: string;
+  singleColor: boolean;
 }
 
-export interface InternalColor extends CollectionBaseItem {
-}
-
-export interface ExternalColor extends CollectionBaseItem {
+export interface Colors extends CollectionBaseItem {
+  internalColorForProduct: string[];
+  externalColorForProduct: string[];
 }
 
 export interface AccessoryColor extends CollectionBaseItem {
@@ -32,6 +33,7 @@ export interface AccessoryColor extends CollectionBaseItem {
 
 export interface WindowType extends CollectionBaseItem {
   numOfDims: number;
+  materialForProduct: string[];
 }
 
 export interface OpeningType extends CollectionBaseItem {
@@ -46,8 +48,7 @@ export interface Crosspiece extends CollectionBaseItem {
 // Main Collections interface
 export interface CollectionsResponse {
   product: Product[];
-  internalColors: InternalColor[];
-  externalColors: ExternalColor[];
+  colors: Colors[];
   accessoryColors: AccessoryColor[];
   windowTypes: WindowType[];
   openingTypes: OpeningType[];
