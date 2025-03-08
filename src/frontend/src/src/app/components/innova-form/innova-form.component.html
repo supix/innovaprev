@@ -291,6 +291,7 @@
                 [class.ng-invalid]="false"
                 [ngClass]="{ 'is-invalid': (submitted || internalColorControl.touched) && internalColorControl.invalid }"
                 [loading]="isCollectionsLoading"
+                (change)="onChangeInternalColor($event)"
                 placeholder="Seleziona un colore">
               </ng-select>
               <div

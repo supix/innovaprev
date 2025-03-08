@@ -271,13 +271,24 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
     this.updateWindowsFormState();
   }
 
+  onChangeInternalColor($event: Colors): void {
+    if (!this.isSingleColor()) {
+      return;
+    }
+    const externalColorControl = this.productData.get('externalColor');
+    if (externalColorControl) {
+      externalColorControl.setValue($event.id, {emitEvent: false});
+      externalColorControl.updateValueAndValidity({emitEvent: false});
+    }
+  }
+
   getInternalColors(productId = this.selectedProductId): Colors[] {
     if (!productId || !this.collections?.colors) {
       return [];
     }
 
     return this.collections.colors
-      .filter(color => color.internalColorForProduct.includes(this.selectedProductId as string));
+      .filter(color => color.internalColorForProduct.includes(productId as string));
   }
 
   getExternalColors(productId = this.selectedProductId): Colors[] {
@@ -285,19 +296,8 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
       return [];
     }
 
-    if (this.isSingleColor()) {
-      return [];
-    }
-
     return this.collections.colors
-      .filter(color => color.externalColorForProduct.includes(this.selectedProductId as string));
-  }
-
-  isSingleColor(): boolean {
-    if (!this.selectedProductId || !this.collections?.product) {
-      return false;
-    }
-    return !!this.collections?.product.find(p => p.id === this.selectedProductId)?.singleColor;
+      .filter(color => color.externalColorForProduct.includes(productId as string));
   }
 
   getWindowTypes(productId = this.selectedProductId): WindowType[] {
@@ -306,7 +306,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     return this.collections.windowTypes
-      .filter(color => color.materialForProduct.includes(this.selectedProductId as string));
+      .filter(color => color.materialForProduct.includes(productId as string));
   }
 
   // Add a new row to the windows FormArray
@@ -699,6 +699,13 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
     return this.productData.valid;
   }
 
+  private isSingleColor(): boolean {
+    if (!this.selectedProductId || !this.collections?.product) {
+      return false;
+    }
+    return !!this.collections?.product.find(p => p.id === this.selectedProductId)?.singleColor;
+  }
+
   private updateFormState(): void {
     if (!this.productData) {
       return;
@@ -732,11 +739,21 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
         externalColorControl.setValue(null, {emitEvent: false});
         externalColorControl.clearValidators();
       } else {
-        const isValidExternalColor = this.externalColorList.some(color => color.id === selectedExternalColor);
-        if (!isValidExternalColor) {
-          externalColorControl.setValue(null, {emitEvent: false});
+        if (this.isSingleColor()) {
+          const isValidInternalColor = this.internalColorList.some(color => color.id === selectedExternalColor);
+          if (!isValidInternalColor) {
+            externalColorControl.setValue(null, {emitEvent: false});
+          } else {
+            externalColorControl.setValue(internalColorControl?.value, {emitEvent: false});
+          }
+          externalColorControl.disable();
+        } else {
+          const isValidExternalColor = this.externalColorList.some(color => color.id === selectedExternalColor);
+          if (!isValidExternalColor) {
+            externalColorControl.setValue(null, {emitEvent: false});
+          }
+          externalColorControl.enable();
         }
-        externalColorControl.enable();
         externalColorControl.setValidators([Validators.required]);
       }
       externalColorControl.updateValueAndValidity({emitEvent: false});
