@@ -1,4 +1,5 @@
-﻿using DomainModel.Classes.Materials;
+﻿using DomainModel.Classes.Colors;
+using DomainModel.Classes.Materials;
 using DomainModel.Classes.Materials.ConcreteMaterials;
 using DomainModel.Classes.Products.Visitor;
 
