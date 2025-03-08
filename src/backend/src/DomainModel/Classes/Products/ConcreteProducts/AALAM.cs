@@ -20,7 +20,7 @@ namespace DomainModel.Classes.Products.ConcreteProducts
         }
         public override decimal GetPrice_DoubleDimFixed(DoubleDimFixedMaterial m, long area_sqmm)
         {
-            return GetFullDoubleDimensionPrice(876M, area_sqmm);
+            throw new InvalidOperationException($"Fixed materials not allowed with this product. Product: {this.Code} - Material: {m.Code}");
         }
     }
 }
