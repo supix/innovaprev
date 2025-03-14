@@ -8,7 +8,7 @@ namespace DomainModel.Classes.Materials.ConcreteMaterials
         {
         }
         public override string Description => "Coprifili";
-        protected override long? ClampMinValue => null;
+        protected override long? ClampMinValue => 1000;
         public override int Order => 180;
         public override decimal GetPrice(IVisitor visitor)
         {
