@@ -38,7 +38,7 @@ namespace DomainModel.Classes.Products
         protected decimal GetFullDoubleDimensionPrice(decimal price_sqm, long area_sqmm)
         {
             const decimal GLASS_PRICE_SQM = 38M;
-            return (price_sqm + GLASS_PRICE_SQM) * area_sqmm / 1e6M;
+            return (price_sqm + ic.Price_sqm + ec.Price_sqm + GLASS_PRICE_SQM) * area_sqmm / 1e6M;
         }
 
         protected decimal GetFullSingleDimensionPrice(decimal price_m, long length_mm)

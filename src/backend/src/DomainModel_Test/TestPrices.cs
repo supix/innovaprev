@@ -57,6 +57,41 @@ namespace DomainModel_Test
         }
 
         [Test]
+        public void Test_WoodWithColorSupplement_PriceIsCorrect()
+        {
+            var p = new ELA(new BrushedAsh9010(), new AluColor_2918());
+            var f1a = new F1A(2000L, 3000L);
+            var price = p.GetMaterialPrice(f1a);
+            const int glassSupplement = 38;
+            const int externalColorSupplement = 101;
+            const int internalColorSupplement = 84;
+            Assert.That(Math.Abs(price - (985 + internalColorSupplement + externalColorSupplement + glassSupplement) * 2M * 3M), Is.LessThan(1e-3M));
+        }
+
+        [Test]
+        public void Test_WoodWithColorSupplement_PriceIsCorrect_v2()
+        {
+            var p = new RALT(new OpenPoreAsh9010(), new SatinDarkGray());
+            var f1a = new F1A(2000L, 3000L);
+            var price = p.GetMaterialPrice(f1a);
+            const int glassSupplement = 38;
+            const int externalColorSupplement = 18;
+            const int internalColorSupplement = 62;
+            Assert.That(Math.Abs(price - (842 + internalColorSupplement + externalColorSupplement + glassSupplement) * 2M * 3M), Is.LessThan(1e-3M));
+        }
+
+        [Test]
+        public void Test_PvcWithColorSupplement_PriceIsCorrect()
+        {
+            var p = new IPC(new DarkWood());
+            var f1a = new F1A(2000L, 3000L);
+            var price = p.GetMaterialPrice(f1a);
+            const int glassSupplement = 38;
+            const decimal colorSupplement = 89M;
+            Assert.That(Math.Abs(price - (528 + colorSupplement + glassSupplement) * 2M * 3M), Is.LessThan(1e-3M));
+        }
+
+        [Test]
         public void Test_WoodWithDoubleLowLengthF1A_PriceIsCorrect()
         {
             var p = new ELA(new Ral1013(), new Ral1013());
