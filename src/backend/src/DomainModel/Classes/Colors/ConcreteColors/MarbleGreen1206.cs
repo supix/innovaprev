@@ -4,7 +4,7 @@
     {
         public override string Description => "Verde Marmo 1206";
 
-        public override decimal Price_mq => 18M;
+        public override decimal Price_sqm => 18M;
 
         public override int Order => 30;
     }

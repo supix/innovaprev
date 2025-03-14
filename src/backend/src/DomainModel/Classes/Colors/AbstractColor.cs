@@ -6,7 +6,7 @@ namespace DomainModel.Classes.Colors
     {
         public string Code => GetType().Name;
         public abstract string Description { get; }
-        public abstract decimal Price_mq { get; }
+        public abstract decimal Price_sqm { get; }
         public abstract int Order { get; }
         public string[] InternalColorForProducts
         {
