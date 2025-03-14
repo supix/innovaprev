@@ -1,4 +1,5 @@
 ﻿using DomainModel.Classes;
+using DomainModel.Classes.Colors;
 using DomainModel.Classes.Materials;
 using DomainModel.Classes.Products;
 
@@ -8,7 +9,9 @@ namespace DomainModel.Services.PriceCalculator
     {
         public PriceInfo getPrices(ProductData productData, WindowsData[] windowsData, CustomData[] customData)
         {
-            var product = ProductFactory.CreateByCode(productData.Product);
+            var internalColor = ColorFactory.CreateByCode(productData.InternalColor);
+            var externalColor = ColorFactory.CreateByCode(productData.ExternalColor ?? productData.InternalColor);
+            var product = ProductFactory.CreateByCode(productData.Product, internalColor, externalColor);
 
             var productPriceInfo = windowsData.Aggregate(
                 new PriceInfo
