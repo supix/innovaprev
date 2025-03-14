@@ -1,4 +1,8 @@
-﻿namespace DomainModel.Classes.Products
+﻿using DomainModel.Classes.Colors;
+using DomainModel.Classes.Colors.ConcreteColors;
+using DomainModel.Classes.Materials;
+
+namespace DomainModel.Classes.Products
 {
     public static class ProductFactory
     {
@@ -9,7 +13,13 @@
                 .Where(type => type.IsSubclassOf(typeof(AbstractProduct)) && !type.IsAbstract)
                 .Select(t =>
                 {
-                    return (AbstractProduct)Activator.CreateInstance(t)!;
+                    if (typeof(PvcAbstractProduct).IsAssignableFrom(t))
+                        return (AbstractProduct)Activator.CreateInstance(t, new NullColor())!;
+                    else
+                    if (typeof(WoodAbstractProduct).IsAssignableFrom(t))
+                        return (AbstractProduct)Activator.CreateInstance(t, new NullColor(), new NullColor())!;
+                    else
+                        throw new InvalidOperationException($"Unable to create product: {t.Name}");
                 })
                 .OrderBy(m => m.Order);
         }
@@ -21,7 +31,13 @@
                 .Where(type => type.IsSubclassOf(typeof(AbstractProduct)) && !type.IsAbstract)
                 .Single(t => t.Name == code);
 
-            return (AbstractProduct)Activator.CreateInstance(t)!;
+            if (typeof(PvcAbstractProduct).IsAssignableFrom(t))
+                return (AbstractProduct)Activator.CreateInstance(t, new NullColor())!;
+            else
+            if (typeof(WoodAbstractProduct).IsAssignableFrom(t))
+                return (AbstractProduct)Activator.CreateInstance(t, new NullColor(), new NullColor())!;
+            else
+                throw new InvalidOperationException($"Unable to create product: {t.Name}");
         }
     }
 }

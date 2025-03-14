@@ -1,8 +1,9 @@
-﻿using DomainModel.Classes.Materials;
+﻿using DomainModel.Classes.Colors;
+using DomainModel.Classes.Materials;
 
 namespace DomainModel.Classes.Products.ConcreteProducts
 {
-    public class IPCAM : PvcAbstractProduct, IAntaMaxAbstractProduct
+    public class IPCAM(IColor color) : PvcAbstractProduct(color), IAntaMaxAbstractProduct
     {
         public override string Description => "Innova PVC/A Classic Anta Max";
 

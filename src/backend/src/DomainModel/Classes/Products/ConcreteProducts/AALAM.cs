@@ -1,8 +1,9 @@
-﻿using DomainModel.Classes.Materials;
+﻿using DomainModel.Classes.Colors;
+using DomainModel.Classes.Materials;
 
 namespace DomainModel.Classes.Products.ConcreteProducts
 {
-    public class AALAM : WoodAbstractProduct, IAntaMaxAbstractProduct
+    public class AALAM(IColor ic, IColor ec) : WoodAbstractProduct(ic, ec), IAntaMaxAbstractProduct
     {
         public override string Description => "Armonia Alluminio/Legno anta max";
 

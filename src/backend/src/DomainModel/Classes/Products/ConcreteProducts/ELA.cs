@@ -1,8 +1,9 @@
-﻿using DomainModel.Classes.Materials;
+﻿using DomainModel.Classes.Colors;
+using DomainModel.Classes.Materials;
 
 namespace DomainModel.Classes.Products.ConcreteProducts
 {
-    public class ELA : WoodAbstractProduct
+    public class ELA(IColor ic, IColor ec) : WoodAbstractProduct(ic, ec)
     {
         public override string Description => "Emblema Legno/Alluminio";
 

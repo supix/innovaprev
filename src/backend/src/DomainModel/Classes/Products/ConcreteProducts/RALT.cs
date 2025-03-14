@@ -1,8 +1,9 @@
-﻿using DomainModel.Classes.Materials;
+﻿using DomainModel.Classes.Colors;
+using DomainModel.Classes.Materials;
 
 namespace DomainModel.Classes.Products.ConcreteProducts
 {
-    public class RALT : WoodAbstractProduct
+    public class RALT(IColor ic, IColor ec) : WoodAbstractProduct(ic, ec)
     {
         public override string Description => "Review Alluminio/Legno Termico";
 

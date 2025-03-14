@@ -10,6 +10,6 @@ namespace DomainModel.Classes.Materials.ConcreteMaterials
         public override string Description => "Scorrevole in linea";
         protected override long? ClampMinValue => 2500000;
         public override int Order => 30;
-        public override string[] MaterialForProduct => new[] { new SP().Code };
+        public override string[] MaterialForProduct => new[] { typeof(SP).Name };
     }
 }

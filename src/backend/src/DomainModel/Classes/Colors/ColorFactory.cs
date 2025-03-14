@@ -6,7 +6,7 @@
         {
             return AppDomain.CurrentDomain.GetAssemblies()
                 .SelectMany(domainAssembly => domainAssembly.GetTypes())
-                .Where(type => type.IsSubclassOf(typeof(AbstractColor)) && !type.IsAbstract)
+                .Where(type => type.IsSubclassOf(typeof(AbstractColor)) && !type.IsAbstract && type != typeof(NullColor))
                 .Select(t =>
                 {
                     return (AbstractColor)Activator.CreateInstance(t)!;

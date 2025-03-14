@@ -1,8 +1,9 @@
-﻿using DomainModel.Classes.Materials.ConcreteMaterials;
+﻿using DomainModel.Classes.Colors;
+using DomainModel.Classes.Materials.ConcreteMaterials;
 
 namespace DomainModel.Classes.Products
 {
-    public abstract class WoodAbstractProduct : AbstractProduct
+    public abstract class WoodAbstractProduct(IColor ic, IColor ec) : AbstractProduct(ic, ec)
     {
         public override decimal GetPrice_CAS(CAS m, long length_mm)
         {

@@ -7,6 +7,14 @@ namespace DomainModel.Classes.Products
 {
     public abstract class AbstractProduct : IProduct, IVisitor
     {
+        private readonly IColor ic;
+        private readonly IColor ec;
+
+        public AbstractProduct(IColor ic, IColor ec)
+        {
+            this.ic = ic;
+            this.ec = ec;
+        }
         public string Code => GetType().Name;
         public abstract string Description { get; }
         public abstract bool TrimSectionVisible { get; }
