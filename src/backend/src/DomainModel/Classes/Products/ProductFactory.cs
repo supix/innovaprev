@@ -1,6 +1,4 @@
 ﻿using DomainModel.Classes.Colors;
-using DomainModel.Classes.Colors.ConcreteColors;
-using DomainModel.Classes.Materials;
 
 namespace DomainModel.Classes.Products
 {
