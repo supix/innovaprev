@@ -343,6 +343,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
     this.updateWindowPositions();
     if (this.windows.length === 0) {
       this.addWindowRow(true);
+      this.updateWindowsFormState();
     }
   }
 
