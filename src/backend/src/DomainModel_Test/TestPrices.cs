@@ -14,7 +14,7 @@ namespace DomainModel_Test
         [Test]
         public void Test_WoodWithCasAllowedLength_PriceIsCorrect()
         {
-            var p = new ELA(new Ral1013(), new Ral1013());
+            var p = new ELA(new DarkColoredAsh(), new DarkColoredAsh());
             var cas = new CAS(2500L);
             var price = p.GetMaterialPrice(cas);
             Assert.That(Math.Abs(price - 285 * 2.5M), Is.LessThan(1e-3M));
@@ -32,7 +32,7 @@ namespace DomainModel_Test
         [Test]
         public void Test_WoodWithCasLowLength_PriceIsCorrect()
         {
-            var p = new ELA(new Ral1013(), new Ral1013());
+            var p = new ELA(new DarkColoredAsh(), new DarkColoredAsh());
             var cas = new CAS(500L);
             var price = p.GetMaterialPrice(cas);
             Assert.That(Math.Abs(price - 285M), Is.LessThan(1e-3M));
@@ -219,16 +219,34 @@ namespace DomainModel_Test
         [Test]
         public void Test_COPWithWood_PriceIsCorrect()
         {
-            var p = new AATT(new Ral1013(), new Ral1013());
+            var p = new AATT(new DarkColoredAsh(), new DarkColoredAsh());
             var cop = new COP(3000L);
             var price = p.GetMaterialPrice(cop);
             Assert.That(Math.Abs(price - 18.2M * 3M), Is.LessThan(1e-3M));
         }
 
         [Test]
+        public void Test_COPWithWoodOpenPoreColorSupplement_PriceIsCorrect()
+        {
+            var p = new AATT(new OpenPoreAsh1013(), new OpenPoreAsh1013());
+            var cop = new COP(3000L);
+            var price = p.GetMaterialPrice(cop);
+            Assert.That(Math.Abs(price - 20M * 3M), Is.LessThan(1e-3M));
+        }
+
+        [Test]
+        public void Test_COPWithWoodDecapeColorSupplement_PriceIsCorrect()
+        {
+            var p = new AATT(new DecapeAsh9010(), new DecapeAsh9010());
+            var cop = new COP(3000L);
+            var price = p.GetMaterialPrice(cop);
+            Assert.That(Math.Abs(price - 23M * 3M), Is.LessThan(1e-3M));
+        }
+
+        [Test]
         public void Test_COPWithWoodLowLength_PriceIsCorrect()
         {
-            var p = new AATT(new Ral1013(), new Ral1013());
+            var p = new AATT(new DarkColoredAsh(), new DarkColoredAsh());
             var cop = new COP(100L);
             var price = p.GetMaterialPrice(cop);
             Assert.That(Math.Abs(price - 18.2M * 0.1M), Is.LessThan(1e-3M));
@@ -237,7 +255,7 @@ namespace DomainModel_Test
         [Test]
         public void Test_FROWithWood_PriceIsCorrect()
         {
-            var p = new AATT(new Ral1013(), new Ral1013());
+            var p = new AATT(new DarkColoredAsh(), new DarkColoredAsh());
             var fro = new FRO(3000L);
             var price = p.GetMaterialPrice(fro);
             Assert.That(Math.Abs(price - 142M * 3M), Is.LessThan(1e-3M));
@@ -246,7 +264,7 @@ namespace DomainModel_Test
         [Test]
         public void Test_FROWithWoodLowLength_PriceIsCorrect()
         {
-            var p = new AATT(new Ral1013(), new Ral1013());
+            var p = new AATT(new DarkColoredAsh(), new DarkColoredAsh());
             var fro = new FRO(100L);
             var price = p.GetMaterialPrice(fro);
             Assert.That(Math.Abs(price - 142M * 1M), Is.LessThan(1e-3M));
