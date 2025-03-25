@@ -244,6 +244,33 @@ namespace DomainModel_Test
         }
 
         [Test]
+        public void Test_FROWithWoodDecapeColorSupplement_PriceIsCorrect()
+        {
+            var p = new AATT(new DecapeAsh9010(), new DecapeAsh9010());
+            var fro = new FRO(3000L);
+            var price = p.GetMaterialPrice(fro);
+            Assert.That(Math.Abs(price - 202M * 3M), Is.LessThan(1e-3M));
+        }
+
+        [Test]
+        public void Test_FROWithOpenPoreColorSupplement_PriceIsCorrect()
+        {
+            var p = new AATT(new OpenPoreAsh1013(), new OpenPoreAsh1013());
+            var fro = new FRO(2500L);
+            var price = p.GetMaterialPrice(fro);
+            Assert.That(Math.Abs(price - 167M * 2.5M), Is.LessThan(1e-3M));
+        }
+
+        [Test]
+        public void Test_FROWithStandardColorSupplement_PriceIsCorrect()
+        {
+            var p = new AATT(new CherryColoredAsh(), new CherryColoredAsh());
+            var fro = new FRO(2600L);
+            var price = p.GetMaterialPrice(fro);
+            Assert.That(Math.Abs(price - 142M * 2.6M), Is.LessThan(1e-3M));
+        }
+
+        [Test]
         public void Test_COPWithWoodLowLength_PriceIsCorrect()
         {
             var p = new AATT(new DarkColoredAsh(), new DarkColoredAsh());
@@ -273,16 +300,16 @@ namespace DomainModel_Test
         [Test]
         public void Test_FROWithPvc_PriceIsCorrect()
         {
-            var p = new IPC(new Ral1013());
+            var p = new IPC(new DarkWood());
             var fro = new FRO(3000L);
             var price = p.GetMaterialPrice(fro);
-            Assert.That(Math.Abs(price - 142M * 3M), Is.LessThan(1e-3M));
+            Assert.That(Math.Abs(price - 201M * 3M), Is.LessThan(1e-3M));
         }
 
         [Test]
         public void Test_FROWithPvcLowLength_PriceIsCorrect()
         {
-            var p = new IPC(new Ral1013());
+            var p = new IPC(new White9010());
             var fro = new FRO(100L);
             var price = p.GetMaterialPrice(fro);
             Assert.That(Math.Abs(price - 142M * 1M), Is.LessThan(1e-3M));
@@ -366,6 +393,24 @@ namespace DomainModel_Test
             var price = p.GetMaterialPrice(prt2a);
             var expected = (635M + 38M) * 1.8M + 616M;
             Assert.That(Math.Abs(price - expected), Is.LessThan(1e-3M));
+        }
+
+        [Test]
+        public void Test_COPWithOpenPoreColorSupplement_PriceIsCorrect()
+        {
+            var p = new AATT(new OpenPoreAsh1013(), new OpenPoreAsh1013());
+            var cop = new COP(2500L);
+            var price = p.GetMaterialPrice(cop);
+            Assert.That(Math.Abs(price - 20M * 2.5M), Is.LessThan(1e-3M));
+        }
+
+        [Test]
+        public void Test_COPWithStandardColorSupplement_PriceIsCorrect()
+        {
+            var p = new AATT(new CherryColoredAsh(), new CherryColoredAsh());
+            var cop = new COP(2600L);
+            var price = p.GetMaterialPrice(cop);
+            Assert.That(Math.Abs(price - 18.2M * 2.6M), Is.LessThan(1e-3M));
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using DomainModel.Classes.Products;
+using DomainModel.Classes.Products.Visitor;
 
 namespace DomainModel.Classes.Colors
 {
@@ -34,5 +35,9 @@ namespace DomainModel.Classes.Colors
                     .ToArray();
             }
         }
+
+        public abstract decimal GetPrice_CAS_m(IColorVisitor visitor);
+        public abstract decimal GetPrice_COP_m(IColorVisitor visitor);
+        public abstract decimal GetPrice_FRO_m(IColorVisitor visitor);
     }
 }

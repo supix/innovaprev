@@ -1,6 +1,8 @@
-﻿namespace DomainModel.Classes.Colors.ConcreteColors
+﻿using DomainModel.Classes.Products.Visitor;
+
+namespace DomainModel.Classes.Colors.ConcreteColors
 {
-    public class DarkWood : PvcColor
+    public class DarkWood : WoodEffectPvcColor
     {
         public override string Description => "Legno Scuro";
         public override decimal Price_sqm => 89M / 2;

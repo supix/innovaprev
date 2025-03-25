@@ -1,4 +1,6 @@
-﻿namespace DomainModel.Classes.Colors.ConcreteColors
+﻿using DomainModel.Classes.Products.Visitor;
+
+namespace DomainModel.Classes.Colors.ConcreteColors
 {
     public class MarbleBrown1204 : AluminumColor
     {

@@ -31,7 +31,7 @@ namespace DomainModel.Classes.Materials
                     return Length_mm;
             }
         }
-        public override decimal GetPrice(IVisitor visitor)
+        public override decimal GetPrice(IMaterialVisitor visitor)
         {
             return 0;
         }

@@ -1,4 +1,11 @@
-﻿namespace DomainModel.Classes.Colors.ConcreteColors
+﻿using DomainModel.Classes.Products.Visitor;
+
+namespace DomainModel.Classes.Colors.ConcreteColors
 {
-    public class LucidToulipier9010 : WoodColor { public override string Description => "Touliper Laccato 9010"; public override decimal Price_sqm => 84M; public override int Order => 310; }
+    public class LucidToulipier9010 : BrushedDecapeToulipierWoodColor
+    {
+        public override string Description => "Touliper Laccato 9010";
+        public override decimal Price_sqm => 84M;
+        public override int Order => 310;
+    }
 }

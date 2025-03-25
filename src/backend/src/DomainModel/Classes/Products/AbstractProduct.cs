@@ -5,10 +5,10 @@ using DomainModel.Classes.Products.Visitor;
 
 namespace DomainModel.Classes.Products
 {
-    public abstract class AbstractProduct : IProduct, IVisitor
+    public abstract class AbstractProduct : IProduct, IMaterialVisitor, IColorVisitor
     {
-        private readonly IColor ic;
-        private readonly IColor ec;
+        protected readonly IColor ic;
+        protected readonly IColor ec;
 
         public AbstractProduct(IColor ic, IColor ec)
         {
@@ -30,7 +30,8 @@ namespace DomainModel.Classes.Products
         public abstract decimal GetPrice_COP(COP m, long length_mm);
         public decimal GetPrice_FRO(FRO m, long length_mm)
         {
-            return GetFullSingleDimensionPrice(142M, length_mm);
+            var price_m = ic.GetPrice_FRO_m(this);
+            return GetFullSingleDimensionPrice(price_m, length_mm);
         }
         public abstract decimal GetPrice_DoubleDim(DoubleDimMaterial m, long area_sqmm);
         public abstract decimal GetPrice_DoubleDimFixed(DoubleDimFixedMaterial m, long area_sqmm);
@@ -45,5 +46,20 @@ namespace DomainModel.Classes.Products
         {
             return price_m * length_mm / 1e3M;
         }
+        public abstract decimal GetPrice_COP_Standard_m();
+        public abstract decimal GetPrice_COP_OpenPore_m();
+        public abstract decimal GetPrice_COP_BrushedDecapeToulipier_m();
+        public abstract decimal GetPrice_FRO_Standard_m();
+        public abstract decimal GetPrice_FRO_OpenPore_m();
+        public abstract decimal GetPrice_FRO_BrushedDecapeToulipier_m();
+        public abstract decimal GetPrice_CAS_Standard_m();
+        public abstract decimal GetPrice_CAS_OpenPore_m();
+        public abstract decimal GetPrice_CAS_BrushedDecapeToulipier_m();
+        public abstract decimal GetPrice_CAS_PvcWhite_m();
+        public abstract decimal GetPrice_CAS_PvcWoodEffect_m();
+        public abstract decimal GetPrice_FRO_PvcWhite_m();
+        public abstract decimal GetPrice_FRO_PvcWoodEffect_m();
+        public abstract decimal GetPrice_COP_PvcWhite_m();
+        public abstract decimal GetPrice_COP_PvcWoodEffect_m();
     }
 }

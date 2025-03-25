@@ -6,7 +6,7 @@ namespace DomainModel.Classes.Materials
     {
         string Code { get; }
         string Description { get; }
-        decimal GetPrice(IVisitor visitor);
+        decimal GetPrice(IMaterialVisitor visitor);
         int NumberOfDimensions { get; }
         string[] MaterialForProduct { get; }
     }

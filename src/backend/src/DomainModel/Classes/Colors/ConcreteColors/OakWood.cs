@@ -1,8 +1,11 @@
-﻿namespace DomainModel.Classes.Colors.ConcreteColors
+﻿using DomainModel.Classes.Products.Visitor;
+
+namespace DomainModel.Classes.Colors.ConcreteColors
 {
-    public class OakWood : PvcColor {
+    public class OakWood : WoodEffectPvcColor
+    {
         public override string Description => "Legno Rovere";
         public override decimal Price_sqm => 89M / 2;
-        public override int Order => 370; }
-
+        public override int Order => 370;
+    }
 }

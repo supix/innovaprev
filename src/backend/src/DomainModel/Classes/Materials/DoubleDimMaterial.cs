@@ -36,7 +36,7 @@ namespace DomainModel.Classes.Materials
                     return netArea_sqmm;
             }
         }
-        public override decimal GetPrice(IVisitor visitor)
+        public override decimal GetPrice(IMaterialVisitor visitor)
         {
             return visitor.GetPrice_DoubleDim(this, GetAllowedArea_sqmm);
         }

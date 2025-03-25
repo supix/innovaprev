@@ -11,6 +11,6 @@ namespace DomainModel.Classes.Materials
         public abstract long DimensionToQuote { get; }
         public abstract int Order { get; }
         public abstract string[] MaterialForProduct { get; }
-        public abstract decimal GetPrice(IVisitor visitor);
+        public abstract decimal GetPrice(IMaterialVisitor visitor);
     }
 }
