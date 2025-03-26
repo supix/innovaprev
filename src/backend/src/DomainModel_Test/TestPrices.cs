@@ -23,10 +23,10 @@ namespace DomainModel_Test
         [Test]
         public void Test_PvcWithCasAllowedLength_PriceIsCorrect()
         {
-            var p = new SP(new Ral1013());
+            var p = new SP(new OakWood());
             var cas = new CAS(2500L);
             var price = p.GetMaterialPrice(cas);
-            Assert.That(Math.Abs(price - 268 * 2.5M), Is.LessThan(1e-3M));
+            Assert.That(Math.Abs(price - 352 * 2.5M), Is.LessThan(1e-3M));
         }
 
         [Test]
@@ -41,7 +41,7 @@ namespace DomainModel_Test
         [Test]
         public void Test_PvcWithCasLowLength_PriceIsCorrect()
         {
-            var p = new IPC(new Ral1013());
+            var p = new IPC(new White9010());
             var cas = new CAS(500L);
             var price = p.GetMaterialPrice(cas);
             Assert.That(Math.Abs(price - 268M), Is.LessThan(1e-3M));
@@ -201,19 +201,37 @@ namespace DomainModel_Test
         [Test]
         public void Test_COPWithPvc_PriceIsCorrect()
         {
-            var p = new IPC(new Ral1013());
+            var p = new IPC(new LightWood());
+            var cas = new CAS(2000L);
+            var price = p.GetMaterialPrice(cas);
+            Assert.That(Math.Abs(price - 352 * 2M), Is.LessThan(1e-3M));
+        }
+
+        [Test]
+        public void Test_CASWithPvcWhiteColorSupplement_PriceIsCorrect()
+        {
+            var p = new IPCAM(new White9010());
             var cop = new COP(3000L);
             var price = p.GetMaterialPrice(cop);
-            Assert.That(Math.Abs(price - 6 * 3M), Is.LessThan(1e-3M));
+            Assert.That(Math.Abs(price - 5.5M * 3M), Is.LessThan(1e-3M));
+        }
+
+        [Test]
+        public void Test_CASWithPvcWoodEffectColorSupplement_PriceIsCorrect()
+        {
+            var p = new IPCAM(new WhiteWood());
+            var cop = new COP(3000L);
+            var price = p.GetMaterialPrice(cop);
+            Assert.That(Math.Abs(price - 9M * 3M), Is.LessThan(1e-3M));
         }
 
         [Test]
         public void Test_COPWithPvcLowLength_PriceIsCorrect()
         {
-            var p = new IPC(new Ral1013());
+            var p = new IPC(new DarkWood());
             var cop = new COP(100L);
             var price = p.GetMaterialPrice(cop);
-            Assert.That(Math.Abs(price - 6 * 0.1M), Is.LessThan(1e-3M));
+            Assert.That(Math.Abs(price - 9 * 0.1M), Is.LessThan(1e-3M));
         }
 
         [Test]
@@ -241,6 +259,24 @@ namespace DomainModel_Test
             var cop = new COP(3000L);
             var price = p.GetMaterialPrice(cop);
             Assert.That(Math.Abs(price - 23M * 3M), Is.LessThan(1e-3M));
+        }
+
+        [Test]
+        public void Test_COPWithPvcWhiteColorSupplement_PriceIsCorrect()
+        {
+            var p = new IPC(new White9010());
+            var cop = new COP(3000L);
+            var price = p.GetMaterialPrice(cop);
+            Assert.That(Math.Abs(price - 5.5M * 3M), Is.LessThan(1e-3M));
+        }
+
+        [Test]
+        public void Test_COPWithPvcWoodEffectColorSupplement_PriceIsCorrect()
+        {
+            var p = new IPC(new Pepper());
+            var cop = new COP(2800L);
+            var price = p.GetMaterialPrice(cop);
+            Assert.That(Math.Abs(price - 9M * 2.8M), Is.LessThan(1e-3M));
         }
 
         [Test]

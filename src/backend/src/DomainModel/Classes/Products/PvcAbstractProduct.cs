@@ -7,11 +7,13 @@ namespace DomainModel.Classes.Products
     {
         public override sealed decimal GetPrice_CAS(CAS m, long length_mm)
         {
-            return GetFullSingleDimensionPrice(268M, length_mm);
+            var price_m = ic.GetPrice_CAS_m(this);
+            return GetFullSingleDimensionPrice(price_m, length_mm);
         }
         public override sealed decimal GetPrice_COP(COP m, long length_mm)
         {
-            return GetFullSingleDimensionPrice(6M, length_mm);
+            var price_m = ic.GetPrice_COP_m(this);
+            return GetFullSingleDimensionPrice(price_m, length_mm);
         }
         public override sealed bool SingleColor => true;
         public override decimal GetPrice_COP_Standard_m()
@@ -52,7 +54,7 @@ namespace DomainModel.Classes.Products
         }
         public override sealed decimal GetPrice_CAS_PvcWhite_m()
         {
-            return 258M;
+            return 268M;
         }
         public override sealed decimal GetPrice_CAS_PvcWoodEffect_m()
         {

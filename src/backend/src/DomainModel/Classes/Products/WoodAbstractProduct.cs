@@ -7,7 +7,8 @@ namespace DomainModel.Classes.Products
     {
         public override decimal GetPrice_CAS(CAS m, long length_mm)
         {
-            return GetFullSingleDimensionPrice(285M, length_mm);
+            var price_m = ic.GetPrice_CAS_m(this);
+            return GetFullSingleDimensionPrice(price_m, length_mm);
         }
 
         public override decimal GetPrice_COP(COP m, long length_mm)
