@@ -226,6 +226,96 @@ namespace DomainModel_Test
         }
 
         [Test]
+        public void Test_FROWithPvcWoodEffectColorSupplement_PriceIsCorrect()
+        {
+            var p = new IPCAM(new WhiteWood());
+            var fro = new FRO(3000L);
+            var price = p.GetMaterialPrice(fro);
+            Assert.That(Math.Abs(price - 201M * 3M), Is.LessThan(1e-3M));
+        }
+
+        [Test]
+        public void Test_FROWithPvcWhiteColorSupplement_PriceIsCorrect()
+        {
+            var p = new IPCAM(new White9010());
+            var fro = new FRO(3000L);
+            var price = p.GetMaterialPrice(fro);
+            Assert.That(Math.Abs(price - 142M * 3M), Is.LessThan(1e-3M));
+        }
+
+        [Test]
+        public void Test_FROWithWoodStandardColorSupplement_PriceIsCorrect()
+        {
+            var p = new RALT(new OakColoredAsh(), new Brown8017());
+            var fro = new FRO(3000L);
+            var price = p.GetMaterialPrice(fro);
+            Assert.That(Math.Abs(price - 142M * 3M), Is.LessThan(1e-3M));
+        }
+
+        [Test]
+        public void Test_FROWithWoodOpenPoreColorSupplement_PriceIsCorrect()
+        {
+            var p = new RALT(new OpenPoreAsh1013(), new SatinDarkGray());
+            var fro = new FRO(3000L);
+            var price = p.GetMaterialPrice(fro);
+            Assert.That(Math.Abs(price - 167M * 3M), Is.LessThan(1e-3M));
+        }
+
+        [Test]
+        public void Test_FROWithWoodBrushedDecapeToulipierColorSupplement_PriceIsCorrect()
+        {
+            var p = new RALT(new BrushedAsh1013(), new AluColor_M220());
+            var fro = new FRO(3000L);
+            var price = p.GetMaterialPrice(fro);
+            Assert.That(Math.Abs(price - 202M * 3M), Is.LessThan(1e-3M));
+        }
+
+        [Test]
+        public void Test_COPWithPvcWoodEffectColorSupplement_PriceIsCorrect()
+        {
+            var p = new IPCAM(new WhiteWood());
+            var cop = new COP(3000L);
+            var price = p.GetMaterialPrice(cop);
+            Assert.That(Math.Abs(price - 9M * 3M), Is.LessThan(1e-3M));
+        }
+
+        [Test]
+        public void Test_COPWithPvcWhiteColorSupplement_PriceIsCorrect()
+        {
+            var p = new IPCAM(new White9010());
+            var cop = new COP(3000L);
+            var price = p.GetMaterialPrice(cop);
+            Assert.That(Math.Abs(price - 5.5M * 3M), Is.LessThan(1e-3M));
+        }
+
+        [Test]
+        public void Test_COPWithWoodStandardColorSupplement_PriceIsCorrect()
+        {
+            var p = new RALT(new OakColoredAsh(), new Brown8017());
+            var cop = new COP(3000L);
+            var price = p.GetMaterialPrice(cop);
+            Assert.That(Math.Abs(price - 18.2M * 3M), Is.LessThan(1e-3M));
+        }
+
+        [Test]
+        public void Test_COPWithWoodOpenPoreColorSupplement_PriceIsCorrect()
+        {
+            var p = new RALT(new OpenPoreAsh1013(), new SatinDarkGray());
+            var cop = new COP(3000L);
+            var price = p.GetMaterialPrice(cop);
+            Assert.That(Math.Abs(price - 20M * 3M), Is.LessThan(1e-3M));
+        }
+
+        [Test]
+        public void Test_COPWithWoodBrushedDecapeToulipierColorSupplement_PriceIsCorrect()
+        {
+            var p = new RALT(new BrushedAsh1013(), new AluColor_M220());
+            var cop = new COP(3000L);
+            var price = p.GetMaterialPrice(cop);
+            Assert.That(Math.Abs(price - 23M * 3M), Is.LessThan(1e-3M));
+        }
+
+        [Test]
         public void Test_COPWithPvcLowLength_PriceIsCorrect()
         {
             var p = new IPC(new DarkWood());
@@ -244,39 +334,12 @@ namespace DomainModel_Test
         }
 
         [Test]
-        public void Test_COPWithWoodOpenPoreColorSupplement_PriceIsCorrect()
-        {
-            var p = new AATT(new OpenPoreAsh1013(), new OpenPoreAsh1013());
-            var cop = new COP(3000L);
-            var price = p.GetMaterialPrice(cop);
-            Assert.That(Math.Abs(price - 20M * 3M), Is.LessThan(1e-3M));
-        }
-
-        [Test]
         public void Test_COPWithWoodDecapeColorSupplement_PriceIsCorrect()
         {
             var p = new AATT(new DecapeAsh9010(), new DecapeAsh9010());
             var cop = new COP(3000L);
             var price = p.GetMaterialPrice(cop);
             Assert.That(Math.Abs(price - 23M * 3M), Is.LessThan(1e-3M));
-        }
-
-        [Test]
-        public void Test_COPWithPvcWhiteColorSupplement_PriceIsCorrect()
-        {
-            var p = new IPC(new White9010());
-            var cop = new COP(3000L);
-            var price = p.GetMaterialPrice(cop);
-            Assert.That(Math.Abs(price - 5.5M * 3M), Is.LessThan(1e-3M));
-        }
-
-        [Test]
-        public void Test_COPWithPvcWoodEffectColorSupplement_PriceIsCorrect()
-        {
-            var p = new IPC(new Pepper());
-            var cop = new COP(2800L);
-            var price = p.GetMaterialPrice(cop);
-            Assert.That(Math.Abs(price - 9M * 2.8M), Is.LessThan(1e-3M));
         }
 
         [Test]
