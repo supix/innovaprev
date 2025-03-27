@@ -36,4 +36,36 @@ public class TestColors
         var products = c.InternalColorForProducts;
         Assert.That(products, Is.EquivalentTo(new[] { typeof(IPC).Name, typeof(IPN).Name, typeof(IPCAM).Name, typeof(SP).Name }));
     }
+
+    [Test]
+    public void Test_AluminumEmbossedIvory1804ColorAsExternalColor_GivesWoodAluProducts()
+    {
+        var c = new EmbossedIvory1804();
+        var products = c.ExternalColorForProducts;
+        Assert.That(products, Is.EquivalentTo(new[] { typeof(ELA).Name, typeof(RALT).Name, typeof(AATT).Name, typeof(AALAM).Name }));
+    }
+
+    [Test]
+    public void Test_AluminumEmbossedIvory1804ColorAsInternalColor_IsEmpty()
+    {
+        var c = new EmbossedIvory1804(); //AluColor_2912
+        var products = c.InternalColorForProducts;
+        Assert.That(products, Is.Empty);
+    }
+
+    [Test]
+    public void Test_AluminumAluColor_2912ColorAsInternalColor_IsEmpty()
+    {
+        var c = new AluColor_2912();
+        var products = c.InternalColorForProducts;
+        Assert.That(products, Is.Empty);
+    }
+
+    [Test]
+    public void Test_AluminumAluColor_2912ColorAsExternalColor_GivesWoodAluProducts()
+    {
+        var c = new AluColor_2912();
+        var products = c.ExternalColorForProducts;
+        Assert.That(products, Is.EquivalentTo(new[] { typeof(ELA).Name, typeof(RALT).Name, typeof(AATT).Name, typeof(AALAM).Name }));
+    }
 }
