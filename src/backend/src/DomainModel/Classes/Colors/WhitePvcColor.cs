@@ -2,7 +2,7 @@
 
 namespace DomainModel.Classes.Colors
 {
-    public abstract class WhitePvcColor : AbstractColor
+    public abstract class WhitePvcColor : PvcColor
     {
         public override sealed decimal GetPrice_CAS_m(IColorVisitor visitor)
         {

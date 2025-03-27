@@ -2,7 +2,7 @@
 
 namespace DomainModel.Classes.Colors
 {
-    public abstract class WoodEffectPvcColor : AbstractColor
+    public abstract class WoodEffectPvcColor : PvcColor
     {
         public override sealed decimal GetPrice_CAS_m(IColorVisitor visitor)
         {
