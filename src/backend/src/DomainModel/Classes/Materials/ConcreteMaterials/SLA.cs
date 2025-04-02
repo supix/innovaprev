@@ -8,6 +8,7 @@
         public override string Description => "Sopraluce apribile";
         protected override long? ClampMinValue => 1500000;
         public override int Order => 140;
+        public override string[] MaterialForProduct => base.GetNotAntaMaxAndNotScorrevoleProductCodes();
     }
 
 }

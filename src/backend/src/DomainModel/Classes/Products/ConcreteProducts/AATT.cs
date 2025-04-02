@@ -1,8 +1,9 @@
-﻿using DomainModel.Classes.Materials;
+﻿using DomainModel.Classes.Colors;
+using DomainModel.Classes.Materials;
 
 namespace DomainModel.Classes.Products.ConcreteProducts
 {
-    public class AATT : WoodAbstractProduct
+    public class AATT(IColor ic, IColor ec) : WoodAbstractProduct(ic, ec)
     {
         public override string Description => "Armonia Alluminio/Legno";
 
@@ -15,7 +16,7 @@ namespace DomainModel.Classes.Products.ConcreteProducts
         public override int Order => 30;
         public override decimal GetPrice_DoubleDim(DoubleDimMaterial m, long area_sqmm)
         {
-            return GetFullDoubleDimensionPrice(694M, area_sqmm);
+            return GetFullDoubleDimensionPrice(793M, area_sqmm);
         }
         public override decimal GetPrice_DoubleDimFixed(DoubleDimFixedMaterial m, long area_sqmm)
         {

@@ -1,4 +1,5 @@
-﻿using DomainModel.Classes.Materials;
+﻿using DomainModel.Classes.Colors;
+using DomainModel.Classes.Materials;
 using DomainModel.Classes.Products;
 
 namespace DomainModel.Services.CollectionsProvider
@@ -10,26 +11,12 @@ namespace DomainModel.Services.CollectionsProvider
             return new Collections()
             {
                 Product = GetProductCollItems(),
-                InternalColors = new[] {
-                    new CollectionItem() { Id = "IC_ARG", Desc = "Argento" },
-                    new CollectionItem() { Id = "IC_BRO", Desc = "Bronzo" },
-                    new CollectionItem() { Id = "IC_RAM", Desc = "Ramato" },
-                    new CollectionItem() { Id = "IC_RAF", Desc = "Raffaello/Altri colori Ral" },
-                    new CollectionItem() { Id = "AC_EL", Desc = "Effetto legno" },
-                },
-                ExternalColors = new[] {
-                    new CollectionItem() { Id = "EC_ARG", Desc = "Argento" },
-                    new CollectionItem() { Id = "EC_BRO", Desc = "Bronzo" },
-                    new CollectionItem() { Id = "EC_RAM", Desc = "Ramato" },
-                    new CollectionItem() { Id = "EC_RAF", Desc = "Raffaello/Altri colori Ral" },
-                    new CollectionItem() { Id = "AC_EL", Desc = "Effetto legno" },
-                },
+                Colors = GetColorCollItems(),
                 AccessoryColors = new[] {
+                    new CollectionItem() { Id = "AC_ORO", Desc = "Oro" },
                     new CollectionItem() { Id = "AC_ARG", Desc = "Argento" },
+                    new CollectionItem() { Id = "AC_BIA", Desc = "Bianco" },
                     new CollectionItem() { Id = "AC_BRO", Desc = "Bronzo" },
-                    new CollectionItem() { Id = "AC_RAM", Desc = "Ramato" },
-                    new CollectionItem() { Id = "AC_RAF", Desc = "Raffaello/Altri colori Ral" },
-                    new CollectionItem() { Id = "AC_EL", Desc = "Effetto legno" },
                 },
                 WindowTypes = GetWindowTypesCollItems(),
                 OpeningTypes = new[] {
@@ -40,25 +27,26 @@ namespace DomainModel.Services.CollectionsProvider
                     new CollectionItem() { Id = "GT_TRASPARENTE", Desc = "Trasparente" },
                     new CollectionItem() { Id = "GT_OPACO", Desc = "Opaco" },
                 },
-                Crosspieces = new[] {
-                    new CollectionItem() { Id = "CR_A", Desc = "Alta" },
-                    new CollectionItem() { Id = "CR_M", Desc = "Media" },
-                    new CollectionItem() { Id = "CR_B", Desc = "Bassa" },
-                },
             };
         }
 
         private ProductCollectionItem[] GetProductCollItems()
         {
             return ProductFactory.GetAll()
-                .Select(p => new ProductCollectionItem() { Id = p.Code, Desc = p.Description, TrimSectionVisible = p.TrimSectionVisible, DescTitle = p.ExtendedDescriptionTitle, ExtDesc = p.ExtendedDescription })
+                .Select(p => new ProductCollectionItem() { Id = p.Code, Desc = p.Description, TrimSectionVisible = p.TrimSectionVisible, SingleColor = p.SingleColor, DescTitle = p.ExtendedDescriptionTitle, ExtDesc = p.ExtendedDescription })
                 .ToArray();
         }
 
         private MaterialCollectionItem[] GetWindowTypesCollItems()
         {
             return MaterialFactory.GetAll()
-                .Select(m => new MaterialCollectionItem() { Id = m.Code, Desc = m.Description, NumOfDims = m.NumberOfDimensions })
+                .Select(m => new MaterialCollectionItem() { Id = m.Code, Desc = m.Description, NumOfDims = m.NumberOfDimensions, MaterialForProduct = m.MaterialForProduct })
+                .ToArray();
+        }
+        private ColorCollectionItem[] GetColorCollItems()
+        {
+            return ColorFactory.GetAll()
+                .Select(c => new ColorCollectionItem() { Id = c.Code, Desc = c.Description, InternalColorForProduct = c.InternalColorForProducts, ExternalColorForProduct = c.ExternalColorForProducts })
                 .ToArray();
         }
     }

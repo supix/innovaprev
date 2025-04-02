@@ -12,10 +12,12 @@ namespace DomainModel.Classes.Materials.ConcreteMaterials
 
         protected override long? ClampMinValue => 1000;
         public override int Order => 200;
-        public override decimal GetPrice(IVisitor visitor)
+        public override decimal GetPrice(IMaterialVisitor visitor)
         {
             return visitor.GetPrice_CAS(this, GetAllowedLength_mm);
         }
+        public override string[] MaterialForProduct => base.GetAllProductCodes();
+
     }
 
 }

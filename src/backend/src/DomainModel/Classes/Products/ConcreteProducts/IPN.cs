@@ -1,8 +1,9 @@
-﻿using DomainModel.Classes.Materials;
+﻿using DomainModel.Classes.Colors;
+using DomainModel.Classes.Materials;
 
 namespace DomainModel.Classes.Products.ConcreteProducts
 {
-    public class IPN : PvcAbstractProduct
+    public class IPN(IColor color) : PvcAbstractProduct(color)
     {
         public override string Description => "Innova PVC/A New";
 

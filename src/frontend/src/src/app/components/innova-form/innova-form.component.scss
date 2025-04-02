@@ -61,6 +61,10 @@ app-innova-form {
     }
 
     .table {
+      width: 100%;
+      min-width: 600px;
+      table-layout: fixed;
+
       thead th,
       tbody td {
 

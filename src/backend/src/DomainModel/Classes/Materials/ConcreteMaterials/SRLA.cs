@@ -8,5 +8,6 @@
         public override string Description => "Scorrevole Ribalta con laterale apribile";
         protected override long? ClampMinValue => 2500000;
         public override int Order => 90;
+        public override string[] MaterialForProduct => base.GetNotAntaMaxAndNotScorrevoleProductCodes();
     }
 }

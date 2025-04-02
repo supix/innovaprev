@@ -1,8 +1,9 @@
-﻿using DomainModel.Classes.Materials;
+﻿using DomainModel.Classes.Colors;
+using DomainModel.Classes.Materials;
 
 namespace DomainModel.Classes.Products.ConcreteProducts
 {
-    public class SP : PvcAbstractProduct
+    public class SP(IColor color) : PvcAbstractProduct(color)
     {
         public override string Description => "Scorrevole PVC";
         public override bool TrimSectionVisible => false;

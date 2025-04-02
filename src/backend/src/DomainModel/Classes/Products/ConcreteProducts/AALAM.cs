@@ -1,8 +1,9 @@
-﻿using DomainModel.Classes.Materials;
+﻿using DomainModel.Classes.Colors;
+using DomainModel.Classes.Materials;
 
 namespace DomainModel.Classes.Products.ConcreteProducts
 {
-    public class AALAM : WoodAbstractProduct
+    public class AALAM(IColor ic, IColor ec) : WoodAbstractProduct(ic, ec), IAntaMaxAbstractProduct
     {
         public override string Description => "Armonia Alluminio/Legno anta max";
 
@@ -20,7 +21,7 @@ namespace DomainModel.Classes.Products.ConcreteProducts
         }
         public override decimal GetPrice_DoubleDimFixed(DoubleDimFixedMaterial m, long area_sqmm)
         {
-            return GetFullDoubleDimensionPrice(876M, area_sqmm);
+            throw new InvalidOperationException($"Fixed materials not allowed with this product. Product: {Code} - Material: {m.Code}");
         }
     }
 }

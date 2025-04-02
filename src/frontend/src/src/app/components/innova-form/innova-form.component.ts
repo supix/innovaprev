@@ -7,10 +7,12 @@ import {
   BillingPayload,
   CollectionBaseItem,
   CollectionsResponse,
+  Colors,
   CustomPayload,
   PricePayload,
   Quotation,
-  WindowsPayload
+  WindowsPayload,
+  WindowType
 } from '../../models';
 import {
   combineLatest,
@@ -78,6 +80,11 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
 
   showFillFormButton = false;
 
+  externalColorList: Colors[] = [];
+  internalColorList: Colors[] = [];
+  windowTypeList: WindowType[] = [];
+
+  private selectedProductId!: string | null;
   private calculatePriceSubject = new Subject<PricePayload | null>();
   private previousPayloadHash: string | null = null;
 
@@ -107,8 +114,8 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
       productData: this.fb.group({
         orderNumber: [''],
         product: [null, Validators.required],
-        internalColor: [null, Validators.required],
-        externalColor: [null, Validators.required],
+        internalColor: [{value: null, disabled: true}, Validators.required],
+        externalColor: [{value: null, disabled: true}, Validators.required],
         accessoryColor: [null, Validators.required],
         notes: ['']
       }),
@@ -254,8 +261,51 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
     return (hasErrorsInSupplier || hasErrorsInCustomer || hasErrorsInProduct || hasErrorsInWindows || hasErrorsInCustomData);
   }
 
-  onImageError(event: Event) {
-    (event.target as HTMLImageElement).src = 'assets/photos/thumb/no-image.jpg';
+  onChangeProduct(selectedProductId: string): void {
+    this.selectedProductId = selectedProductId || null;
+    this.internalColorList = this.getInternalColors();
+    this.externalColorList = this.getExternalColors();
+    this.windowTypeList = this.getWindowTypes();
+    this.updateFormState();
+    this.updateWindowsFormState();
+  }
+
+  onChangeInternalColor($event: Colors): void {
+    if (!this.isSingleColor()) {
+      return;
+    }
+    const externalColorControl = this.productData.get('externalColor');
+    if (externalColorControl) {
+      externalColorControl.setValue($event.id, {emitEvent: false});
+      externalColorControl.updateValueAndValidity({emitEvent: false});
+    }
+  }
+
+  getInternalColors(): Colors[] {
+    if (!this.selectedProductId || !this.collections?.colors) {
+      return [];
+    }
+
+    return this.collections.colors
+      .filter(color => color.internalColorForProduct.includes(this.selectedProductId as string));
+  }
+
+  getExternalColors(): Colors[] {
+    if (!this.selectedProductId || !this.collections?.colors) {
+      return [];
+    }
+
+    return this.collections.colors
+      .filter(color => color.externalColorForProduct.includes(this.selectedProductId as string));
+  }
+
+  getWindowTypes(): WindowType[] {
+    if (!this.selectedProductId || !this.collections?.windowTypes) {
+      return [];
+    }
+
+    return this.collections.windowTypes
+      .filter(color => color.materialForProduct.includes(this.selectedProductId as string));
   }
 
   // Add a new row to the windows FormArray
@@ -270,7 +320,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
         width: [{value: null, disabled: true}, minNumber(1, true, 'f')],
         length: [{value: null, disabled: true}, minNumber(1, true, 'f')],
         quantity: [1, minNumber(1, true, 'f')],
-        windowType: [null, Validators.required],
+        windowType: [{value: null, disabled: true}, Validators.required],
         openingType: [null, Validators.required],
         glassType: [null, Validators.required],
         crosspiece: [null],
@@ -293,6 +343,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
     this.updateWindowPositions();
     if (this.windows.length === 0) {
       this.addWindowRow(true);
+      this.updateWindowsFormState();
     }
   }
 
@@ -382,7 +433,6 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
     input.value = validValue;
   }
 
-
   // Filters non-numeric characters from the input and updates the corresponding FormControl.
   onInputNumber(event: Event, controlName: string): void {
     const input = event.target as HTMLInputElement;
@@ -469,13 +519,30 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
 
     const currentFormValue = this.form.value;
 
-    // Helper function to pick a random item from an array
-    const getRandomItem = <T extends CollectionBaseItem>(items: T[], defaultValue: string | null = null): string | null => {
-      return items?.length > 0 ? items[Math.floor(Math.random() * items.length)].id : defaultValue;
-    };
+    const product = currentFormValue.productData?.product || getRandomItem(this.collections.product, null);
 
-    // Helper function to generate a random number within a range
-    const getRandomNumber = (max: number, min: number = 1): number => Math.max(min, Math.floor(Math.random() * max));
+    if (!product) {
+      console.error('Product not found!');
+      return;
+    } else {
+      console.log('Product found: ', product);
+      this.onChangeProduct(product);
+    }
+
+    const getRandomWindowType = (): string => {
+      const windowTypeList = this.getWindowTypes();
+      return windowTypeList?.length > 0 ? windowTypeList[Math.floor(Math.random() * windowTypeList.length)].id : 'defaultType';
+    }
+
+    const getRandomInternalColor = (): string => {
+      const internalColorList = this.getInternalColors();
+      return internalColorList?.length > 0 ? internalColorList[Math.floor(Math.random() * internalColorList.length)].id : 'defaultInternalColor';
+    }
+
+    const getRandomExternalColor = (): string => {
+      const externalColorList = this.getExternalColors();
+      return externalColorList?.length > 0 ? externalColorList[Math.floor(Math.random() * externalColorList.length)].id : 'defaultExternalColor';
+    }
 
     // Filter out invalid windows
     const validWindows = this.windows.controls.filter(control => control.valid);
@@ -500,7 +567,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
         width: [getRandomNumber(this.maxValues['width'], 500)],
         length: [getRandomNumber(this.maxValues['width'], 500)],
         quantity: [getRandomNumber(5)],
-        windowType: [getRandomItem(this.collections.windowTypes, 'defaultType'), Validators.required],
+        windowType: [getRandomWindowType(), Validators.required],
         openingType: [getRandomItem(this.collections.openingTypes, 'defaultOpening'), Validators.required],
         glassType: [getRandomItem(this.collections.glassTypes, 'defaultGlass'), Validators.required],
         crosspiece: [getRandomItem(this.collections.crosspieces, null)],
@@ -561,9 +628,9 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
       },
       productData: {
         orderNumber: currentFormValue.productData?.orderNumber || 'ORD123456',
-        product: currentFormValue.productData?.product || getRandomItem(this.collections.product, 'defaultProduct'),
-        internalColor: currentFormValue.productData?.internalColor || getRandomItem(this.collections.internalColors, 'defaultInternalColor'),
-        externalColor: currentFormValue.productData?.externalColor || getRandomItem(this.collections.externalColors, 'defaultExternalColor'),
+        product,
+        internalColor: currentFormValue.productData?.internalColor || getRandomInternalColor(),
+        externalColor: currentFormValue.productData?.externalColor || getRandomExternalColor(),
         accessoryColor: currentFormValue.productData?.accessoryColor || getRandomItem(this.collections.accessoryColors, 'defaultAccessoryColor'),
         notes: currentFormValue.productData?.notes || 'No special notes.'
       }
@@ -571,6 +638,17 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.hasTriggeredWindowsValidation = false;
     this.hasTriggeredCustomValidation = false;
+
+    // Helper function to pick a random item from an array
+    function getRandomItem<T extends CollectionBaseItem>(items: T[], defaultValue: string | null = null): string | null {
+      return items?.length > 0 ? items[Math.floor(Math.random() * items.length)].id : defaultValue;
+    }
+
+    // Helper function to generate a random number within a range
+    function getRandomNumber(max: number, min: number = 1): number {
+      return Math.max(min, Math.floor(Math.random() * max));
+    }
+
   }
 
   onReset(): void {
@@ -630,6 +708,96 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
   // Check if the 'productData' form is valid
   private isProductDataValid(): boolean {
     return this.productData.valid;
+  }
+
+  private isSingleColor(): boolean {
+    if (!this.selectedProductId || !this.collections?.product) {
+      return false;
+    }
+    return !!this.collections?.product.find(p => p.id === this.selectedProductId)?.singleColor;
+  }
+
+  private updateFormState(): void {
+    if (!this.productData) {
+      return;
+    }
+
+    const internalColorControl = this.productData.get('internalColor');
+    if (internalColorControl) {
+      const selectedInternalColor = internalColorControl.value;
+
+      if (this.internalColorList.length === 0) {
+        internalColorControl.disable();
+        internalColorControl.setValue(null, {emitEvent: false});
+        internalColorControl.clearValidators();
+      } else {
+        const isValidInternalColor = this.internalColorList.some(color => color.id === selectedInternalColor);
+        if (!isValidInternalColor) {
+          internalColorControl.setValue(null, {emitEvent: false});
+        }
+        internalColorControl.enable();
+        internalColorControl.setValidators([Validators.required]);
+      }
+      internalColorControl.updateValueAndValidity({emitEvent: false});
+    }
+
+    const externalColorControl = this.productData.get('externalColor');
+    if (externalColorControl) {
+      const selectedExternalColor = externalColorControl.value;
+
+      if (this.externalColorList.length === 0) {
+        externalColorControl.disable();
+        externalColorControl.setValue(null, {emitEvent: false});
+        externalColorControl.clearValidators();
+      } else {
+        if (this.isSingleColor()) {
+          const isValidInternalColor = this.internalColorList.some(color => color.id === selectedExternalColor);
+          if (!isValidInternalColor) {
+            externalColorControl.setValue(null, {emitEvent: false});
+          } else {
+            externalColorControl.setValue(internalColorControl?.value, {emitEvent: false});
+          }
+          externalColorControl.disable();
+        } else {
+          const isValidExternalColor = this.externalColorList.some(color => color.id === selectedExternalColor);
+          if (!isValidExternalColor) {
+            externalColorControl.setValue(null, {emitEvent: false});
+          }
+          externalColorControl.enable();
+        }
+        externalColorControl.setValidators([Validators.required]);
+      }
+      externalColorControl.updateValueAndValidity({emitEvent: false});
+    }
+  }
+
+  private updateWindowsFormState(): void {
+    if (!this.windows) {
+      return;
+    }
+
+    this.windows.controls.forEach((windowGroup: AbstractControl) => {
+      const windowTypeControl = windowGroup.get('windowType');
+
+      if (windowTypeControl) {
+        const selectedWindowType = windowTypeControl.value;
+
+        if (this.windowTypeList.length === 0) {
+          windowTypeControl.disable();
+          windowTypeControl.setValue(null, {emitEvent: false});
+          windowTypeControl.clearValidators();
+        } else {
+          const isValidWindowType = this.windowTypeList.some(type => type.id === selectedWindowType);
+          if (!isValidWindowType) {
+            windowTypeControl.setValue(null, {emitEvent: false});
+          }
+          windowTypeControl.enable();
+          windowTypeControl.setValidators([Validators.required]);
+        }
+
+        windowTypeControl.updateValueAndValidity({emitEvent: false});
+      }
+    });
   }
 
   // Setup subscription to calculate price
@@ -696,26 +864,26 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
           row.get('width')?.setValidators([minNumber(1, true, 'f')]);
           row.get('length')?.setValidators(null);
 
-          row.get('height')?.enable({ emitEvent: false });
-          row.get('width')?.enable({ emitEvent: false });
-          row.get('length')?.disable({ emitEvent: false });
+          row.get('height')?.enable({emitEvent: false});
+          row.get('width')?.enable({emitEvent: false});
+          row.get('length')?.disable({emitEvent: false});
 
-          row.patchValue({ length: null }, { emitEvent: false });
+          row.patchValue({length: null}, {emitEvent: false});
         } else if (numOfDims === 1) {
           row.get('height')?.setValidators(null);
           row.get('width')?.setValidators(null);
           row.get('length')?.setValidators([minNumber(1, true, 'f')]);
 
-          row.get('height')?.disable({ emitEvent: false });
-          row.get('width')?.disable({ emitEvent: false });
-          row.get('length')?.enable({ emitEvent: false });
+          row.get('height')?.disable({emitEvent: false});
+          row.get('width')?.disable({emitEvent: false});
+          row.get('length')?.enable({emitEvent: false});
 
-          row.patchValue({ height: null, width: null }, { emitEvent: false });
+          row.patchValue({height: null, width: null}, {emitEvent: false});
         }
 
-        row.get('height')?.updateValueAndValidity({ emitEvent: false });
-        row.get('width')?.updateValueAndValidity({ emitEvent: false });
-        row.get('length')?.updateValueAndValidity({ emitEvent: false });
+        row.get('height')?.updateValueAndValidity({emitEvent: false});
+        row.get('width')?.updateValueAndValidity({emitEvent: false});
+        row.get('length')?.updateValueAndValidity({emitEvent: false});
 
       }
 

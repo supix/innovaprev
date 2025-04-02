@@ -27,8 +27,8 @@ namespace PdfQuote
                 c.Item().DefaultTextStyle(x => x.FontSize(9)).Column(c =>
                 {
                     c.Item().Text($"Colore");
-                    c.Item().PaddingLeft(5).Text($"Interno: {coll.InternalColors.Single(ic => ic.Id == pd.InternalColor).Desc}");
-                    c.Item().PaddingLeft(5).Text($"Esterno: {coll.ExternalColors.Single(ec => ec.Id == pd.ExternalColor).Desc}");
+                    c.Item().PaddingLeft(5).Text($"Interno: {coll.Colors.Single(ic => ic.Id == pd.InternalColor).Desc}");
+                    c.Item().PaddingLeft(5).Text($"Esterno: {coll.Colors.Single(ec => ec.Id == pd.ExternalColor).Desc}");
                     c.Item().PaddingLeft(5).Text($"Accessori: {coll.AccessoryColors.Single(ac => ac.Id == pd.AccessoryColor).Desc}");
                 });
 
