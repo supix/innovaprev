@@ -28,7 +28,6 @@ export interface WindowRow {
   windowType: string;
   openingType: string;
   glassType: string;
-  crosspiece: string;
   leftTrim: number;
   rightTrim: number;
   upperTrim: number;
