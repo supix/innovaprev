@@ -27,11 +27,6 @@ namespace DomainModel.Services.CollectionsProvider
                     new CollectionItem() { Id = "GT_TRASPARENTE", Desc = "Trasparente" },
                     new CollectionItem() { Id = "GT_OPACO", Desc = "Opaco" },
                 },
-                Crosspieces = new[] {
-                    new CollectionItem() { Id = "CR_A", Desc = "Alta" },
-                    new CollectionItem() { Id = "CR_M", Desc = "Media" },
-                    new CollectionItem() { Id = "CR_B", Desc = "Bassa" },
-                },
             };
         }
 

@@ -133,7 +133,7 @@ namespace DomainModel_Test
             var p = new AATT(new Ral1013(), new Ral1013());
             var f1a = new F1A(5000L, 4000L);
             var price = p.GetMaterialPrice(f1a);
-            Assert.That(Math.Abs(price - (694 + 38) * 5M * 4M), Is.LessThan(1e-3M));
+            Assert.That(Math.Abs(price - (793 + 38) * 5M * 4M), Is.LessThan(1e-3M));
         }
 
         [Test]
@@ -510,6 +510,15 @@ namespace DomainModel_Test
             var cop = new COP(2600L);
             var price = p.GetMaterialPrice(cop);
             Assert.That(Math.Abs(price - 18.2M * 2.6M), Is.LessThan(1e-3M));
+        }
+
+        [Test]
+        public void Test_AALPlain_PriceIsCorrect()
+        {
+            var p = new AATT(new DarkColoredAsh(), new Ral1013());
+            var mat = new F1A(1500L, 1000L);
+            var price = p.GetMaterialPrice(mat);
+            Assert.That(Math.Abs(price - 831M * 1.5M), Is.LessThan(1e-3M));
         }
     }
 }
