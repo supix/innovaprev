@@ -8,6 +8,5 @@
         public required MaterialCollectionItem[] WindowTypes { get; set; }
         public required CollectionItem[] OpeningTypes { get; set; }
         public required CollectionItem[] GlassTypes { get; set; }
-        public required CollectionItem[] Crosspieces { get; set; }
     }
 }
