@@ -48,7 +48,7 @@ namespace PdfQuote
                     r.RelativeItem(6).Text($"Tipol.: {coll.WindowTypes.Single(wt => wt.Id == windowsData.WindowType).Desc}");
                     r.RelativeItem(3).Text($"Apert. (vista interna): {coll.OpeningTypes.Single(ot => ot.Id == windowsData.OpeningType).Desc}");
                     r.RelativeItem(2).Text($"Vetro: {coll.GlassTypes.Single(gt => gt.Id == windowsData.GlassType).Desc}");
-                    r.RelativeItem(2).AlignRight().Text($"Trav.: {coll.Crosspieces.Single(cp => cp.Id == windowsData.Crosspiece).Desc}");
+                    // r.RelativeItem(2).AlignRight().Text($"Trav.: {coll.Crosspieces.Single(cp => cp.Id == windowsData.Crosspiece).Desc}");
                 });
 
                 // Prices
