@@ -374,9 +374,6 @@
                 <th [attr.rowspan]="isTrimSectionVisible() ? '2' : '1'"
                     [ngStyle]="{ width: isTrimSectionVisible() ? '8%' : '12%' }">Vetro
                 </th>
-                <th [attr.rowspan]="isTrimSectionVisible() ? '2' : '1'"
-                    [ngStyle]="{ width: isTrimSectionVisible() ? '8%' : '12%' }">Traversa
-                </th>
                 <th *ngIf="isTrimSectionVisible()" colspan="4" style="width: 24%;">Rifilo Battuta</th>
                 <th [attr.rowspan]="isTrimSectionVisible() ? '2' : '1'" style="width: 6%;"></th>
               </tr>
@@ -438,11 +435,6 @@
                     *ngTemplateOutlet="glassTypeInput; context: { index: i, form: row, tableLg: true }"></ng-container>
                 </td>
 
-                <!-- Traversa -->
-                <td>
-                  <ng-container
-                    *ngTemplateOutlet="crosspieceInput; context: { index: i, form: row, tableLg: true }"></ng-container>
-                </td>
                 <ng-container *ngIf="isTrimSectionVisible()">
                   <!-- Rifilo Battuta Sx -->
                   <td>
@@ -516,10 +508,6 @@
               <div class="mb-2">
                 <label class="form-label">Vetro</label>
                 <ng-container *ngTemplateOutlet="glassTypeInput; context: { index: i, form: row }"></ng-container>
-              </div>
-              <div class="mb-2">
-                <label class="form-label">Traversa</label>
-                <ng-container *ngTemplateOutlet="crosspieceInput; context: { index: i, form: row }"></ng-container>
               </div>
               <ng-container *ngIf="isTrimSectionVisible()">
                 <hr class="section-separator"/>
