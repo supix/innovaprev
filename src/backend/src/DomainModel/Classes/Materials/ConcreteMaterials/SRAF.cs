@@ -2,7 +2,7 @@
 {
     public class SRAF : DoubleDimMaterial
     {
-        public SRAF(long height_mm, long width_mm) : base(height_mm, width_mm)
+        public SRAF(long height_mm, long width_mm, bool opaqueGlass) : base(height_mm, width_mm, opaqueGlass)
         {
         }
         public override string Description => "Scorrevole Ribalta con anta fissa";

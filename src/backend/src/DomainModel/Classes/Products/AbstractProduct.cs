@@ -36,10 +36,13 @@ namespace DomainModel.Classes.Products
         public abstract decimal GetPrice_DoubleDim(DoubleDimMaterial m, long area_sqmm);
         public abstract decimal GetPrice_DoubleDimFixed(DoubleDimFixedMaterial m, long area_sqmm);
 
-        protected decimal GetFullDoubleDimensionPrice(decimal price_sqm, long area_sqmm)
+        protected decimal GetFullDoubleDimensionPrice(decimal price_sqm, long area_sqmm, bool opaqueGlass)
         {
-            const decimal GLASS_PRICE_SQM = 38M;
-            return (price_sqm + ic.Price_sqm + ec.Price_sqm + GLASS_PRICE_SQM) * area_sqmm / 1e6M;
+            const decimal TRANSPARENT_GLASS_PRICE_SQM = 38M;
+            const decimal OPAQUE_GLASS_PRICE_SQM = 48M;
+            decimal glassPrice = opaqueGlass ? OPAQUE_GLASS_PRICE_SQM : TRANSPARENT_GLASS_PRICE_SQM;
+
+            return (price_sqm + ic.Price_sqm + ec.Price_sqm + glassPrice) * area_sqmm / 1e6M;
         }
 
         protected decimal GetFullSingleDimensionPrice(decimal price_m, long length_mm)

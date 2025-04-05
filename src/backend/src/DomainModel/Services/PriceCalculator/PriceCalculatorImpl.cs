@@ -23,7 +23,7 @@ namespace DomainModel.Services.PriceCalculator
                 {
                     long m1 = x.Length != 0 ? x.Length : x.Height;
                     long m2 = x.Width;
-                    var material = MaterialFactory.CreateByCode(x.WindowType, m1, m2);
+                    var material = MaterialFactory.CreateByCode(x.WindowType, m1, m2, x.GlassType == "GT_OPACO");
                     var netPrice = product.GetMaterialPrice(material);
                     var totalMaterialPrice = netPrice * x.Quantity;
                     var detailPrice = new DetailPrice() { NetPrice = totalMaterialPrice, Vat = 0.22M };

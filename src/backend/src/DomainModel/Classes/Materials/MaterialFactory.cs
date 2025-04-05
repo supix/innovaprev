@@ -2,7 +2,7 @@
 {
     public static class MaterialFactory
     {
-        public static IMaterial CreateByCode(string code, long m1, long m2)
+        public static IMaterial CreateByCode(string code, long m1, long m2, bool opaqueGlass)
         {
             var t = AppDomain.CurrentDomain.GetAssemblies()
                 .SelectMany(domainAssembly => domainAssembly.GetTypes())
@@ -22,7 +22,7 @@
                 if (m1 == 0 || m2 == 0)
                     throw new InvalidOperationException($"For a double dimension material m1 and m2 must not be zero. Material code: {code}");
 
-                return (AbstractMaterial)Activator.CreateInstance(t, m1, m2)!;
+                return (AbstractMaterial)Activator.CreateInstance(t, m1, m2, false)!;
             }
 
             throw new InvalidOperationException($"Unknown material. Code: {code}");
@@ -42,7 +42,7 @@
 
                     if (t.IsSubclassOf(typeof(DoubleDimMaterial)))
                     {
-                        return (AbstractMaterial)Activator.CreateInstance(t, 0, 0)!;
+                        return (AbstractMaterial)Activator.CreateInstance(t, 0, 0, false)!;
                     }
 
                     throw new NotImplementedException($"Unhandled material type: {t}");

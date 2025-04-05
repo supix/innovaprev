@@ -4,7 +4,7 @@ namespace DomainModel.Classes.Materials
 {
     public abstract class DoubleDimFixedMaterial : DoubleDimMaterial
     {
-        protected DoubleDimFixedMaterial(long height_mm, long width_mm) : base(height_mm, width_mm)
+        protected DoubleDimFixedMaterial(long height_mm, long width_mm, bool opaqueGlass) : base(height_mm, width_mm, opaqueGlass)
         {
         }
         public override decimal GetPrice(IMaterialVisitor visitor)
