@@ -22,7 +22,7 @@
                 if (m1 == 0 || m2 == 0)
                     throw new InvalidOperationException($"For a double dimension material m1 and m2 must not be zero. Material code: {code}");
 
-                return (AbstractMaterial)Activator.CreateInstance(t, m1, m2, false)!;
+                return (AbstractMaterial)Activator.CreateInstance(t, m1, m2, opaqueGlass)!;
             }
 
             throw new InvalidOperationException($"Unknown material. Code: {code}");

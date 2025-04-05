@@ -47,7 +47,7 @@ namespace DomainModel.Classes.Materials
         protected string[] GetNotAntaMaxAndNotScorrevoleProductCodes()
         {
             return ProductFactory.GetAll()
-                .Where(p => !(p is IAntaMaxAbstractProduct) && !(p is SP))
+                .Where(p => !(p is IAntaMaxAbstractProduct) && (p is not SP))
                 .Select(p => p.Code)
                 .ToArray();
         }

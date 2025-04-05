@@ -8,8 +8,8 @@
         public long Length { get; set; }
         public long Quantity { get; set; }
         public required string WindowType { get; set; }
-        public required string OpeningType { get; set; }
-        public required string GlassType { get; set; }
+        public string? OpeningType { get; set; }
+        public string? GlassType { get; set; }
         public long LeftTrim { get; set; }
         public long RightTrim { get; set; }
         public long UpperTrim { get; set; }

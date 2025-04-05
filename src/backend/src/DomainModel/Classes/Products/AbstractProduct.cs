@@ -40,9 +40,9 @@ namespace DomainModel.Classes.Products
         {
             const decimal TRANSPARENT_GLASS_PRICE_SQM = 38M;
             const decimal OPAQUE_GLASS_PRICE_SQM = 48M;
-            decimal glassPrice = opaqueGlass ? OPAQUE_GLASS_PRICE_SQM : TRANSPARENT_GLASS_PRICE_SQM;
+            decimal glassPrice_sqm = opaqueGlass ? OPAQUE_GLASS_PRICE_SQM : TRANSPARENT_GLASS_PRICE_SQM;
 
-            return (price_sqm + ic.Price_sqm + ec.Price_sqm + glassPrice) * area_sqmm / 1e6M;
+            return (price_sqm + ic.Price_sqm + ec.Price_sqm + glassPrice_sqm) * area_sqmm / 1e6M;
         }
 
         protected decimal GetFullSingleDimensionPrice(decimal price_m, long length_mm)
