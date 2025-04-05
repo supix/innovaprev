@@ -11,5 +11,6 @@ namespace DomainModel.Classes.Materials
         {
             return visitor.GetPrice_DoubleDimFixed(this, GetAllowedArea_sqmm);
         }
+        public override sealed bool openingTypeVisible => false;
     }
 }

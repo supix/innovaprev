@@ -13,6 +13,8 @@ namespace DomainModel.Classes.Materials
         }
 
         public override sealed int NumberOfDimensions => 2;
+        public override bool openingTypeVisible => true;
+        public override sealed bool glassTypeVisible => true;
         public long Height_mm { get; set; }
         public long Width_mm { get; set; }
         public override sealed long DimensionToQuote
