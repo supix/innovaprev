@@ -8,6 +8,8 @@ namespace DomainModel.Classes.Materials
         string Description { get; }
         decimal GetPrice(IMaterialVisitor visitor);
         int NumberOfDimensions { get; }
+        bool openingTypeVisible { get; }
+        bool glassTypeVisible { get; }
         string[] MaterialForProduct { get; }
     }
 }

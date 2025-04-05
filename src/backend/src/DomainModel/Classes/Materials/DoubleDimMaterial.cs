@@ -17,7 +17,8 @@ namespace DomainModel.Classes.Materials
         public long Height_mm { get; }
         public long Width_mm { get; }
         public bool OpaqueGlass { get; }
-
+        public override bool openingTypeVisible => true;
+        public override sealed bool glassTypeVisible => true;
         public override sealed long DimensionToQuote
         {
             get

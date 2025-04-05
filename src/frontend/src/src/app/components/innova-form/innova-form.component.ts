@@ -186,10 +186,21 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
     return this.collections?.product.some(p => p.id === currentProduct && p.trimSectionVisible) || false;
   }
 
-  // Helper function to check validity of a specific row by index
   isWindowRowValid(index: number): boolean {
-    const row = this.windows.at(index);
-    return row ? row.valid : false;
+    const row = this.windows.at(index) as FormGroup;
+    if (!row) return false;
+
+    const isStandardValid = row.valid;
+
+    const allDisabledRequiredFieldsValid = Object.keys(row.controls).every(controlName => {
+      const control = row.get(controlName);
+      const isDisabled = control?.disabled;
+      const isRequired = control?.hasValidator(Validators.required);
+
+      return !isDisabled || !isRequired || !!control.value;
+    });
+
+    return isStandardValid && allDisabledRequiredFieldsValid;
   }
 
   // Helper function to check validity of a specific row by index
@@ -321,8 +332,8 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
         length: [{value: null, disabled: true}, minNumber(1, true, 'f')],
         quantity: [1, minNumber(1, true, 'f')],
         windowType: [{value: null, disabled: true}, Validators.required],
-        openingType: [null, Validators.required],
-        glassType: [null, Validators.required],
+        openingType: [{value: null, disabled: true}, Validators.required],
+        glassType: [{value: null, disabled: true}, Validators.required],
         leftTrim: [null, minNumber(0)],
         rightTrim: [null, minNumber(0)],
         upperTrim: [null, minNumber(0)],
@@ -850,13 +861,31 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // Function executed whenever the values in a row change.
   private onWindowRowValueChanged(index: number): void {
-    const row = this.windows.at(index);
+    const row = this.windows.at(index) as FormGroup;
 
     if (row) {
       const windowType = row.get('windowType')?.value;
 
       if (windowType) {
-        const numOfDims = this.collections?.windowTypes.find(value => value.id === windowType)?.numOfDims;
+        const { numOfDims, openingTypeVisible, glassTypeVisible } = this.collections?.windowTypes.find(value => value.id === windowType as unknown as string) as WindowType || {};
+
+        if (openingTypeVisible) {
+          row.get('openingType')?.setValidators([Validators.required]);
+          row.get('openingType')?.enable({emitEvent: false});
+        } else {
+          row.get('openingType')?.setValidators(null);
+          row.get('openingType')?.disable({emitEvent: false});
+          row.patchValue({openingType: null}, {emitEvent: false});
+        }
+
+        if (glassTypeVisible) {
+          row.get('glassType')?.setValidators([Validators.required]);
+          row.get('glassType')?.enable({emitEvent: false});
+        } else {
+          row.get('glassType')?.setValidators(null);
+          row.get('glassType')?.disable({emitEvent: false});
+          row.patchValue({glassType: null}, {emitEvent: false});
+        }
 
         if (numOfDims === 2) {
           row.get('height')?.setValidators([minNumber(1, true, 'f')]);
@@ -883,6 +912,8 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
         row.get('height')?.updateValueAndValidity({emitEvent: false});
         row.get('width')?.updateValueAndValidity({emitEvent: false});
         row.get('length')?.updateValueAndValidity({emitEvent: false});
+        row.get('glassType')?.updateValueAndValidity({emitEvent: false});
+        row.get('openingType')?.updateValueAndValidity({emitEvent: false});
 
       }
 
