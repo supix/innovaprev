@@ -848,34 +848,6 @@
     </ng-container>
   </ng-container>
 </ng-template>
-<ng-template #crosspieceInput let-tableLg="tableLg" let-i="index" let-form="form">
-  <ng-container [formGroup]="form">
-    <ng-container *ngIf="form.get('crosspiece') as crosspieceControl">
-      <ng-select
-        (mouseenter)="onEnterTooltip($event, 'tooltip-crosspiece-' + i)"
-        (mouseleave)="onLeaveTooltip('tooltip-crosspiece-' + i)"
-        (open)="ngSelectHandleFocus(tableLg)"
-        [items]="collections?.crosspieces || []"
-        [searchable]="true"
-        [clearable]="true"
-        formControlName="crosspiece"
-        appendTo="body"
-        [class.ng-invalid]="false"
-        (clear)="onWindowsRowClearInput(i, 'crosspiece')"
-        [ngClass]="{ 'is-invalid': (crosspieceControl.touched || hasTriggeredWindowsValidation) && crosspieceControl.invalid }"
-        [loading]="isCollectionsLoading">
-      </ng-select>
-      <div
-        *ngIf="(crosspieceControl.touched || hasTriggeredWindowsValidation) && crosspieceControl.invalid && !tableLg"
-        class="invalid-feedback">Il traverso è obbligatorio.
-      </div>
-      <div
-        *ngIf="(crosspieceControl.touched || hasTriggeredWindowsValidation) && crosspieceControl.invalid && tableLg"
-        class="tooltip danger" [id]="'tooltip-crosspiece-' + i">Il traverso è obbligatorio.
-      </div>
-    </ng-container>
-  </ng-container>
-</ng-template>
 <ng-template #leftTrimInput let-tableLg="tableLg" let-i="index" let-form="form">
   <ng-container [formGroup]="form">
     <ng-container *ngIf="form.get('leftTrim') as leftTrimControl">
