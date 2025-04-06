@@ -96,9 +96,9 @@ const getMockCollections = (): CollectionsResponse => ({
     {id: 'AC_ROSSO', desc: 'Rosso'},
   ],
   windowTypes: [
-    {id: 'WT_GRANDE', desc: 'Grande', numOfDims: 1, materialForProduct: ['PRO_GIALLO', 'PRO_VERDE', 'PRO_ROSSO']},
-    {id: 'WT_MEDIA', desc: 'Media', numOfDims: 2, materialForProduct: ['PRO_GIALLO', 'PRO_ROSSO']},
-    {id: 'WT_PICCOLA', desc: 'Piccola', numOfDims: 1, materialForProduct: ['PRO_VERDE', 'PRO_ROSSO']},
+    {id: 'WT_GRANDE', desc: 'Grande', numOfDims: 1, materialForProduct: ['PRO_GIALLO', 'PRO_VERDE', 'PRO_ROSSO'], glassTypeVisible: true, openingTypeVisible: true},
+    {id: 'WT_MEDIA', desc: 'Media', numOfDims: 2, materialForProduct: ['PRO_GIALLO', 'PRO_ROSSO'], glassTypeVisible: true, openingTypeVisible: true},
+    {id: 'WT_PICCOLA', desc: 'Piccola', numOfDims: 1, materialForProduct: ['PRO_VERDE', 'PRO_ROSSO'], glassTypeVisible: true, openingTypeVisible: true},
   ],
   openingTypes: [
     {id: 'OT_DX', desc: 'SX'},

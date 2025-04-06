@@ -2,7 +2,7 @@
 {
     public class FIX : DoubleDimFixedMaterial
     {
-        public FIX(long height_mm, long width_mm) : base(height_mm, width_mm)
+        public FIX(long height_mm, long width_mm, bool opaqueGlass) : base(height_mm, width_mm, opaqueGlass)
         {
         }
         public override string Description => "Fisso con fermavetro";
