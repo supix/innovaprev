@@ -1,5 +1,6 @@
 ﻿using DomainModel.Classes.Colors;
 using DomainModel.Classes.Materials.ConcreteMaterials;
+using DomainModel.Services.WireCoverLenCalculator;
 
 namespace DomainModel.Classes.Products
 {
@@ -71,5 +72,7 @@ namespace DomainModel.Classes.Products
         {
             return 9M;
         }
+        protected override sealed IWireCoverLenCalculator WireCoverLenCalculator => new PvcWireCoverLenCalculator();
+
     }
 }

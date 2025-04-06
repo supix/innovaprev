@@ -1,5 +1,6 @@
 ﻿using DomainModel.Classes.Colors;
 using DomainModel.Classes.Materials.ConcreteMaterials;
+using DomainModel.Services.WireCoverLenCalculator;
 
 namespace DomainModel.Classes.Products
 {
@@ -71,5 +72,6 @@ namespace DomainModel.Classes.Products
             throw new NotImplementedException();
         }
         public override sealed bool SingleColor => false;
+        protected override sealed IWireCoverLenCalculator WireCoverLenCalculator => new WoodWireCoverLenCalculator();
     }
 }

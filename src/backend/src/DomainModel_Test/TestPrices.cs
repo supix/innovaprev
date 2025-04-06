@@ -422,5 +422,27 @@ namespace DomainModel_Test
             var price = p.GetMaterialPrice(mat);
             Assert.That(Math.Abs(price - 841M * 1.5M), Is.LessThan(1e-3M));
         }
+
+        [Test]
+        public void Test_WoodWithWireCover_PriceIsCorrect()
+        {
+            var p = new AATT(new DarkColoredAsh(), new Ral1013());
+            var mat = new F1A(1500L, 1000L, false, true);
+            var price = p.GetMaterialPrice(mat);
+            const decimal windowPrice = 831M * 1.5M;
+            const decimal wireCoverPrice = 3 * 2 * 18.2M;
+            Assert.That(Math.Abs(price - (windowPrice + wireCoverPrice)), Is.LessThan(1e-3M));
+        }
+
+        [Test]
+        public void Test_PvcWithWireCover_PriceIsCorrect()
+        {
+            var p = new IPC(new White9010());
+            var mat = new F1A(2000L, 2000L, false, true);
+            var price = p.GetMaterialPrice(mat);
+            const decimal windowPrice = (528M + 38M) * 4M;
+            const decimal wireCoverPrice = 6.5M * 5.5M;
+            Assert.That(Math.Abs(price - (windowPrice + wireCoverPrice)), Is.LessThan(1e-3M));
+        }
     }
 }

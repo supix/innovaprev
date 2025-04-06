@@ -2,6 +2,7 @@
 using DomainModel.Classes.Materials;
 using DomainModel.Classes.Materials.ConcreteMaterials;
 using DomainModel.Classes.Products.Visitor;
+using DomainModel.Services.WireCoverLenCalculator;
 
 namespace DomainModel.Classes.Products
 {
@@ -35,13 +36,20 @@ namespace DomainModel.Classes.Products
         public abstract decimal GetPrice_DoubleDim(DoubleDimMaterial m, long area_sqmm);
         public abstract decimal GetPrice_DoubleDimFixed(DoubleDimFixedMaterial m, long area_sqmm);
 
-        protected decimal GetFullDoubleDimensionPrice(decimal price_sqm, long area_sqmm, bool opaqueGlass)
+        protected decimal GetFullDoubleDimensionPrice(decimal price_sqm, long area_sqmm, bool opaqueGlass, bool wireCover, long height_mm, long width_mm)
         {
             const decimal TRANSPARENT_GLASS_PRICE_SQM = 38M;
             const decimal OPAQUE_GLASS_PRICE_SQM = 48M;
             decimal glassPrice_sqm = opaqueGlass ? OPAQUE_GLASS_PRICE_SQM : TRANSPARENT_GLASS_PRICE_SQM;
 
-            return (price_sqm + ic.Price_sqm + ec.Price_sqm + glassPrice_sqm) * area_sqmm / 1e6M;
+            var wireCoverPrice = 0M;
+            if (wireCover)
+            {
+                var totLen = this.WireCoverLenCalculator.GetLen(height_mm, width_mm);
+                wireCoverPrice = totLen / 1000M * ic.GetPrice_COP_m(this);
+            }
+
+            return (price_sqm + ic.Price_sqm + ec.Price_sqm + glassPrice_sqm) * area_sqmm / 1e6M + wireCoverPrice;
         }
 
         protected decimal GetFullSingleDimensionPrice(decimal price_m, long length_mm)
@@ -63,5 +71,6 @@ namespace DomainModel.Classes.Products
         public abstract decimal GetPrice_FRO_PvcWoodEffect_m();
         public abstract decimal GetPrice_COP_PvcWhite_m();
         public abstract decimal GetPrice_COP_PvcWoodEffect_m();
+        protected abstract IWireCoverLenCalculator WireCoverLenCalculator { get; }
     }
 }
