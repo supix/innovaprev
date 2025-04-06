@@ -762,6 +762,7 @@
         (mouseenter)="onEnterTooltip($event, 'tooltip-windowType-' + i)"
         (mouseleave)="onLeaveTooltip('tooltip-windowType-' + i)"
         (open)="ngSelectHandleFocus(tableLg)"
+        (change)="onChangeWindowType(i)"
         [items]="windowTypeList"
         [searchable]="true"
         [clearable]="false"
