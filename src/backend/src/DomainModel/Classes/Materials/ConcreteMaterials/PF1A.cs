@@ -2,7 +2,7 @@
 {
     public class PF1A : DoubleDimMaterial
     {
-        public PF1A(long height_mm, long width_mm, bool opaqueGlass) : base(height_mm, width_mm, opaqueGlass)
+        public PF1A(long height_mm, long width_mm, bool opaqueGlass, bool wireCover) : base(height_mm, width_mm, opaqueGlass, wireCover)
         {
         }
         public override string Description => "Portafinestra 1 Anta";

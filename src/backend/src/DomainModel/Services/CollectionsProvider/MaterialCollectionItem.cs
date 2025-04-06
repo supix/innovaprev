@@ -6,5 +6,6 @@
         public required string[] MaterialForProduct { get; set; }
         public required bool openingTypeVisible { get; set; }
         public required bool glassTypeVisible { get; set; }
+        public required bool wireCoverVisible { get; set; }
     }
 }

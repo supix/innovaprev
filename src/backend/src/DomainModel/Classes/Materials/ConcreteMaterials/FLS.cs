@@ -2,7 +2,7 @@
 {
     public class FLS : DoubleDimFixedMaterial
     {
-        public FLS(long height_mm, long width_mm, bool opaqueGlass) : base(height_mm, width_mm, opaqueGlass)
+        public FLS(long height_mm, long width_mm, bool opaqueGlass, bool wireCover) : base(height_mm, width_mm, opaqueGlass, wireCover)
         {
         }
 

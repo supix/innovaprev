@@ -27,7 +27,6 @@ namespace DomainModel.Classes.Products
             return material.GetPrice(this);
         }
         public abstract decimal GetPrice_CAS(CAS m, long length_mm);
-        public abstract decimal GetPrice_COP(COP m, long length_mm);
         public decimal GetPrice_FRO(FRO m, long length_mm)
         {
             var price_m = ic.GetPrice_FRO_m(this);

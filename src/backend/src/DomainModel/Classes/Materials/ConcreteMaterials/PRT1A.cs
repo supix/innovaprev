@@ -2,7 +2,7 @@
 {
     public class PRT1A : NeedsLockMaterial
     {
-        public PRT1A(long height_mm, long width_mm, bool opaqueGlass) : base(height_mm, width_mm, opaqueGlass)
+        public PRT1A(long height_mm, long width_mm, bool opaqueGlass, bool wireCover) : base(height_mm, width_mm, opaqueGlass, wireCover)
         {
         }
         public override string Description => "Portoncino 1 anta";

@@ -2,7 +2,7 @@
 {
     public class F1A : DoubleDimMaterial
     {
-        public F1A(long height_mm, long width_mm, bool opaqueGlass) : base(height_mm, width_mm, opaqueGlass)
+        public F1A(long height_mm, long width_mm, bool opaqueGlass, bool wireCover) : base(height_mm, width_mm, opaqueGlass, wireCover)
         {
         }
 

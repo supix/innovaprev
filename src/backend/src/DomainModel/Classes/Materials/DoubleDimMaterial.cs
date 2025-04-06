@@ -6,19 +6,22 @@ namespace DomainModel.Classes.Materials
 {
     public abstract class DoubleDimMaterial : AbstractMaterial
     {
-        protected DoubleDimMaterial(long height_mm, long width_mm, bool opaqueGlass)
+        protected DoubleDimMaterial(long height_mm, long width_mm, bool opaqueGlass, bool wireCover)
         {
             Height_mm = height_mm;
             Width_mm = width_mm;
             OpaqueGlass = opaqueGlass;
+            WireCover = wireCover;
         }
 
         public override sealed int NumberOfDimensions => 2;
         public long Height_mm { get; }
         public long Width_mm { get; }
         public bool OpaqueGlass { get; }
+        public bool WireCover { get; }
         public override bool openingTypeVisible => true;
         public override sealed bool glassTypeVisible => true;
+        public override sealed bool wireCoverVisible => true;
         public override sealed long DimensionToQuote
         {
             get

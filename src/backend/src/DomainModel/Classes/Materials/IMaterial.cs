@@ -10,6 +10,7 @@ namespace DomainModel.Classes.Materials
         int NumberOfDimensions { get; }
         bool openingTypeVisible { get; }
         bool glassTypeVisible { get; }
+        bool wireCoverVisible { get; }
         string[] MaterialForProduct { get; }
     }
 }

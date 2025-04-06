@@ -10,12 +10,6 @@ namespace DomainModel.Classes.Products
             var price_m = ic.GetPrice_CAS_m(this);
             return GetFullSingleDimensionPrice(price_m, length_mm);
         }
-
-        public override decimal GetPrice_COP(COP m, long length_mm)
-        {
-            var price_m = ic.GetPrice_COP_m(this);
-            return GetFullSingleDimensionPrice(price_m, length_mm);
-        }
         public override sealed decimal GetPrice_COP_Standard_m()
         {
             return 18.2M;

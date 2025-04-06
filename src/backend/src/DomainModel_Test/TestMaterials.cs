@@ -13,7 +13,7 @@ public class TestMaterials
     public void FIX_ProductAreCorrect()
     {
         var correctProducts = new[] { "ELA", "RALT", "AATT", "IPC", "IPN" };
-        var mat = new FIX(1000, 1000, false);
+        var mat = new FIX(1000, 1000, false, false);
         Assert.That(mat.MaterialForProduct, Is.EquivalentTo(correctProducts));
     }
 
@@ -21,7 +21,7 @@ public class TestMaterials
     public void PF1A_ProductAreCorrect()
     {
         var correctProducts = new[] { "ELA", "RALT", "AATT", "IPC", "IPN" };
-        var mat = new PF1A(1000, 1000, false);
+        var mat = new PF1A(1000, 1000, false, false);
         Assert.That(mat.MaterialForProduct, Is.EquivalentTo(correctProducts));
     }
 
@@ -29,25 +29,8 @@ public class TestMaterials
     public void PRT1A_ProductAreCorrect()
     {
         var correctProducts = new[] { "AALAM", "IPCAM" };
-        var mat = new PRT1A(1000, 1000, false);
+        var mat = new PRT1A(1000, 1000, false, false);
         Assert.That(mat.MaterialForProduct, Is.EquivalentTo(correctProducts));
-    }
-
-    [Test]
-    public void COP_ProductAreCorrect()
-    {
-        var correctProducts = new[] { "AALAM", "AATT", "ELA", "IPC", "IPCAM", "IPN", "RALT", "SP" };
-        var mat = new COP(1000);
-        Assert.That(mat.MaterialForProduct, Is.EquivalentTo(correctProducts));
-
-    }
-
-    [Test]
-    public void COP_DoesntShowGlass()
-    {
-        var mat = new COP(1000);
-        Assert.That(mat.glassTypeVisible, Is.False);
-
     }
 
     [Test]
@@ -67,23 +50,45 @@ public class TestMaterials
     }
 
     [Test]
+    public void CAS_DoesntShowWireCover()
+    {
+        var mat = new CAS(1000);
+        Assert.That(mat.wireCoverVisible, Is.False);
+
+    }
+
+    [Test]
     public void F1A_ShowsGlass()
     {
-        var mat = new F1A(1000, 1500, false);
+        var mat = new F1A(1000, 1500, false, false);
         Assert.That(mat.glassTypeVisible, Is.True);
+    }
+
+    [Test]
+    public void F1A_ShowsWireCover()
+    {
+        var mat = new F1A(1000, 1500, false, false);
+        Assert.That(mat.wireCoverVisible, Is.True);
     }
 
     [Test]
     public void FIX_ShowsGlass()
     {
-        var mat = new FIX(1000, 1550, false);
+        var mat = new FIX(1000, 1550, false, false);
         Assert.That(mat.glassTypeVisible, Is.True);
+    }
+
+    [Test]
+    public void FIX_ShowsWireCover()
+    {
+        var mat = new FIX(1000, 1550, false, false);
+        Assert.That(mat.wireCoverVisible, Is.True);
     }
 
     [Test]
     public void PRT1A_ShowsGlass()
     {
-        var mat = new PRT1A(1000, 1550, false);
+        var mat = new PRT1A(1000, 1550, false, false);
         Assert.That(mat.glassTypeVisible, Is.True);
     }
 }

@@ -46,7 +46,9 @@ namespace DomainModel.Services.CollectionsProvider
                     NumOfDims = m.NumberOfDimensions, 
                     MaterialForProduct = m.MaterialForProduct, 
                     glassTypeVisible = m.glassTypeVisible, 
-                    openingTypeVisible = m.openingTypeVisible})
+                    openingTypeVisible = m.openingTypeVisible,
+                    wireCoverVisible = m.wireCoverVisible
+                })
                 .ToArray();
         }
         private ColorCollectionItem[] GetColorCollItems()

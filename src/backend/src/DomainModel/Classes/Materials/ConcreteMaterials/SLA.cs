@@ -2,7 +2,7 @@
 {
     public class SLA : DoubleDimMaterial
     {
-        public SLA(long height_mm, long width_mm, bool opaqueGlass) : base(height_mm, width_mm, opaqueGlass)
+        public SLA(long height_mm, long width_mm, bool opaqueGlass, bool wireCover) : base(height_mm, width_mm, opaqueGlass, wireCover)
         {
         }
         public override string Description => "Sopraluce apribile";
