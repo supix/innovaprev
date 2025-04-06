@@ -718,62 +718,41 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
   // Function executed whenever the windowType in a row change.
   onChangeWindowType(index: number): void {
     const row = this.windows.at(index) as FormGroup;
+    if (!row) return;
 
-    if (row) {
-      const windowType = row.get('windowType')?.value;
+    const windowTypeId = String(row.get('windowType')?.value);
+    const found = this.collections?.windowTypes.find(wt => wt.id === windowTypeId);
+    console.log(found);
+    if (!found) return;
 
-      if (windowType) {
-        const { numOfDims, openingTypeVisible, glassTypeVisible } = this.collections?.windowTypes.find(value => value.id === windowType as unknown as string) as WindowType || {};
+    const { numOfDims, openingTypeVisible, glassTypeVisible } = found;
 
-        if (openingTypeVisible) {
-          row.get('openingType')?.setValidators([Validators.required]);
-          row.get('openingType')?.enable({emitEvent: false});
-        } else {
-          row.get('openingType')?.setValidators(null);
-          row.get('openingType')?.disable({emitEvent: false});
-          row.patchValue({openingType: null}, {emitEvent: false});
-        }
+    const setField = (name: string, enable: boolean, validators: any[] | null) => {
+      const ctrl = row.get(name);
+      if (!ctrl) return;
+      ctrl.setValidators(validators);
+      ctrl[enable ? 'enable' : 'disable']({ emitEvent: false });
+      if (!enable) row.patchValue({ [name]: null }, { emitEvent: false });
+    };
 
-        if (glassTypeVisible) {
-          row.get('glassType')?.setValidators([Validators.required]);
-          row.get('glassType')?.enable({emitEvent: false});
-        } else {
-          row.get('glassType')?.setValidators(null);
-          row.get('glassType')?.disable({emitEvent: false});
-          row.patchValue({glassType: null}, {emitEvent: false});
-        }
+    setField('openingType', openingTypeVisible, openingTypeVisible ? [Validators.required] : null);
+    setField('glassType', glassTypeVisible, glassTypeVisible ? [Validators.required] : null);
 
-        if (numOfDims === 2) {
-          row.get('height')?.setValidators([minNumber(1, true, 'f')]);
-          row.get('width')?.setValidators([minNumber(1, true, 'f')]);
-          row.get('length')?.setValidators(null);
-
-          row.get('height')?.enable({emitEvent: false});
-          row.get('width')?.enable({emitEvent: false});
-          row.get('length')?.disable({emitEvent: false});
-
-          row.patchValue({length: null}, {emitEvent: false});
-        } else if (numOfDims === 1) {
-          row.get('height')?.setValidators(null);
-          row.get('width')?.setValidators(null);
-          row.get('length')?.setValidators([minNumber(1, true, 'f')]);
-
-          row.get('height')?.disable({emitEvent: false});
-          row.get('width')?.disable({emitEvent: false});
-          row.get('length')?.enable({emitEvent: false});
-
-          row.patchValue({height: null, width: null}, {emitEvent: false});
-        }
-
-        row.get('height')?.updateValueAndValidity({emitEvent: false});
-        row.get('width')?.updateValueAndValidity({emitEvent: false});
-        row.get('length')?.updateValueAndValidity({emitEvent: false});
-        row.get('glassType')?.updateValueAndValidity({emitEvent: false});
-        row.get('openingType')?.updateValueAndValidity({emitEvent: false});
-
-      }
+    if (numOfDims === 2) {
+      setField('height', true, [minNumber(1, true, 'f')]);
+      setField('width', true, [minNumber(1, true, 'f')]);
+      setField('length', false, null);
+    } else if (numOfDims === 1) {
+      setField('height', false, null);
+      setField('width', false, null);
+      setField('length', true, [minNumber(1, true, 'f')]);
     }
+
+    ['height', 'width', 'length', 'glassType', 'openingType'].forEach(field => {
+      row.get(field)?.updateValueAndValidity({ emitEvent: false });
+    });
   }
+
 
   // Check if the 'productData' form is valid
   private isProductDataValid(): boolean {
