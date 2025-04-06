@@ -364,9 +364,9 @@
                 <th [attr.rowspan]="isTrimSectionVisible() ? '2' : '1'"
                     [ngStyle]="{ width: isTrimSectionVisible() ? '8%' : '12%' }">Tipologia
                 </th>
-                <th [attr.rowspan]="isTrimSectionVisible() ? '2' : '1'" style="width: 8%;">Largh.</th>
-                <th [attr.rowspan]="isTrimSectionVisible() ? '2' : '1'" style="width: 8%;">Alt.</th>
-                <th [attr.rowspan]="isTrimSectionVisible() ? '2' : '1'" style="width: 8%;">Lungh.</th>
+                <th [attr.rowspan]="isTrimSectionVisible() ? '2' : '1'" style="width: 8%;">Largh.<small> (mm)</small></th>
+                <th [attr.rowspan]="isTrimSectionVisible() ? '2' : '1'" style="width: 8%;">Alt.<small> (mm)</small></th>
+                <th [attr.rowspan]="isTrimSectionVisible() ? '2' : '1'" style="width: 8%;">Lungh.<small> (mm)</small></th>
                 <th [attr.rowspan]="isTrimSectionVisible() ? '2' : '1'" style="width: 8%;">Q.tà</th>
                 <th [attr.rowspan]="isTrimSectionVisible() ? '2' : '1'"
                     [ngStyle]="{ width: isTrimSectionVisible() ? '8%' : '12%' }">Apertura
@@ -495,15 +495,15 @@
                 <ng-container *ngTemplateOutlet="windowTypeInput; context: { index: i, form: row }"></ng-container>
               </div>
               <div class="mb-2">
-                <label class="form-label">Larghezza</label>
+                <label class="form-label">Larghezza (mm)</label>
                 <ng-container *ngTemplateOutlet="widthInput; context: { index: i, form: row }"></ng-container>
               </div>
               <div class="mb-2">
-                <label class="form-label">Altezza</label>
+                <label class="form-label">Altezza (mm)</label>
                 <ng-container *ngTemplateOutlet="heightInput; context: { index: i, form: row }"></ng-container>
               </div>
               <div class="mb-2">
-                <label class="form-label">Lunghezza</label>
+                <label class="form-label">Lunghezza (mm)</label>
                 <ng-container *ngTemplateOutlet="lengthInput; context: { index: i, form: row }"></ng-container>
               </div>
               <div class="mb-2">
