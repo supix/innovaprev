@@ -374,6 +374,9 @@
                 <th [attr.rowspan]="isTrimSectionVisible() ? '2' : '1'"
                     [ngStyle]="{ width: isTrimSectionVisible() ? '8%' : '12%' }">Vetro
                 </th>
+                <th [attr.rowspan]="isTrimSectionVisible() ? '2' : '1'"
+                    [ngStyle]="{ width: isTrimSectionVisible() ? '8%' : '12%' }">Copriprofilo
+                </th>
                 <th *ngIf="isTrimSectionVisible()" colspan="4" style="width: 24%;">Rifilo Battuta</th>
                 <th [attr.rowspan]="isTrimSectionVisible() ? '2' : '1'" style="width: 6%;"></th>
               </tr>
@@ -433,6 +436,12 @@
                 <td>
                   <ng-container
                     *ngTemplateOutlet="glassTypeInput; context: { index: i, form: row, tableLg: true }"></ng-container>
+                </td>
+
+                <!-- Copriprofilo -->
+                <td>
+                  <ng-container
+                    *ngTemplateOutlet="wireCoverInput; context: { index: i, form: row, tableLg: true }"></ng-container>
                 </td>
 
                 <ng-container *ngIf="isTrimSectionVisible()">
@@ -508,6 +517,10 @@
               <div class="mb-2">
                 <label class="form-label">Vetro</label>
                 <ng-container *ngTemplateOutlet="glassTypeInput; context: { index: i, form: row }"></ng-container>
+              </div>
+              <div class="mb-2">
+                <label class="form-label">Copriprofilo</label>
+                <ng-container *ngTemplateOutlet="wireCoverInput; context: { index: i, form: row }"></ng-container>
               </div>
               <ng-container *ngIf="isTrimSectionVisible()">
                 <hr class="section-separator"/>
@@ -762,7 +775,6 @@
         (mouseenter)="onEnterTooltip($event, 'tooltip-windowType-' + i)"
         (mouseleave)="onLeaveTooltip('tooltip-windowType-' + i)"
         (open)="ngSelectHandleFocus(tableLg)"
-        (change)="onChangeWindowType(i)"
         [items]="windowTypeList"
         [searchable]="true"
         [clearable]="false"
@@ -845,6 +857,36 @@
       </div>
       <div *ngIf="(glassTypeControl.touched || hasTriggeredWindowsValidation) && glassTypeControl.invalid && tableLg"
            class="tooltip danger" [id]="'tooltip-glassType-' + i">Il vetro è obbligatorio.
+      </div>
+    </ng-container>
+  </ng-container>
+</ng-template>
+<ng-template #wireCoverInput let-tableLg="tableLg" let-i="index" let-form="form">
+  <ng-container [formGroup]="form">
+    <ng-container *ngIf="form.get('wireCover') as wireCoverControl">
+      <ng-select
+        [items]="yesNoOptions"
+        bindLabel="label"
+        bindValue="value"
+        (mouseenter)="onEnterTooltip($event, 'tooltip-wireCover-' + i)"
+        (mouseleave)="onLeaveTooltip('tooltip-wireCover-' + i)"
+        (open)="ngSelectHandleFocus(tableLg)"
+        [searchable]="true"
+        [clearable]="true"
+        formControlName="wireCover"
+        appendTo="body"
+        [class.ng-invalid]="false"
+        (clear)="onWindowsRowClearInput(i, 'wireCover')"
+        [ngClass]="{ 'is-invalid': (wireCoverControl.touched || hasTriggeredWindowsValidation) && wireCoverControl.invalid }"
+        [loading]="isCollectionsLoading">
+      </ng-select>
+      <div
+        *ngIf="(wireCoverControl.touched || hasTriggeredWindowsValidation) && wireCoverControl.invalid && !tableLg"
+        class="invalid-feedback">Il copriprofilo è obbligatorio.
+      </div>
+      <div
+        *ngIf="(wireCoverControl.touched || hasTriggeredWindowsValidation) && wireCoverControl.invalid && tableLg"
+        class="tooltip danger" [id]="'tooltip-wireCover-' + i">Il copriprofilo è obbligatorio.
       </div>
     </ng-container>
   </ng-container>

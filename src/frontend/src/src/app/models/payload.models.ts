@@ -32,6 +32,7 @@ export interface WindowRow {
   rightTrim: number;
   upperTrim: number;
   belowThreshold: number;
+  wireCover: boolean;
 }
 
 export interface CustomRow {
