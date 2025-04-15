@@ -22,6 +22,7 @@ namespace DomainModel.Classes.Materials.ConcreteMaterials
         public override bool glassTypeVisible => false;
         public override bool wireCoverVisible => false;
         public override string[] MaterialForProduct => base.GetAllProductCodes();
+        public override long? MinAllowedHeight_mm => 500;
     }
 
 }

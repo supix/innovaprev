@@ -22,5 +22,8 @@ namespace DomainModel.Classes.Materials
                 .Select(p => p.Code)
                 .ToArray();
         }
+        public virtual long? MinAllowedWidth_mm => null;
+        public virtual long? MinAllowedHeight_mm => null;
+        public virtual long? MinAllowedLength_mm => null;
     }
 }

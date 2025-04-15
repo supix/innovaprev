@@ -1,4 +1,6 @@
-﻿namespace DomainModel.Classes.Materials
+﻿using DomainModel.Classes.Materials.ConcreteMaterials;
+
+namespace DomainModel.Classes.Materials
 {
     public static class MaterialFactory
     {
@@ -42,7 +44,10 @@
 
                     if (t.IsSubclassOf(typeof(DoubleDimMaterial)))
                     {
-                        return (AbstractMaterial)Activator.CreateInstance(t, 0, 0, false, false)!;
+                        if (t.IsAssignableTo(typeof(CAS)))
+                            return (AbstractMaterial)Activator.CreateInstance(t, 500, 0)!;
+                        else
+                            return (AbstractMaterial)Activator.CreateInstance(t, 0, 0, false, false)!;
                     }
 
                     throw new NotImplementedException($"Unhandled material type: {t}");
