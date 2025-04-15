@@ -20,8 +20,8 @@ namespace DomainModel.Classes.Materials
         public bool OpaqueGlass { get; }
         public bool WireCover { get; }
         public override bool openingTypeVisible => true;
-        public override sealed bool glassTypeVisible => true;
-        public override sealed bool wireCoverVisible => true;
+        public override bool glassTypeVisible => true;
+        public override bool wireCoverVisible => true;
         public override sealed long DimensionToQuote
         {
             get

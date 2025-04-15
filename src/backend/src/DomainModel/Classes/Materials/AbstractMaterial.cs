@@ -1,4 +1,5 @@
-﻿using DomainModel.Classes.Products.Visitor;
+﻿using DomainModel.Classes.Products;
+using DomainModel.Classes.Products.Visitor;
 
 namespace DomainModel.Classes.Materials
 {
@@ -15,5 +16,11 @@ namespace DomainModel.Classes.Materials
         public abstract int Order { get; }
         public abstract string[] MaterialForProduct { get; }
         public abstract decimal GetPrice(IMaterialVisitor visitor);
+        protected string[] GetAllProductCodes()
+        {
+            return ProductFactory.GetAll()
+                .Select(p => p.Code)
+                .ToArray();
+        }
     }
 }

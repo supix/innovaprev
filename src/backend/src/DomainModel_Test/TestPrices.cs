@@ -15,7 +15,7 @@ namespace DomainModel_Test
         public void Test_WoodWithCasAllowedLength_PriceIsCorrect()
         {
             var p = new ELA(new DarkColoredAsh(), new DarkColoredAsh());
-            var cas = new CAS(2500L);
+            var cas = new CAS(600L, 2500L);
             var price = p.GetMaterialPrice(cas);
             Assert.That(Math.Abs(price - 285 * 2.5M), Is.LessThan(1e-3M));
         }
@@ -24,7 +24,7 @@ namespace DomainModel_Test
         public void Test_PvcWithCasAllowedLength_PriceIsCorrect()
         {
             var p = new SP(new OakWood());
-            var cas = new CAS(2500L);
+            var cas = new CAS(600L, 2500L);
             var price = p.GetMaterialPrice(cas);
             Assert.That(Math.Abs(price - 352 * 2.5M), Is.LessThan(1e-3M));
         }
@@ -33,7 +33,7 @@ namespace DomainModel_Test
         public void Test_WoodWithCasLowLength_PriceIsCorrect()
         {
             var p = new ELA(new DarkColoredAsh(), new DarkColoredAsh());
-            var cas = new CAS(500L);
+            var cas = new CAS(600L, 500L);
             var price = p.GetMaterialPrice(cas);
             Assert.That(Math.Abs(price - 285M), Is.LessThan(1e-3M));
         }
@@ -42,7 +42,7 @@ namespace DomainModel_Test
         public void Test_PvcWithCasLowLength_PriceIsCorrect()
         {
             var p = new IPC(new White9010());
-            var cas = new CAS(500L);
+            var cas = new CAS(600L, 500L);
             var price = p.GetMaterialPrice(cas);
             Assert.That(Math.Abs(price - 268M), Is.LessThan(1e-3M));
         }
@@ -202,7 +202,7 @@ namespace DomainModel_Test
         public void Test_COPWithPvc_PriceIsCorrect()
         {
             var p = new IPC(new LightWood());
-            var cas = new CAS(2000L);
+            var cas = new CAS(600L, 2000L);
             var price = p.GetMaterialPrice(cas);
             Assert.That(Math.Abs(price - 352 * 2M), Is.LessThan(1e-3M));
         }

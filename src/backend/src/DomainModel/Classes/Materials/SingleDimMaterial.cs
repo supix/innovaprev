@@ -38,11 +38,5 @@ namespace DomainModel.Classes.Materials
         {
             return 0;
         }
-        protected string[] GetAllProductCodes()
-        {
-            return ProductFactory.GetAll()
-                .Select(p => p.Code)
-                .ToArray();
-        }
     }
 }

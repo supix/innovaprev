@@ -10,7 +10,7 @@ public class TestMaterials
     }
 
     [Test]
-    public void FIX_ProductAreCorrect()
+    public void FIX_ProductsAreCorrect()
     {
         var correctProducts = new[] { "ELA", "RALT", "AATT", "IPC", "IPN" };
         var mat = new FIX(1000, 1000, false, false);
@@ -18,7 +18,7 @@ public class TestMaterials
     }
 
     [Test]
-    public void PF1A_ProductAreCorrect()
+    public void PF1A_ProductsAreCorrect()
     {
         var correctProducts = new[] { "ELA", "RALT", "AATT", "IPC", "IPN" };
         var mat = new PF1A(1000, 1000, false, false);
@@ -26,7 +26,7 @@ public class TestMaterials
     }
 
     [Test]
-    public void PRT1A_ProductAreCorrect()
+    public void PRT1A_ProductsAreCorrect()
     {
         var correctProducts = new[] { "AALAM", "IPCAM" };
         var mat = new PRT1A(1000, 1000, false, false);
@@ -42,9 +42,15 @@ public class TestMaterials
     }
 
     [Test]
+    public void CAS_HeightLessThan500_Throws()
+    {
+        Assert.Catch(typeof(InvalidOperationException), () => new CAS(400, 1000));
+    }
+
+    [Test]
     public void CAS_DoesntShowGlass()
     {
-        var mat = new CAS(1000);
+        var mat = new CAS(1000, 600);
         Assert.That(mat.glassTypeVisible, Is.False);
 
     }
@@ -52,7 +58,7 @@ public class TestMaterials
     [Test]
     public void CAS_DoesntShowWireCover()
     {
-        var mat = new CAS(1000);
+        var mat = new CAS(1000, 600);
         Assert.That(mat.wireCoverVisible, Is.False);
 
     }
