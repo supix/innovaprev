@@ -1,5 +1,13 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormArray,
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators
+} from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { NgSelectConfig, NgSelectModule } from '@ng-select/ng-select';
 import { ApiService } from '../../services/api.service';
@@ -32,7 +40,7 @@ import {
   generateValidItalianVat,
   italianVatValidator,
   minNumber,
-  phoneNumberValidator
+  phoneNumberValidator, validatorNumber
 } from '../../validators/innova.validator';
 import { catchError } from 'rxjs/operators';
 import CryptoJS from 'crypto-js';
@@ -42,7 +50,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 @Component({
   selector: 'app-innova-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, NgSelectModule, PriceDisplayComponent],
+  imports: [CommonModule, ReactiveFormsModule, NgSelectModule, PriceDisplayComponent, FormsModule],
   templateUrl: './innova-form.component.html',
   styleUrls: ['./innova-form.component.scss'],
   encapsulation: ViewEncapsulation.None
@@ -88,6 +96,8 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
     { label: 'Sì', value: true },
     { label: 'No', value: false }
   ];
+
+  debugIndex: number = 1;
 
   private selectedProductId!: string | null;
   private calculatePriceSubject = new Subject<PricePayload | null>();
@@ -577,13 +587,22 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
 
     // Add 5 new windows to windowsData
     for (let i = 0; i < 5; i++) {
+      const windowType = getRandomWindowType();
+      const {
+        minAllowedHeight_mm,
+        minAllowedLength_mm,
+        minAllowedWidth_mm,
+        maxAllowedHeight_mm,
+        maxAllowedLength_mm,
+        maxAllowedWidth_mm
+      } = this.collections?.windowTypes.find(value => value.id === windowType as unknown as string) as WindowType || {};
       const row = this.fb.group({
         position: [0], // Updated later by updateWindowPositions
-        height: [getRandomNumber(this.maxValues['height'], 500)],
-        width: [getRandomNumber(this.maxValues['width'], 500)],
-        length: [getRandomNumber(this.maxValues['width'], 500)],
+        height: [getRandomNumber(maxAllowedHeight_mm || this.maxValues['height'], minAllowedHeight_mm || 500)],
+        width: [getRandomNumber(maxAllowedWidth_mm || this.maxValues['width'], minAllowedWidth_mm || 500)],
+        length: [getRandomNumber(maxAllowedLength_mm || this.maxValues['length'], minAllowedLength_mm || 500)],
         quantity: [getRandomNumber(5)],
-        windowType: [getRandomWindowType(), Validators.required],
+        windowType: [windowType, Validators.required],
         openingType: [getRandomItem(this.collections.openingTypes, 'defaultOpening'), Validators.required],
         glassType: [getRandomItem(this.collections.glassTypes, 'defaultGlass'), Validators.required],
         wireCover: [getRandomBoolean(), Validators.required],
@@ -870,7 +889,6 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
     this.windowSubscriptions.push(subscription);
   }
 
-  // Function executed whenever the values in a row change.
   private onWindowRowValueChanged(index: number): void {
     const row = this.windows.at(index) as FormGroup;
 
@@ -878,64 +896,104 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
       const windowType = row.get('windowType')?.value;
 
       if (windowType) {
-        const { numOfDims, openingTypeVisible, glassTypeVisible, wireCoverVisible } = this.collections?.windowTypes.find(value => value.id === windowType as unknown as string) as WindowType || {};
+        const {
+          numOfDims,
+          openingTypeVisible,
+          glassTypeVisible,
+          wireCoverVisible,
+          minAllowedHeight_mm,
+          minAllowedLength_mm,
+          minAllowedWidth_mm,
+          maxAllowedHeight_mm,
+          maxAllowedLength_mm,
+          maxAllowedWidth_mm
+        } = this.collections?.windowTypes.find(value => value.id === windowType as unknown as string) as WindowType || {};
 
+        // Opening Type
         if (openingTypeVisible) {
           row.get('openingType')?.setValidators([Validators.required]);
-          row.get('openingType')?.enable({emitEvent: false});
+          row.get('openingType')?.enable({ emitEvent: false });
         } else {
           row.get('openingType')?.setValidators(null);
-          row.get('openingType')?.disable({emitEvent: false});
-          row.patchValue({openingType: null}, {emitEvent: false});
+          row.get('openingType')?.disable({ emitEvent: false });
+          row.patchValue({ openingType: null }, { emitEvent: false });
         }
 
+        // Glass Type
         if (glassTypeVisible) {
           row.get('glassType')?.setValidators([Validators.required]);
-          row.get('glassType')?.enable({emitEvent: false});
+          row.get('glassType')?.enable({ emitEvent: false });
         } else {
           row.get('glassType')?.setValidators(null);
-          row.get('glassType')?.disable({emitEvent: false});
-          row.patchValue({glassType: null}, {emitEvent: false});
+          row.get('glassType')?.disable({ emitEvent: false });
+          row.patchValue({ glassType: null }, { emitEvent: false });
         }
 
+        // Wire Cover
         if (wireCoverVisible) {
           row.get('wireCover')?.setValidators([Validators.required]);
-          row.get('wireCover')?.enable({emitEvent: false});
+          row.get('wireCover')?.enable({ emitEvent: false });
         } else {
           row.get('wireCover')?.setValidators(null);
-          row.get('wireCover')?.disable({emitEvent: false});
-          row.patchValue({wireCover: null}, {emitEvent: false});
+          row.get('wireCover')?.disable({ emitEvent: false });
+          row.patchValue({ wireCover: null }, { emitEvent: false });
         }
 
+        // Dimension Fields
         if (numOfDims === 2) {
-          row.get('height')?.setValidators([minNumber(1, true, 'f')]);
-          row.get('width')?.setValidators([minNumber(1, true, 'f')]);
+          row.get('height')?.setValidators([
+            validatorNumber({
+              required: true,
+              min: minAllowedHeight_mm || 1,
+              max: maxAllowedHeight_mm,
+              gender: 'f'
+            })
+          ]);
+
+          row.get('width')?.setValidators([
+            validatorNumber({
+              required: true,
+              min: minAllowedWidth_mm || 1,
+              max: maxAllowedWidth_mm,
+              gender: 'f'
+            })
+          ]);
+
           row.get('length')?.setValidators(null);
 
-          row.get('height')?.enable({emitEvent: false});
-          row.get('width')?.enable({emitEvent: false});
-          row.get('length')?.disable({emitEvent: false});
+          row.get('height')?.enable({ emitEvent: false });
+          row.get('width')?.enable({ emitEvent: false });
+          row.get('length')?.disable({ emitEvent: false });
 
-          row.patchValue({length: null}, {emitEvent: false});
+          row.patchValue({ length: null }, { emitEvent: false });
+
         } else if (numOfDims === 1) {
           row.get('height')?.setValidators(null);
           row.get('width')?.setValidators(null);
-          row.get('length')?.setValidators([minNumber(1, true, 'f')]);
 
-          row.get('height')?.disable({emitEvent: false});
-          row.get('width')?.disable({emitEvent: false});
-          row.get('length')?.enable({emitEvent: false});
+          row.get('length')?.setValidators([
+            validatorNumber({
+              required: true,
+              min: minAllowedLength_mm || 1,
+              max: maxAllowedLength_mm,
+              gender: 'f'
+            })
+          ]);
 
-          row.patchValue({height: null, width: null}, {emitEvent: false});
+          row.get('height')?.disable({ emitEvent: false });
+          row.get('width')?.disable({ emitEvent: false });
+          row.get('length')?.enable({ emitEvent: false });
+
+          row.patchValue({ height: null, width: null }, { emitEvent: false });
         }
 
-        row.get('height')?.updateValueAndValidity({emitEvent: false});
-        row.get('width')?.updateValueAndValidity({emitEvent: false});
-        row.get('length')?.updateValueAndValidity({emitEvent: false});
-        row.get('glassType')?.updateValueAndValidity({emitEvent: false});
-        row.get('wireCover')?.updateValueAndValidity({emitEvent: false});
-        row.get('openingType')?.updateValueAndValidity({emitEvent: false});
-
+        // Update validity
+        row.get('height')?.updateValueAndValidity({ emitEvent: false });
+        row.get('width')?.updateValueAndValidity({ emitEvent: false });
+        row.get('length')?.updateValueAndValidity({ emitEvent: false });
+        row.get('glassType')?.updateValueAndValidity({ emitEvent: false });
+        row.get('wireCover')?.updateValueAndValidity({ emitEvent: false });
+        row.get('openingType')?.updateValueAndValidity({ emitEvent: false });
       }
 
       if (row.valid && this.hasTriggeredWindowsValidation) {
@@ -943,6 +1001,49 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     }
   }
+
+  debugWindowRowValidators(index: number): void {
+    const row = this.windows.at(index - 1) as FormGroup;
+
+    if (!row) {
+      console.warn(`No row found at index ${index}.`);
+      return;
+    }
+
+    const fields = ['height', 'width', 'length', 'glassType', 'wireCover', 'openingType'];
+
+    console.group(`Active validators for row ${index}`);
+
+    fields.forEach(field => {
+      const control = row.get(field);
+
+      if (!control) {
+        console.log(`${field}: control not found`);
+        return;
+      }
+
+      const rawValidators = (control as any)._rawValidators || [];
+      const isEnabled = !control.disabled;
+      const hasErrors = control.errors;
+
+      console.groupCollapsed(`${field} (${isEnabled ? 'enabled' : 'disabled'})`);
+
+      rawValidators.forEach((validator: any, idx: number) => {
+        const meta = validator._validatorInfo;
+        if (meta) {
+          console.log(`Validator #${idx}:`, meta);
+        } else {
+          console.log(`Validator #${idx}: (no metadata available)`, validator.toString());
+        }
+      });
+
+      console.log('Validation errors:', hasErrors);
+      console.groupEnd();
+    });
+
+    console.groupEnd();
+  }
+
 
   // Subscribes to `valueChanges` for a specific row
   private subscribeToCustomRowValueChanges(row: FormGroup, index: number): void {

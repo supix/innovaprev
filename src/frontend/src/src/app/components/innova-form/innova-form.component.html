@@ -256,14 +256,14 @@
                       </div>
                       <div class="image-container p-2">
                         <img [src]="getUrl(item.id)" height="150"
-                             [alt]="item.desc" class="rounded" />
+                             [alt]="item.desc" class="rounded"/>
                       </div>
                     </div>
                   </div>
                   <div class="visible-sm">
                     <div class="card product-card-sm" style="width: 18rem;">
                       <img [src]="getUrl(item.id)" height="150"
-                           [alt]="item.desc" class="card-img-top" style="height: 18rem;" />
+                           [alt]="item.desc" class="card-img-top" style="height: 18rem;"/>
                       <div class="card-body content">
                         <h5 class="card-title">{{ item.desc }}</h5>
                         <p class="card-text text-content text-muted" [innerHTML]="sanitizeHtml(item.extDesc)"></p>
@@ -364,9 +364,11 @@
                 <th [attr.rowspan]="isTrimSectionVisible() ? '2' : '1'"
                     [ngStyle]="{ width: isTrimSectionVisible() ? '8%' : '12%' }">Tipologia
                 </th>
-                <th [attr.rowspan]="isTrimSectionVisible() ? '2' : '1'" style="width: 8%;">Largh.<small> (mm)</small></th>
+                <th [attr.rowspan]="isTrimSectionVisible() ? '2' : '1'" style="width: 8%;">Largh.<small> (mm)</small>
+                </th>
                 <th [attr.rowspan]="isTrimSectionVisible() ? '2' : '1'" style="width: 8%;">Alt.<small> (mm)</small></th>
-                <th [attr.rowspan]="isTrimSectionVisible() ? '2' : '1'" style="width: 8%;">Lungh.<small> (mm)</small></th>
+                <th [attr.rowspan]="isTrimSectionVisible() ? '2' : '1'" style="width: 8%;">Lungh.<small> (mm)</small>
+                </th>
                 <th [attr.rowspan]="isTrimSectionVisible() ? '2' : '1'" style="width: 8%;">Q.tà</th>
                 <th [attr.rowspan]="isTrimSectionVisible() ? '2' : '1'"
                     [ngStyle]="{ width: isTrimSectionVisible() ? '8%' : '12%' }">Apertura
@@ -634,11 +636,13 @@
               <div *ngFor="let row of customData.controls; let i = index" [formGroupName]="i" class="card mb-3 p-3">
                 <div class="mb-2">
                   <label class="form-label">Posizione</label>
-                  <ng-container *ngTemplateOutlet="positionCustomInput; context: { index: i, form: row }"></ng-container>
+                  <ng-container
+                    *ngTemplateOutlet="positionCustomInput; context: { index: i, form: row }"></ng-container>
                 </div>
                 <div class="mb-2">
                   <label class="form-label">Quantità</label>
-                  <ng-container *ngTemplateOutlet="quantityCustomInput; context: { index: i, form: row }"></ng-container>
+                  <ng-container
+                    *ngTemplateOutlet="quantityCustomInput; context: { index: i, form: row }"></ng-container>
                 </div>
                 <div class="mb-2">
                   <label class="form-label">Descrizione</label>
@@ -671,12 +675,26 @@
     </div>
   </form>
 </div>
-<div *ngIf="showFillFormButton" class="row">
-  <div class="col-12 text-center">
-    <button class="btn btn-outline-secondary mt-3 me-3" (click)="fillForm()">Fill Form</button>
-    <button class="btn btn-outline-secondary mt-3 me-3" (click)="onReset()">Reset</button>
+
+<div *ngIf="showFillFormButton" class="row align-items-center">
+  <div class="col-12 text-center mt-3 d-flex justify-content-center flex-wrap gap-3">
+
+    <div class="d-flex align-items-center gap-2">
+      <button class="btn btn-outline-secondary btn-sm" (click)="fillForm()">Fill Form</button>
+      <button class="btn btn-outline-secondary btn-sm" (click)="onReset()">Reset</button>
+    </div>
+
+    <div class="vr mx-3 d-none d-md-block" style="height: 40px;"></div>
+
+    <div class="d-flex align-items-center gap-2">
+      <input type="number" min="1" [(ngModel)]="debugIndex"
+             class="form-control form-control-sm" style="width: 60px;">
+      <button class="btn btn-outline-secondary btn-sm" (click)="debugWindowRowValidators(debugIndex)">Debug Row</button>
+    </div>
+
   </div>
 </div>
+
 <ng-template #positionInput let-tableLg="tableLg" let-form="form" let-i="index">
   <ng-container [formGroup]="form">
     <input type="text" inputmode="numeric" formControlName="position" class="form-control" autocomplete="off"

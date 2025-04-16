@@ -28,6 +28,51 @@ export function minNumber(min: number, required: boolean = false, gender: 'm' | 
   };
 }
 
+export function validatorNumber(options: {
+  required?: boolean,
+  min?: number,
+  max?: number,
+  gender?: 'm' | 'f'
+} = {}): ValidatorFn {
+  const { required = false, min, max, gender = 'm' } = options;
+
+  const fn: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
+    const value = control.value;
+
+    if (value === null || value === undefined || value === '') {
+      if (required) {
+        return { invalidValue: { reason: ` è obbligatori${gender === 'm' ? 'o' : 'a'}` } };
+      }
+      return null;
+    }
+
+    const numericValue = Number(value);
+    if (isNaN(numericValue)) {
+      return { invalidValue: { reason: ' deve essere un numero valido' } };
+    }
+
+    if (min != null && numericValue < min) {
+      return { invalidValue: { reason: ` è minimo di ${min}` } };
+    }
+
+    if (max != null && numericValue > max) {
+      return { invalidValue: { reason: ` è massimo di ${max}` } };
+    }
+
+    return null;
+  };
+
+  (fn as any)._validatorInfo = {
+    type: 'validatorNumber',
+    required,
+    min,
+    max,
+    gender
+  };
+
+  return fn;
+}
+
 // Validator for bank coordinates (IBAN or bank code)
 export function bankCoordinatesValidator(required: boolean = false): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {

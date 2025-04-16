@@ -33,6 +33,12 @@ export interface AccessoryColor extends CollectionBaseItem {
 
 export interface WindowType extends CollectionBaseItem {
   numOfDims: number;
+  minAllowedHeight_mm?: number;
+  minAllowedLength_mm?: number;
+  minAllowedWidth_mm?: number;
+  maxAllowedHeight_mm?: number;
+  maxAllowedLength_mm?: number;
+  maxAllowedWidth_mm?: number;
   openingTypeVisible: boolean;
   glassTypeVisible: boolean;
   wireCoverVisible: boolean;
