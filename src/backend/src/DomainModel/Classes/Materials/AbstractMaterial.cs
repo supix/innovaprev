@@ -25,5 +25,8 @@ namespace DomainModel.Classes.Materials
         public virtual long? MinAllowedWidth_mm => null;
         public virtual long? MinAllowedHeight_mm => null;
         public virtual long? MinAllowedLength_mm => null;
+        public virtual long? MaxAllowedWidth_mm => null;
+        public virtual long? MaxAllowedHeight_mm => null;
+        public virtual long? MaxAllowedLength_mm => null;
     }
 }

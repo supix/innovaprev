@@ -50,7 +50,10 @@ namespace DomainModel.Services.CollectionsProvider
                     wireCoverVisible = m.wireCoverVisible,
                     MinAllowedHeight_mm = m.MinAllowedHeight_mm,
                     MinAllowedLength_mm = m.MinAllowedLength_mm,
-                    MinAllowedWidth_mm = m.MinAllowedWidth_mm
+                    MinAllowedWidth_mm = m.MinAllowedWidth_mm,
+                    MaxAllowedHeight_mm = m.MaxAllowedHeight_mm,
+                    MaxAllowedLength_mm = m.MaxAllowedLength_mm,
+                    MaxAllowedWidth_mm = m.MaxAllowedWidth_mm
                 })
                 .ToArray();
         }

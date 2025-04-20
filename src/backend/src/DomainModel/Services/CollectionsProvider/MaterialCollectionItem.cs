@@ -10,5 +10,8 @@
         public required long? MinAllowedWidth_mm { get; set; }
         public required long? MinAllowedHeight_mm { get; set; }
         public required long? MinAllowedLength_mm { get; set; }
+        public required long? MaxAllowedWidth_mm { get; set; }
+        public required long? MaxAllowedHeight_mm { get; set; }
+        public required long? MaxAllowedLength_mm { get; set; }
     }
 }
