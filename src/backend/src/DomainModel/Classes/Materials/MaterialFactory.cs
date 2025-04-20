@@ -27,6 +27,14 @@ namespace DomainModel.Classes.Materials
                 return (AbstractMaterial)Activator.CreateInstance(t, m1, m2, opaqueGlass, wireCover)!;
             }
 
+            if (t == typeof(CAS))
+            {
+                if (m1 == 0 || m2 == 0)
+                    throw new InvalidOperationException($"For a CAS material m1 and m2 must not be zero. Material code: {code}");
+
+                return new CAS(m1, m2);
+            }
+
             throw new InvalidOperationException($"Unknown material. Code: {code}");
         }
 
@@ -44,11 +52,11 @@ namespace DomainModel.Classes.Materials
 
                     if (t.IsSubclassOf(typeof(DoubleDimMaterial)))
                     {
-                        if (t.IsAssignableTo(typeof(CAS)))
-                            return (AbstractMaterial)Activator.CreateInstance(t, 500, 0)!;
-                        else
-                            return (AbstractMaterial)Activator.CreateInstance(t, 0, 0, false, false)!;
+                        return (AbstractMaterial)Activator.CreateInstance(t, 0, 0, false, false)!;
                     }
+
+                    if (t == typeof(CAS))
+                        return new CAS(500, 0);
 
                     throw new NotImplementedException($"Unhandled material type: {t}");
                 })
