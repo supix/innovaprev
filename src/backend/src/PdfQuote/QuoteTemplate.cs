@@ -1,4 +1,7 @@
 ﻿using DomainModel.Classes;
+using DomainModel.Classes.Colors;
+using DomainModel.Classes.Materials;
+using DomainModel.Classes.Products;
 using DomainModel.Services;
 using DomainModel.Services.CollectionsProvider;
 using DomainModel.Services.PriceCalculator;
@@ -31,7 +34,7 @@ namespace PdfQuote
                     page.Margin(50);
                     page.DefaultTextStyle(x => x.FontSize(10));
 
-                    page.Header().Element(ComposeHeader);
+                    page.Header().PaddingBottom(10).Element(ComposeHeader);
                     page.Content().Element(ComposeContent);
                     page.Footer().AlignCenter().Text(x =>
                     {
@@ -56,7 +59,7 @@ namespace PdfQuote
                         {
                             x.Span("Preventivo");
                             if (!string.IsNullOrWhiteSpace(project.ProductData.OrderNumber))
-                                x.Span($" #{project.ProductData.OrderNumber}");
+                                x.Span($" {project.ProductData.OrderNumber}");
                         });
 
                     column.Item().Text(text =>
@@ -100,11 +103,23 @@ namespace PdfQuote
                 foreach (var wd in project.WindowsData)
                 {
                     var detailPrice = priceInfo.DetailPrices[idx];
+
+                    // create product
+                    var internalColor = ColorFactory.CreateByCode(pd.InternalColor);
+                    var externalColor = ColorFactory.CreateByCode(pd.ExternalColor ?? pd.InternalColor);
+                    var product = ProductFactory.CreateByCode(pd.Product, internalColor, externalColor);
+
+                    // create material
+                    long m1 = wd.Length != 0 ? wd.Length : wd.Height;
+                    long m2 = wd.Width;
+                    var material = MaterialFactory.CreateByCode(wd.WindowType, m1, m2, (wd.OpeningType != null && wd.OpeningType.Contains("SX")) ? "SX" : "DX", wd.GlassType == "GT_OPACO", wd.WireCover);
+
+                    var component = PdfComponentFactory.CreateComponent(++idx, material, wd, detailPrice, product.TrimSectionVisible);
                     column.Item()
                         .BorderBottom(1)
                         .BorderColor(Colors.Grey.Lighten2)
                         .PaddingBottom(7)
-                        .Component(new StandardProductComponent(++idx, wd, detailPrice, coll, coll.Product.Single(p => p.Id == pd.Product).TrimSectionVisible));
+                        .Component(component);
                 }
                 // custom data
                 foreach (var cd in project.CustomData)

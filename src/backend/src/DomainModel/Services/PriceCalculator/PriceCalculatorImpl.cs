@@ -19,13 +19,13 @@ namespace DomainModel.Services.PriceCalculator
                     GrandTotal = 0M,
                     DetailPrices = new List<DetailPrice>()
                 },
-                (Func<PriceInfo, WindowsData, PriceInfo>)((acc, x) =>
+                (Func<PriceInfo, WindowsData, PriceInfo>)((acc, wd) =>
                 {
-                    long m1 = x.Length != 0 ? x.Length : x.Height;
-                    long m2 = x.Width;
-                    var material = MaterialFactory.CreateByCode(x.WindowType, m1, m2, x.GlassType == "GT_OPACO", x.WireCover);
+                    long m1 = wd.Length != 0 ? wd.Length : wd.Height;
+                    long m2 = wd.Width;
+                    var material = MaterialFactory.CreateByCode(wd.WindowType, m1, m2, (wd.OpeningType != null && wd.OpeningType.Contains("SX")) ? "SX" : "DX", wd.GlassType == "GT_OPACO", wd.WireCover);
                     var netPrice = product.GetMaterialPrice(material);
-                    var totalMaterialPrice = netPrice * x.Quantity;
+                    var totalMaterialPrice = netPrice * wd.Quantity;
                     var detailPrice = new DetailPrice() { NetPrice = totalMaterialPrice, Vat = 0.22M };
                     acc.DetailPrices.Add(detailPrice);
                     acc.Total += totalMaterialPrice;

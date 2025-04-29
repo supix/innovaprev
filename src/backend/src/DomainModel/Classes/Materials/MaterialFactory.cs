@@ -4,7 +4,7 @@ namespace DomainModel.Classes.Materials
 {
     public static class MaterialFactory
     {
-        public static IMaterial CreateByCode(string code, long m1, long m2, bool opaqueGlass, bool wireCover)
+        public static IMaterial CreateByCode(string code, long m1, long m2, string openingType, bool opaqueGlass, bool wireCover)
         {
             var t = AppDomain.CurrentDomain.GetAssemblies()
                 .SelectMany(domainAssembly => domainAssembly.GetTypes())
@@ -24,7 +24,7 @@ namespace DomainModel.Classes.Materials
                 if (m1 == 0 || m2 == 0)
                     throw new InvalidOperationException($"For a double dimension material m1 and m2 must not be zero. Material code: {code}");
 
-                return (AbstractMaterial)Activator.CreateInstance(t, m1, m2, opaqueGlass, wireCover)!;
+                return (AbstractMaterial)Activator.CreateInstance(t, m1, m2, openingType, opaqueGlass, wireCover)!;
             }
 
             if (t == typeof(CAS))
@@ -52,7 +52,7 @@ namespace DomainModel.Classes.Materials
 
                     if (t.IsSubclassOf(typeof(DoubleDimMaterial)))
                     {
-                        return (AbstractMaterial)Activator.CreateInstance(t, 0, 0, false, false)!;
+                        return (AbstractMaterial)Activator.CreateInstance(t, 0, 0, string.Empty, false, false)!;
                     }
 
                     if (t == typeof(CAS))

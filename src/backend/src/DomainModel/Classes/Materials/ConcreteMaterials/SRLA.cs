@@ -2,7 +2,7 @@
 {
     public class SRLA : DoubleDimMaterial
     {
-        public SRLA(long height_mm, long width_mm, bool opaqueGlass, bool wireCover) : base(height_mm, width_mm, opaqueGlass, wireCover)
+        public SRLA(long height_mm, long width_mm, string openingType, bool opaqueGlass, bool wireCover) : base(height_mm, width_mm, openingType, opaqueGlass, wireCover)
         {
         }
         public override string Description => "Scorrevole Ribalta con laterale apribile";
