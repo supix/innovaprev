@@ -1,0 +1,1 @@
+export type WindowType = 'double-leaf' | 'double-fixed' | 'single-opening';

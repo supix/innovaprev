@@ -1,0 +1,86 @@
+{
+	"openapi": "3.0.0",
+	"components": {
+		"examples": {},
+		"headers": {},
+		"parameters": {},
+		"requestBodies": {},
+		"responses": {},
+		"schemas": {},
+		"securitySchemes": {}
+	},
+	"info": {
+		"title": "src",
+		"version": "1.4.0",
+		"description": "REST microservice to generate scaled raster images of window types based on dimensions and configuration",
+		"license": {
+			"name": "ISC"
+		},
+		"contact": {}
+	},
+	"paths": {
+		"/windows/drawWindow": {
+			"get": {
+				"operationId": "DrawWindowImage",
+				"responses": {
+					"204": {
+						"description": "No content"
+					}
+				},
+				"description": "Generates a raster image of a window based on height, width, and type,\r\nand returns it as a PNG stream response.\r\n\r\nThe image is scaled proportionally to match the input dimensions,\r\nand reflects the visual representation of the specified window type:\r\n- 'double-leaf': two operable panes\r\n- 'double-fixed': two fixed panes\r\n- 'single-opening': single operable pane",
+				"summary": "Generate and download window raster image as PNG",
+				"tags": [
+					"Windows"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"description": "Height of the window in millimeters",
+						"in": "query",
+						"name": "height",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"description": "Width of the window in millimeters",
+						"in": "query",
+						"name": "width",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"description": "Type of window ('double-leaf', 'double-fixed', 'single-opening')",
+						"in": "query",
+						"name": "type",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"enum": [
+								"double-leaf",
+								"double-fixed",
+								"single-opening"
+							]
+						}
+					}
+				]
+			}
+		}
+	},
+	"servers": [
+		{
+			"url": "/api"
+		}
+	],
+	"tags": [
+		{
+			"name": "Windows",
+			"description": "Windows Renderer"
+		}
+	]
+}

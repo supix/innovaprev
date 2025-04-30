@@ -1,0 +1,50 @@
+{
+  "name": "src",
+  "version": "1.0.0",
+  "main": "index.js",
+  "description": "REST microservice to generate scaled raster images of window types based on dimensions and configuration",
+  "scripts": {
+    "start:dev": "nodemon",
+    "start": "node -r module-alias/register ./dist --env=developement",
+    "build": "node build.js"
+  },
+  "nodemonConfig": {
+    "watch": [
+      "src"
+    ],
+    "ext": "ts, html",
+    "ignore": [
+      "src/public",
+      "src/routes.ts"
+    ],
+    "exec": "npx tsoa spec-and-routes && ts-node -r tsconfig-paths/register ./src"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "canvas": "^3.1.0",
+    "cookie-parser": "^1.4.7",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "fs-extra": "^11.3.0",
+    "helmet": "^8.0.0",
+    "joi": "^17.13.3",
+    "morgan": "^1.10.0",
+    "swagger-ui-express": "^5.0.1",
+    "winston": "^3.17.0",
+    "winston-daily-rotate-file": "^5.0.0"
+  },
+  "devDependencies": {
+    "@types/cookie-parser": "^1.4.8",
+    "@types/express": "^5.0.0",
+    "@types/morgan": "^1.9.9",
+    "@types/node": "^22.10.5",
+    "@types/swagger-ui-express": "^4.1.7",
+    "nodemon": "^3.1.9",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^3.15.0",
+    "tsoa": "^6.6.0",
+    "typescript": "^5.7.3"
+  }
+}

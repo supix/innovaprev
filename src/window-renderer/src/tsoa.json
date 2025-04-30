@@ -1,0 +1,24 @@
+{
+  "entryFile": "src/server.ts",
+  "noImplicitAdditionalProperties": "throw-on-extras",
+  "controllerPathGlobs": ["src/controllers/*.ts"],
+  "spec": {
+    "outputDirectory": "src",
+    "specVersion": 3,
+    "basePath": "/api",
+    "version": "1.4.0",
+    "title": "Window Renderer API",
+    "description": "REST microservice to generate scaled raster images of window types based on dimensions and configuration",
+    "tags": [
+      {
+        "name": "Windows",
+        "description": "Windows Renderer"
+      }
+    ]
+  },
+  "routes": {
+    "routesDir": "src",
+    "routesFileName": "routes.ts",
+    "basePath": "/api"
+  }
+}
