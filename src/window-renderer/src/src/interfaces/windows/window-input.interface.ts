@@ -5,6 +5,6 @@ export interface WindowInput {
   width: number;                 // larghezza in mm
   materialType: WindowMaterialType;
   wireCover?: boolean;           // presenza coprifilo (opzionale)
-  glassType?: 'OT_DX' | 'OT_SX'; // direzione apertura vetro (destra/sinistra)
-  openingType?: 'GT_TRASPARENTE' | 'GT_OPACO'; // tipo vetro
+  openingType?: 'OT_DX' | 'OT_SX'; // direzione apertura vetro (destra/sinistra)
+  glassType?: 'GT_TRASPARENTE' | 'GT_OPACO'; // tipo vetro
 }

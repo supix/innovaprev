@@ -46,6 +46,8 @@ import { catchError } from 'rxjs/operators';
 import CryptoJS from 'crypto-js';
 import { environment } from '../../../environments/environment';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { WindowApiService } from '../../services/window-api.service';
+import { ModalService } from '../../services/modal.service';
 
 @Component({
   selector: 'app-innova-form',
@@ -87,14 +89,15 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
   };
 
   showFillFormButton = false;
+  showPreviewButton = false;
 
   externalColorList: Colors[] = [];
   internalColorList: Colors[] = [];
   windowTypeList: WindowType[] = [];
 
   yesNoOptions = [
-    { label: 'Sì', value: true },
-    { label: 'No', value: false }
+    {label: 'Sì', value: true},
+    {label: 'No', value: false}
   ];
 
   debugIndex: number = 1;
@@ -104,7 +107,8 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
   private previousPayloadHash: string | null = null;
 
   constructor(private sanitizer: DomSanitizer, private fb: FormBuilder,
-              private config: NgSelectConfig, private apiService: ApiService) {
+              private config: NgSelectConfig, private apiService: ApiService,
+              private windowApiService: WindowApiService, private modalService: ModalService) {
     this.config.bindLabel = 'desc';
     this.config.bindValue = 'id';
     this.config.notFoundText = 'Nessun elemento trovato';
@@ -152,6 +156,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
     this.setupPriceCalculationSubscription();
     this.subscribeToFormChanges();
     this.showFillFormButton = this.determineShowFillFormButton();
+    this.showPreviewButton = this.determineShowPreviewButton();
   }
 
   ngAfterViewInit(): void {
@@ -216,6 +221,20 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
     });
 
     return isStandardValid && allDisabledRequiredFieldsValid;
+  }
+
+  isPreviewWindowRowValid(index: number): boolean {
+    const row = this.windows.at(index) as FormGroup;
+    if (!row) return false;
+    const validRow = this.isWindowRowValid(index);
+    if (validRow) {
+      const windowType = row.get('windowType')?.value;
+      const {numOfDims} = this.collections?.windowTypes.find(value => value.id === windowType as unknown as string) as WindowType || {};
+      return numOfDims === 2;
+    } else {
+      return false;
+    }
+
   }
 
   // Helper function to check validity of a specific row by index
@@ -373,6 +392,18 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
       this.updateWindowsFormState();
     }
   }
+
+  previewWindowRow(index: number): void {
+    const row = this.windows.at(index) as FormGroup;
+    if (!row || row.invalid) return;
+
+    const input = row.value;
+
+    this.windowApiService.drawWindow(input).subscribe({
+      next: (blob) => this.modalService.showPreviewModal(blob),
+    });
+  }
+
 
   // Updates the value of the `position` field for each row in the FormArray.
   updateWindowPositions(): void {
@@ -912,31 +943,31 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
         // Opening Type
         if (openingTypeVisible) {
           row.get('openingType')?.setValidators([Validators.required]);
-          row.get('openingType')?.enable({ emitEvent: false });
+          row.get('openingType')?.enable({emitEvent: false});
         } else {
           row.get('openingType')?.setValidators(null);
-          row.get('openingType')?.disable({ emitEvent: false });
-          row.patchValue({ openingType: null }, { emitEvent: false });
+          row.get('openingType')?.disable({emitEvent: false});
+          row.patchValue({openingType: null}, {emitEvent: false});
         }
 
         // Glass Type
         if (glassTypeVisible) {
           row.get('glassType')?.setValidators([Validators.required]);
-          row.get('glassType')?.enable({ emitEvent: false });
+          row.get('glassType')?.enable({emitEvent: false});
         } else {
           row.get('glassType')?.setValidators(null);
-          row.get('glassType')?.disable({ emitEvent: false });
-          row.patchValue({ glassType: null }, { emitEvent: false });
+          row.get('glassType')?.disable({emitEvent: false});
+          row.patchValue({glassType: null}, {emitEvent: false});
         }
 
         // Wire Cover
         if (wireCoverVisible) {
           row.get('wireCover')?.setValidators([Validators.required]);
-          row.get('wireCover')?.enable({ emitEvent: false });
+          row.get('wireCover')?.enable({emitEvent: false});
         } else {
           row.get('wireCover')?.setValidators(null);
-          row.get('wireCover')?.disable({ emitEvent: false });
-          row.patchValue({ wireCover: null }, { emitEvent: false });
+          row.get('wireCover')?.disable({emitEvent: false});
+          row.patchValue({wireCover: null}, {emitEvent: false});
         }
 
         // Dimension Fields
@@ -961,11 +992,11 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
 
           row.get('length')?.setValidators(null);
 
-          row.get('height')?.enable({ emitEvent: false });
-          row.get('width')?.enable({ emitEvent: false });
-          row.get('length')?.disable({ emitEvent: false });
+          row.get('height')?.enable({emitEvent: false});
+          row.get('width')?.enable({emitEvent: false});
+          row.get('length')?.disable({emitEvent: false});
 
-          row.patchValue({ length: null }, { emitEvent: false });
+          row.patchValue({length: null}, {emitEvent: false});
 
         } else if (numOfDims === 1) {
           row.get('height')?.setValidators(null);
@@ -980,20 +1011,20 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
             })
           ]);
 
-          row.get('height')?.disable({ emitEvent: false });
-          row.get('width')?.disable({ emitEvent: false });
-          row.get('length')?.enable({ emitEvent: false });
+          row.get('height')?.disable({emitEvent: false});
+          row.get('width')?.disable({emitEvent: false});
+          row.get('length')?.enable({emitEvent: false});
 
-          row.patchValue({ height: null, width: null }, { emitEvent: false });
+          row.patchValue({height: null, width: null}, {emitEvent: false});
         }
 
         // Update validity
-        row.get('height')?.updateValueAndValidity({ emitEvent: false });
-        row.get('width')?.updateValueAndValidity({ emitEvent: false });
-        row.get('length')?.updateValueAndValidity({ emitEvent: false });
-        row.get('glassType')?.updateValueAndValidity({ emitEvent: false });
-        row.get('wireCover')?.updateValueAndValidity({ emitEvent: false });
-        row.get('openingType')?.updateValueAndValidity({ emitEvent: false });
+        row.get('height')?.updateValueAndValidity({emitEvent: false});
+        row.get('width')?.updateValueAndValidity({emitEvent: false});
+        row.get('length')?.updateValueAndValidity({emitEvent: false});
+        row.get('glassType')?.updateValueAndValidity({emitEvent: false});
+        row.get('wireCover')?.updateValueAndValidity({emitEvent: false});
+        row.get('openingType')?.updateValueAndValidity({emitEvent: false});
       }
 
       if (row.valid && this.hasTriggeredWindowsValidation) {
@@ -1178,6 +1209,10 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
     } else {
       return environment.enableFillFormButton ?? false;
     }
+  }
+
+  private determineShowPreviewButton(): boolean {
+    return this.determineShowFillFormButton();
   }
 
 }

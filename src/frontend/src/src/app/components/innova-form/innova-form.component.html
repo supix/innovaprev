@@ -379,14 +379,14 @@
                 <th [attr.rowspan]="isTrimSectionVisible() ? '2' : '1'"
                     [ngStyle]="{ width: isTrimSectionVisible() ? '8%' : '12%' }">Copriprofilo
                 </th>
-                <th *ngIf="isTrimSectionVisible()" colspan="4" style="width: 24%;">Rifilo Battuta</th>
-                <th [attr.rowspan]="isTrimSectionVisible() ? '2' : '1'" style="width: 6%;"></th>
+                <th *ngIf="isTrimSectionVisible()" colspan="4" style="width: 20%;">Rifilo Battuta</th>
+                <th [attr.rowspan]="isTrimSectionVisible() ? '2' : '1'" [ngStyle]="{ width: showPreviewButton ? '8%' : '6%' }"></th>
               </tr>
               <tr *ngIf="isTrimSectionVisible()">
-                <th style="width: 7%;font-size: 0.8rem;">Sx</th>
-                <th style="width: 7%;font-size: 0.8rem;">Dx</th>
-                <th style="width: 7%;font-size: 0.8rem;">Sopra</th>
-                <th style="width: 7%;font-size: 0.8rem;">Sotto</th>
+                <th style="width: 5%;font-size: 0.8rem;">Sx</th>
+                <th style="width: 5%;font-size: 0.8rem;">Dx</th>
+                <th style="width: 5%;font-size: 0.8rem;">Sopra</th>
+                <th style="width: 5%;font-size: 0.8rem;">Sotto</th>
               </tr>
               </thead>
               <tbody>
@@ -472,15 +472,33 @@
                   </td>
                 </ng-container>
                 <td class="text-center align-middle">
-                  <button type="button" class="btn btn-danger btn-sm"
-                          (mouseenter)="onEnterTooltip($event, 'tooltip-remove-' + i)"
-                          (mouseleave)="onLeaveTooltip('tooltip-remove-' + i)" (click)="removeWindowRow(i)">
-                    <svg class="icon-trash">
-                      <use xlink:href="#icon-trash"></use>
-                    </svg>
-                  </button>
+                  <div class="d-flex justify-content-center gap-1">
+                    <button *ngIf="showPreviewButton" type="button" class="btn btn-outline-secondary btn-sm me-1"
+                            [disabled]="!isPreviewWindowRowValid(i)"
+                            (mouseenter)="onEnterTooltip($event, 'tooltip-preview-' + i)"
+                            (mouseleave)="onLeaveTooltip('tooltip-preview-' + i)" (click)="previewWindowRow(i)">
+                      <svg class="icon-preview" [ngClass]="{'icon-sm': showPreviewButton}">
+                        <use xlink:href="#icon-preview"></use>
+                      </svg>
+                    </button>
+                    <button type="button" class="btn btn-danger btn-sm"
+                            (mouseenter)="onEnterTooltip($event, 'tooltip-remove-' + i)"
+                            (mouseleave)="onLeaveTooltip('tooltip-remove-' + i)" (click)="removeWindowRow(i)">
+                      <svg class="icon-trash" [ngClass]="{'icon-sm': showPreviewButton}">
+                        <use xlink:href="#icon-trash"></use>
+                      </svg>
+                    </button>
+                  </div>
+
+                  <div class="tooltip secondary" [id]="'tooltip-preview-' + i">
+                    {{ !isPreviewWindowRowValid(i)
+                    ? 'Compila tutti i campi richiesti per visualizzare l\'anteprima.'
+                    : 'Anteprima Pos. #' + (i + 1) }}
+                  </div>
+
                   <div class="tooltip danger" [id]="'tooltip-remove-' + i">Rimuovi Pos. #{{ i + 1 }}</div>
                 </td>
+
               </tr>
               </tbody>
             </table>
@@ -551,6 +569,10 @@
                   </div>
                 </div>
               </ng-container>
+              <button *ngIf="showPreviewButton" type="button" class="btn btn-outline-secondary btn-sm my-3"
+                      [disabled]="!isPreviewWindowRowValid(i)" (click)="previewWindowRow(i)">Anteprima<span
+                class="ms-1">Finestra #{{ row.get('position')?.value }}</span>
+              </button>
               <button type="button" class="btn btn-danger btn-sm" (click)="removeWindowRow(i)">Rimuovi<span
                 class="ms-1">Finestra #{{ row.get('position')?.value }}</span>
               </button>

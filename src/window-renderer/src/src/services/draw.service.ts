@@ -21,7 +21,7 @@ export class DrawService {
         const ctx = canvas.getContext('2d');
 
         // Fill background based on the opening type
-        if (input.openingType === 'GT_OPACO') {
+        if (input.glassType === 'GT_OPACO') {
             ctx.fillStyle = '#ccc';
         } else {
             ctx.fillStyle = '#eef';

@@ -37,8 +37,8 @@ export class ProjectsController extends Controller {
      * @param width Width of the window in millimeters
      * @param materialType Material type of the window
      * @param wireCover Optional: include wire cover rendering
-     * @param glassType Optional: direction of glass opening ('OT_DX' or 'OT_SX')
-     * @param openingType Optional: glass type ('GT_TRASPARENTE' or 'GT_OPACO')
+     * @param openingType Optional: direction of glass opening ('OT_DX' or 'OT_SX')
+     * @param glassType Optional: glass type ('GT_TRASPARENTE' or 'GT_OPACO')
      * @param request Express request object used to stream file response
      * @returns PNG image buffer representing the requested window
      */
@@ -49,8 +49,8 @@ export class ProjectsController extends Controller {
       @Query() materialType: WindowMaterialType,
       @Request() request: ExRequest,
       @Query() wireCover?: boolean,
-      @Query() glassType?: 'OT_DX' | 'OT_SX',
-      @Query() openingType?: 'GT_TRASPARENTE' | 'GT_OPACO'
+      @Query() openingType?: 'OT_DX' | 'OT_SX',
+      @Query() glassType?: 'GT_TRASPARENTE' | 'GT_OPACO'
     ): Promise<void> {
         try {
             const fileName = `window_${materialType}_${width}x${height}.png`;
