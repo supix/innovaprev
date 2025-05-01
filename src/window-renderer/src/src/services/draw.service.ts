@@ -72,20 +72,6 @@ export class DrawService {
         ctx.stroke();
     }
 
-    private drawDoubleFixed(ctx: CanvasRenderingContext2D, w: number, h: number) {
-        const midX = w / 2;
-
-        ctx.beginPath();
-        ctx.moveTo(midX, 0);
-        ctx.lineTo(midX, h);
-        ctx.stroke();
-
-        ctx.font = 'bold 10px Sans';
-        ctx.fillStyle = '#666';
-        ctx.fillText('FIXED', midX / 2 - 15, h / 2);
-        ctx.fillText('FIXED', (3 * midX) / 2 - 15, h / 2);
-    }
-
     private drawSingleOpening(ctx: CanvasRenderingContext2D, w: number, h: number) {
         ctx.beginPath();
         ctx.moveTo(0, 0);
