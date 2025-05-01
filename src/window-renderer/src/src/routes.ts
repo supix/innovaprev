@@ -39,6 +39,9 @@ export function RegisterRoutes(app: Router) {
                 width: {"in":"query","name":"width","required":true,"dataType":"double"},
                 materialType: {"in":"query","name":"materialType","required":true,"ref":"WindowMaterialType"},
                 request: {"in":"request","name":"request","required":true,"dataType":"object"},
+                wireCover: {"in":"query","name":"wireCover","dataType":"boolean"},
+                glassType: {"in":"query","name":"glassType","dataType":"union","subSchemas":[{"dataType":"enum","enums":["OT_DX"]},{"dataType":"enum","enums":["OT_SX"]}]},
+                openingType: {"in":"query","name":"openingType","dataType":"union","subSchemas":[{"dataType":"enum","enums":["GT_TRASPARENTE"]},{"dataType":"enum","enums":["GT_OPACO"]}]},
         };
         app.get('/api/windows/drawWindow',
             ...(fetchMiddlewares<RequestHandler>(ProjectsController)),

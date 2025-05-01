@@ -7,13 +7,6 @@ import { WindowMaterialType } from '../interfaces/windows/windows.type';
 @Route("windows")
 @Tags("Windows")
 export class ProjectsController extends Controller {
-    private readonly drawService: DrawService;
-
-    constructor() {
-        super();
-        this.drawService = new DrawService();
-    }
-
     /**
      * Generates a raster image of a window based on height, width, and material type
      * and returns it as a PNG stream response.
@@ -43,6 +36,9 @@ export class ProjectsController extends Controller {
      * @param height Height of the window in millimeters
      * @param width Width of the window in millimeters
      * @param materialType Material type of the window
+     * @param wireCover Optional: include wire cover rendering
+     * @param glassType Optional: direction of glass opening ('OT_DX' or 'OT_SX')
+     * @param openingType Optional: glass type ('GT_TRASPARENTE' or 'GT_OPACO')
      * @param request Express request object used to stream file response
      * @returns PNG image buffer representing the requested window
      */
@@ -51,11 +47,22 @@ export class ProjectsController extends Controller {
       @Query() height: number,
       @Query() width: number,
       @Query() materialType: WindowMaterialType,
-      @Request() request: ExRequest
+      @Request() request: ExRequest,
+      @Query() wireCover?: boolean,
+      @Query() glassType?: 'OT_DX' | 'OT_SX',
+      @Query() openingType?: 'GT_TRASPARENTE' | 'GT_OPACO'
     ): Promise<void> {
         try {
             const fileName = `window_${materialType}_${width}x${height}.png`;
-            const imageBuffer = this.drawService.drawWindow({ height, width, materialType });
+
+            const imageBuffer = this.drawService.drawWindow({
+                height,
+                width,
+                materialType,
+                wireCover,
+                glassType,
+                openingType,
+            });
 
             const stream = Readable.from([imageBuffer]);
 
@@ -76,6 +83,11 @@ export class ProjectsController extends Controller {
         }
     }
 
+    private readonly drawService: DrawService;
 
+    constructor() {
+        super();
+        this.drawService = new DrawService();
+    }
 
 }

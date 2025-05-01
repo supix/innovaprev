@@ -85,6 +85,41 @@
 						"schema": {
 							"$ref": "#/components/schemas/WindowMaterialType"
 						}
+					},
+					{
+						"description": "Optional: include wire cover rendering",
+						"in": "query",
+						"name": "wireCover",
+						"required": false,
+						"schema": {
+							"type": "boolean"
+						}
+					},
+					{
+						"description": "Optional: direction of glass opening ('OT_DX' or 'OT_SX')",
+						"in": "query",
+						"name": "glassType",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"enum": [
+								"OT_DX",
+								"OT_SX"
+							]
+						}
+					},
+					{
+						"description": "Optional: glass type ('GT_TRASPARENTE' or 'GT_OPACO')",
+						"in": "query",
+						"name": "openingType",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"enum": [
+								"GT_TRASPARENTE",
+								"GT_OPACO"
+							]
+						}
 					}
 				]
 			}
