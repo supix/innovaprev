@@ -1,7 +1,7 @@
-import { WindowType } from './windows.type';
+import { WindowMaterialType } from './windows.type';
 
 export interface WindowInput {
   height: number; // mm
   width: number;  // mm
-  type: WindowType;
+  materialType: WindowMaterialType;
 }

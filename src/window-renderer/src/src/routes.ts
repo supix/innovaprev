@@ -12,6 +12,11 @@ import type { Request as ExRequest, Response as ExResponse, RequestHandler, Rout
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
 const models: TsoaRoute.Models = {
+    "WindowMaterialType": {
+        "dataType": "refAlias",
+        "type": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["CAS"]},{"dataType":"enum","enums":["F1A"]},{"dataType":"enum","enums":["F2A"]},{"dataType":"enum","enums":["FIX"]},{"dataType":"enum","enums":["FLD"]},{"dataType":"enum","enums":["FLS"]},{"dataType":"enum","enums":["FRO"]},{"dataType":"enum","enums":["PF1A"]},{"dataType":"enum","enums":["PF2A"]},{"dataType":"enum","enums":["PRT1A"]},{"dataType":"enum","enums":["PRT2A"]},{"dataType":"enum","enums":["SIL"]},{"dataType":"enum","enums":["SLA"]},{"dataType":"enum","enums":["SLF"]},{"dataType":"enum","enums":["SRAF"]},{"dataType":"enum","enums":["SRLA"]},{"dataType":"enum","enums":["VAS"]}],"validators":{}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 };
 const templateService = new ExpressTemplateService(models, {"noImplicitAdditionalProperties":"throw-on-extras","bodyCoercion":true});
 
@@ -32,7 +37,7 @@ export function RegisterRoutes(app: Router) {
         const argsProjectsController_drawWindowImage: Record<string, TsoaRoute.ParameterSchema> = {
                 height: {"in":"query","name":"height","required":true,"dataType":"double"},
                 width: {"in":"query","name":"width","required":true,"dataType":"double"},
-                type: {"in":"query","name":"type","required":true,"dataType":"union","subSchemas":[{"dataType":"enum","enums":["double-leaf"]},{"dataType":"enum","enums":["double-fixed"]},{"dataType":"enum","enums":["single-opening"]}]},
+                materialType: {"in":"query","name":"materialType","required":true,"ref":"WindowMaterialType"},
                 request: {"in":"request","name":"request","required":true,"dataType":"object"},
         };
         app.get('/api/windows/drawWindow',

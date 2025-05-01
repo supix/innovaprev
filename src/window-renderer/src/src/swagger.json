@@ -6,7 +6,30 @@
 		"parameters": {},
 		"requestBodies": {},
 		"responses": {},
-		"schemas": {},
+		"schemas": {
+			"WindowMaterialType": {
+				"type": "string",
+				"enum": [
+					"CAS",
+					"F1A",
+					"F2A",
+					"FIX",
+					"FLD",
+					"FLS",
+					"FRO",
+					"PF1A",
+					"PF2A",
+					"PRT1A",
+					"PRT2A",
+					"SIL",
+					"SLA",
+					"SLF",
+					"SRAF",
+					"SRLA",
+					"VAS"
+				]
+			}
+		},
 		"securitySchemes": {}
 	},
 	"info": {
@@ -27,7 +50,7 @@
 						"description": "No content"
 					}
 				},
-				"description": "Generates a raster image of a window based on height, width, and type,\r\nand returns it as a PNG stream response.\r\n\r\nThe image is scaled proportionally to match the input dimensions,\r\nand reflects the visual representation of the specified window type:\r\n- 'double-leaf': two operable panes\r\n- 'double-fixed': two fixed panes\r\n- 'single-opening': single operable pane",
+				"description": "Generates a raster image of a window based on height, width, and material type\r\nand returns it as a PNG stream response.\r\n\r\nThe image is scaled proportionally to match the input dimensions\r\nand reflects the visual representation of the specified window material type:\r\n\r\n- 'CAS': Cassonetto\r\n- 'F1A': Finestra 1 Anta\r\n- 'F2A': Finestra 2 Ante\r\n- 'FIX': Fisso centrale\r\n- 'FLD': Fisso laterale destro\r\n- 'FLS': Fisso laterale sinistro\r\n- 'FRO': Frontalino\r\n- 'PF1A': Portafinestra 1 Anta\r\n- 'PF2A': Portafinestra 2 Ante\r\n- 'PRT1A': Portoncino 1 Anta\r\n- 'PRT2A': Portoncino 2 Ante\r\n- 'SIL': Scorrevole in linea\r\n- 'SLA': Sopraluce apribile\r\n- 'SLF': Sopraluce fisso\r\n- 'SRAF': Scorrevole ribalta con anta fissa\r\n- 'SRLA': Scorrevole ribalta con laterale apribile\r\n- 'VAS': Vasistas",
 				"summary": "Generate and download window raster image as PNG",
 				"tags": [
 					"Windows"
@@ -55,17 +78,12 @@
 						}
 					},
 					{
-						"description": "Type of window ('double-leaf', 'double-fixed', 'single-opening')",
+						"description": "Material type of the window",
 						"in": "query",
-						"name": "type",
+						"name": "materialType",
 						"required": true,
 						"schema": {
-							"type": "string",
-							"enum": [
-								"double-leaf",
-								"double-fixed",
-								"single-opening"
-							]
+							"$ref": "#/components/schemas/WindowMaterialType"
 						}
 					}
 				]

@@ -2,6 +2,7 @@ import { Controller, Get, Query, Request, Route, Tags } from "tsoa";
 import { Request as ExRequest } from "express";
 import { Readable } from "stream";
 import { DrawService } from '../services/draw.service';
+import { WindowMaterialType } from '../interfaces/windows/windows.type';
 
 @Route("windows")
 @Tags("Windows")
@@ -14,19 +15,34 @@ export class ProjectsController extends Controller {
     }
 
     /**
-     * Generates a raster image of a window based on height, width, and type,
+     * Generates a raster image of a window based on height, width, and material type
      * and returns it as a PNG stream response.
      *
-     * The image is scaled proportionally to match the input dimensions,
-     * and reflects the visual representation of the specified window type:
-     * - 'double-leaf': two operable panes
-     * - 'double-fixed': two fixed panes
-     * - 'single-opening': single operable pane
+     * The image is scaled proportionally to match the input dimensions
+     * and reflects the visual representation of the specified window material type:
+     *
+     * - 'CAS': Cassonetto
+     * - 'F1A': Finestra 1 Anta
+     * - 'F2A': Finestra 2 Ante
+     * - 'FIX': Fisso centrale
+     * - 'FLD': Fisso laterale destro
+     * - 'FLS': Fisso laterale sinistro
+     * - 'FRO': Frontalino
+     * - 'PF1A': Portafinestra 1 Anta
+     * - 'PF2A': Portafinestra 2 Ante
+     * - 'PRT1A': Portoncino 1 Anta
+     * - 'PRT2A': Portoncino 2 Ante
+     * - 'SIL': Scorrevole in linea
+     * - 'SLA': Sopraluce apribile
+     * - 'SLF': Sopraluce fisso
+     * - 'SRAF': Scorrevole ribalta con anta fissa
+     * - 'SRLA': Scorrevole ribalta con laterale apribile
+     * - 'VAS': Vasistas
      *
      * @summary Generate and download window raster image as PNG
      * @param height Height of the window in millimeters
      * @param width Width of the window in millimeters
-     * @param type Type of window ('double-leaf', 'double-fixed', 'single-opening')
+     * @param materialType Material type of the window
      * @param request Express request object used to stream file response
      * @returns PNG image buffer representing the requested window
      */
@@ -34,12 +50,12 @@ export class ProjectsController extends Controller {
     public async drawWindowImage(
       @Query() height: number,
       @Query() width: number,
-      @Query() type: 'double-leaf' | 'double-fixed' | 'single-opening',
+      @Query() materialType: WindowMaterialType,
       @Request() request: ExRequest
     ): Promise<void> {
         try {
-            const fileName = `window_${type}_${width}x${height}.png`;
-            const imageBuffer = this.drawService.drawWindow({ height, width, type });
+            const fileName = `window_${materialType}_${width}x${height}.png`;
+            const imageBuffer = this.drawService.drawWindow({ height, width, materialType });
 
             const stream = Readable.from([imageBuffer]);
 
