@@ -2,11 +2,11 @@ FROM node:18-slim as builder
 
 WORKDIR /app
 
-COPY package.json ./
+COPY src/window-renderer/src/package.json ./
 
 RUN npm i
 
-COPY .. .
+COPY src/window-renderer/src .
 
 RUN npm run build
 
