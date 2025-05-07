@@ -12,7 +12,7 @@ on:
       - 'src/window-renderer/**'
 
 jobs:
-  deploy_frontend:
+  deploy_window_renderer:
     runs-on: ubuntu-latest
     steps:
       - name: checkout
