@@ -3,11 +3,11 @@ name: Build and publish window renderer
 on:
   workflow_dispatch:
   push:
-    branches: [ "main", "qa" ]
+    branches: [ "main", "qa", "devel" ]
     paths:
       - 'src/window-renderer/**'
   pull_request:
-    branches: [ "main", "qa" ]
+    branches: [ "main", "qa", "devel" ]
     paths:
       - 'src/window-renderer/**'
 
