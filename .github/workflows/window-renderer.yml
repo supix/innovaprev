@@ -1,0 +1,41 @@
+name: Build and publish window renderer
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "main", "qa" ]
+    paths:
+      - 'src/window-renderer/**'
+  pull_request:
+    branches: [ "main", "qa" ]
+    paths:
+      - 'src/window-renderer/**'
+
+jobs:
+  deploy_frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+      - name: Build app and build docker image
+        run: docker build . -t supix/innovaprev_wr:latest -f ./src/window-renderer/src/Dockerfile
+      - name: Publish docker image to Docker hub
+        run: |
+          docker login -u supix -p ${{ secrets.DOCKER_HUB_TOKEN }}
+          docker push supix/innovaprev_wr:latest
+      - name: Pull newly published image and restart the container
+        env:
+          WR_CNT_NAME: ${{ github.ref_name == 'qa' && 'wr_qa' || 'wr_prod' }}
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.HOST_ADDR }}
+          username: ${{ secrets.HOST_USER }}
+          key: ${{ secrets.HOST_KEY }}
+          script: |
+            echo ${{ secrets.HOST_PWD }} | sudo -S docker rm -f ${{ env.WR_CNT_NAME }}1
+            echo ${{ secrets.HOST_PWD }} | sudo -S docker pull supix/innovaprev_wr:latest
+            echo ${{ secrets.HOST_PWD }} | sudo -S docker network inspect wr_nw >/dev/null 2>&1 || echo ${{ secrets.HOST_PWD }} | docker network create wr_nw
+            echo ${{ secrets.HOST_PWD }} | sudo -S docker run -d --network=wr_nw --name=${{ env.WR_CNT_NAME }}1 -eNODE_ENV=production --restart=unless-stopped supix/innovaprev_wr:latest
+            sleep 15
+            echo ${{ secrets.HOST_PWD }} | sudo -S docker rm -f ${{ env.WR_CNT_NAME }}2
+            echo ${{ secrets.HOST_PWD }} | sudo -S docker run -d --network=wr_nw --name=${{ env.WR_CNT_NAME }}2 -eNODE_ENV=production  --restart=unless-stopped supix/innovaprev_wr:latest
