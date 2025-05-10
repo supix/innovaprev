@@ -377,7 +377,7 @@
                     [ngStyle]="{ width: isTrimSectionVisible() ? '8%' : '12%' }">Vetro
                 </th>
                 <th [attr.rowspan]="isTrimSectionVisible() ? '2' : '1'"
-                    [ngStyle]="{ width: isTrimSectionVisible() ? '8%' : '12%' }">Copriprofilo
+                    [ngStyle]="{ width: isTrimSectionVisible() ? '8%' : '12%' }">Coprifilo
                 </th>
                 <th *ngIf="isTrimSectionVisible()" colspan="4" style="width: 20%;">Rifilo Battuta</th>
                 <th [attr.rowspan]="isTrimSectionVisible() ? '2' : '1'" [ngStyle]="{ width: showPreviewButton ? '8%' : '6%' }"></th>
@@ -440,7 +440,7 @@
                     *ngTemplateOutlet="glassTypeInput; context: { index: i, form: row, tableLg: true }"></ng-container>
                 </td>
 
-                <!-- Copriprofilo -->
+                <!-- Coprifilo -->
                 <td>
                   <ng-container
                     *ngTemplateOutlet="wireCoverInput; context: { index: i, form: row, tableLg: true }"></ng-container>
@@ -539,7 +539,7 @@
                 <ng-container *ngTemplateOutlet="glassTypeInput; context: { index: i, form: row }"></ng-container>
               </div>
               <div class="mb-2">
-                <label class="form-label">Copriprofilo</label>
+                <label class="form-label">Coprifilo</label>
                 <ng-container *ngTemplateOutlet="wireCoverInput; context: { index: i, form: row }"></ng-container>
               </div>
               <ng-container *ngIf="isTrimSectionVisible()">
