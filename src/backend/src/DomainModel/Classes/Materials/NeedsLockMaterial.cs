@@ -6,7 +6,7 @@ namespace DomainModel.Classes.Materials
     {
         public override decimal GetPrice(IMaterialVisitor visitor)
         {
-            return visitor.GetPrice_DoubleDim(this, GetAllowedArea_sqmm) + 616M;
+            return base.GetPrice(visitor) + 616M;
         }
     }
 }

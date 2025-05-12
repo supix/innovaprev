@@ -1,4 +1,6 @@
-﻿namespace DomainModel.Classes.Materials.ConcreteMaterials
+﻿using DomainModel.Classes.Products.Visitor;
+
+namespace DomainModel.Classes.Materials.ConcreteMaterials
 {
     public class VASM : DoubleDimMaterial
     {
@@ -10,5 +12,10 @@
         protected override long? ClampMinValue => 1500000;
         public override int Order => 54;
         public override string[] MaterialForProduct => base.GetNotAntaMaxAndNotScorrevoleProductCodes();
+
+        public override decimal GetPrice(IMaterialVisitor visitor)
+        {
+            return base.GetPrice(visitor) + 180M;
+        }
     }
 }

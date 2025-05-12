@@ -444,5 +444,23 @@ namespace DomainModel_Test
             const decimal wireCoverPrice = 6.5M * 5.5M;
             Assert.That(Math.Abs(price - (windowPrice + wireCoverPrice)), Is.LessThan(1e-3M));
         }
+
+        [Test]
+        public void Test_WoodWithVasc_PriceIsCorrect()
+        {
+            var p = new ELA(new Ral1013(), new Ral1013());
+            var vas = new VASC(2500L, 2400L, string.Empty, false, false);
+            var price = p.GetMaterialPrice(vas);
+            Assert.That(Math.Abs(price - (985 + 38) * 2.5M * 2.4M), Is.LessThan(1e-3M));
+        }
+
+        [Test]
+        public void Test_WoodWithVasm_PriceIsCorrect()
+        {
+            var p = new ELA(new Ral1013(), new Ral1013());
+            var vasm = new VASM(2500L, 2400L, string.Empty, false, false);
+            var price = p.GetMaterialPrice(vasm);
+            Assert.That(Math.Abs(price - ((985 + 38) * 2.5M * 2.4M + 180)), Is.LessThan(1e-3M));
+        }
     }
 }
