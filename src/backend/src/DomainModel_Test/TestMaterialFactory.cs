@@ -28,6 +28,8 @@ public class TestMaterialFactory
         Assert.That(mats.Single(m => m.GetType() == typeof(FIX)), Is.InstanceOf<FIX>());
         Assert.That(mats.Single(m => m.GetType() == typeof(PRT1A)), Is.InstanceOf<PRT1A>());
         Assert.That(mats.Single(m => m.GetType() == typeof(FRO)), Is.InstanceOf<FRO>());
-        Assert.That(mats.Single(m => m.GetType() == typeof(VAS)), Is.InstanceOf<VAS>());
+        Assert.That(mats.Single(m => m.GetType() == typeof(VAST)), Is.InstanceOf<VAST>());
+        Assert.That(mats.Single(m => m.GetType() == typeof(VASC)), Is.InstanceOf<VASC>());
+        Assert.That(mats.Single(m => m.GetType() == typeof(VASM)), Is.InstanceOf<VASM>());
     }
 }
