@@ -3,16 +3,16 @@ name: Build and publish window renderer
 on:
   workflow_dispatch:
   push:
-    branches: [ "devel" ]
+    branches: [ "main", "qa" ]
     paths:
       - 'src/window-renderer/**'
   pull_request:
-    branches: [ "devel" ]
+    branches: [ "main", "qa" ]
     paths:
       - 'src/window-renderer/**'
 
 jobs:
-  deploy_frontend:
+  deploy_window_renderer:
     runs-on: ubuntu-latest
     steps:
       - name: checkout
@@ -34,7 +34,6 @@ jobs:
           script: |
             echo ${{ secrets.HOST_PWD }} | sudo -S docker rm -f ${{ env.WR_CNT_NAME }}1
             echo ${{ secrets.HOST_PWD }} | sudo -S docker pull supix/innovaprev_wr:latest
-            echo ${{ secrets.HOST_PWD }} | sudo -S docker network inspect wr_nw >/dev/null 2>&1 || echo ${{ secrets.HOST_PWD }} | docker network create wr_nw
             echo ${{ secrets.HOST_PWD }} | sudo -S docker run -d --network=wr_nw --name=${{ env.WR_CNT_NAME }}1 -eNODE_ENV=production --restart=unless-stopped supix/innovaprev_wr:latest
             sleep 15
             echo ${{ secrets.HOST_PWD }} | sudo -S docker rm -f ${{ env.WR_CNT_NAME }}2
