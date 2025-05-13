@@ -1,4 +1,6 @@
-﻿using DomainModel.Classes.Materials.ConcreteMaterials;
+﻿using DomainModel.Classes.Colors.ConcreteColors;
+using DomainModel.Classes.Materials.ConcreteMaterials;
+using DomainModel.Classes.Products.ConcreteProducts;
 
 namespace DomainModel_Test;
 
@@ -103,5 +105,33 @@ public class TestMaterials
     {
         var mat = new PRT1A(1000, 1550, "SX", false, false);
         Assert.That(mat.OpeningType, Is.EqualTo("SX"));
+    }
+    
+    [Test]
+    public void Test_SrafDescriptionLessOrEqualThan240_DescriptionIsCorrect()
+    {
+        var sraf = new SRAF(2500L, 2400L, string.Empty, false, false);
+        Assert.That(sraf.Description, Is.EqualTo("Scorrevole ribalta con anta fissa"));
+    }
+
+    [Test]
+    public void Test_SrafDescriptionGreaterThan240_DescriptionIsCorrect()
+    {
+        var sraf = new SRAF(2500L, 2401L, string.Empty, false, false);
+        Assert.That(sraf.Description, Is.EqualTo("Scorrevole ribalta con anta fissa e meccanismo forzato"));
+    }
+
+    [Test]
+    public void Test_SrlaDescriptionLessOrEqualThan240_DescriptionIsCorrect()
+    {
+        var sraf = new SRLA(2500L, 2400L, string.Empty, false, false);
+        Assert.That(sraf.Description, Is.EqualTo("Scorrevole ribalta con laterale apribile"));
+    }
+
+    [Test]
+    public void Test_SrlaDescriptionGreaterThan240_DescriptionIsCorrect()
+    {
+        var srla = new SRLA(2500L, 2401L, string.Empty, false, false);
+        Assert.That(srla.Description, Is.EqualTo("Scorrevole ribalta con laterale apribile e meccanismo forzato"));
     }
 }

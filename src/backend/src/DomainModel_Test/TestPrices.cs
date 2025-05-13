@@ -462,5 +462,41 @@ namespace DomainModel_Test
             var price = p.GetMaterialPrice(vasm);
             Assert.That(Math.Abs(price - ((985 + 38) * 2.5M * 2.4M + 180)), Is.LessThan(1e-3M));
         }
+
+        [Test]
+        public void Test_WoodWithSrafLessOrEqualThan240_PriceIsCorrect()
+        {
+            var p = new ELA(new Ral1013(), new Ral1013());
+            var sraf = new SRAF(2500L, 2400L, string.Empty, false, false);
+            var price = p.GetMaterialPrice(sraf);
+            Assert.That(Math.Abs(price - ((985 + 38) * 2.5M * 2.4M + 1300)), Is.LessThan(1e-3M));
+        }
+
+        [Test]
+        public void Test_WoodWithSrafGreaterThan240_PriceIsCorrect()
+        {
+            var p = new ELA(new Ral1013(), new Ral1013());
+            var sraf = new SRAF(2500L, 2401L, string.Empty, false, false);
+            var price = p.GetMaterialPrice(sraf);
+            Assert.That(Math.Abs(price - ((985 + 38) * 2.5M * 2.401M + 3000)), Is.LessThan(1e-3M));
+        }
+
+        [Test]
+        public void Test_WoodWithSrlaLessOrEqualThan240_PriceIsCorrect()
+        {
+            var p = new ELA(new Ral1013(), new Ral1013());
+            var srla = new SRLA(2500L, 2400L, string.Empty, false, false);
+            var price = p.GetMaterialPrice(srla);
+            Assert.That(Math.Abs(price - ((985 + 38) * 2.5M * 2.4M + 1300)), Is.LessThan(1e-3M));
+        }
+
+        [Test]
+        public void Test_WoodWithSrlaGreaterThan240_PriceIsCorrect()
+        {
+            var p = new ELA(new Ral1013(), new Ral1013());
+            var srla = new SRLA(2500L, 2401L, string.Empty, false, false);
+            var price = p.GetMaterialPrice(srla);
+            Assert.That(Math.Abs(price - ((985 + 38) * 2.5M * 2.401M + 3000)), Is.LessThan(1e-3M));
+        }
     }
 }
