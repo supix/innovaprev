@@ -27,7 +27,7 @@ import {
   debounceTime,
   EMPTY,
   filter,
-  finalize,
+  finalize, forkJoin, of,
   startWith,
   Subject,
   Subscription,
@@ -100,6 +100,8 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
     {label: 'No', value: false}
   ];
 
+  drawableWindowTypes: string[] = [];
+
   debugIndex: number = 1;
 
   private selectedProductId!: string | null;
@@ -148,15 +150,35 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.apiService.getCollectionsData().pipe(
-      startWith(null),
-      tap(() => this.isCollectionsLoading = true),
-      finalize(() => this.isCollectionsLoading = false)
-    ).subscribe(collections => this.collections = collections);
-    this.setupPriceCalculationSubscription();
-    this.subscribeToFormChanges();
-    this.showFillFormButton = this.determineShowFillFormButton();
-    this.showPreviewButton = this.determineShowPreviewButton();
+    this.isCollectionsLoading = true;
+
+    forkJoin({
+      collections: this.apiService.getCollectionsData().pipe(
+        catchError(() => of({
+          product: [],
+          colors: [],
+          accessoryColors: [],
+          windowTypes: [],
+          openingTypes: [],
+          glassTypes: [],
+          crosspieces: []
+        }))
+      ),
+      windowTypes: this.windowApiService.getDrawableWindowTypes().pipe(
+        catchError(() => of([]))
+      )
+    })
+      .pipe(
+        finalize(() => this.isCollectionsLoading = false)
+      )
+      .subscribe(({collections, windowTypes}) => {
+        this.collections = collections;
+        this.drawableWindowTypes = windowTypes;
+        this.showPreviewButton = Array.isArray(windowTypes) && windowTypes.length > 0;
+        this.setupPriceCalculationSubscription();
+        this.subscribeToFormChanges();
+        this.showFillFormButton = this.determineShowFillFormButton();
+      });
   }
 
   ngAfterViewInit(): void {
@@ -226,15 +248,17 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
   isPreviewWindowRowValid(index: number): boolean {
     const row = this.windows.at(index) as FormGroup;
     if (!row) return false;
+
     const validRow = this.isWindowRowValid(index);
-    if (validRow) {
-      const windowType = row.get('windowType')?.value;
-      const {numOfDims} = this.collections?.windowTypes.find(value => value.id === windowType as unknown as string) as WindowType || {};
-      return numOfDims === 2;
-    } else {
+    if (!validRow) return false;
+
+    const windowType = row.get('windowType')?.value;
+
+    if (!this.drawableWindowTypes || this.drawableWindowTypes.length === 0) {
       return false;
     }
 
+    return this.drawableWindowTypes.includes(windowType);
   }
 
   // Helper function to check validity of a specific row by index
@@ -350,7 +374,8 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     return this.collections.windowTypes
-      .filter(color => color.materialForProduct.includes(this.selectedProductId as string));
+      .filter(type => type.materialForProduct.includes(this.selectedProductId as string))
+      .sort((a, b) => a.id.localeCompare(b.id));
   }
 
   // Add a new row to the windows FormArray
@@ -398,9 +423,10 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
     if (!row || row.invalid) return;
 
     const input = row.value;
+    const windowType = this.windowTypeList.find(type => type.id === input.windowType);
 
     this.windowApiService.drawWindow(input).subscribe({
-      next: (blob) => this.modalService.showPreviewModal(blob),
+      next: (blob) => this.modalService.showPreviewModal(windowType?.desc || '', blob),
     });
   }
 
@@ -1211,9 +1237,9 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  private determineShowPreviewButton(): boolean {
-    return this.determineShowFillFormButton();
-  }
+  // private determineShowPreviewButton(): boolean {
+  //   return this.determineShowFillFormButton();
+  // }
 
 }
 

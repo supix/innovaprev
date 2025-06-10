@@ -14,7 +14,16 @@ import type { Request as ExRequest, Response as ExResponse, RequestHandler, Rout
 const models: TsoaRoute.Models = {
     "WindowMaterialType": {
         "dataType": "refAlias",
-        "type": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["CAS"]},{"dataType":"enum","enums":["F1A"]},{"dataType":"enum","enums":["F2A"]},{"dataType":"enum","enums":["FIX"]},{"dataType":"enum","enums":["FLD"]},{"dataType":"enum","enums":["FLS"]},{"dataType":"enum","enums":["FRO"]},{"dataType":"enum","enums":["PF1A"]},{"dataType":"enum","enums":["PF2A"]},{"dataType":"enum","enums":["PRT1A"]},{"dataType":"enum","enums":["PRT2A"]},{"dataType":"enum","enums":["SIL"]},{"dataType":"enum","enums":["SLA"]},{"dataType":"enum","enums":["SLF"]},{"dataType":"enum","enums":["SRAF"]},{"dataType":"enum","enums":["SRLA"]},{"dataType":"enum","enums":["VAS"]}],"validators":{}},
+        "type": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["F1A"]},{"dataType":"enum","enums":["F2A"]},{"dataType":"enum","enums":["FIX"]},{"dataType":"enum","enums":["FLD"]},{"dataType":"enum","enums":["FLS"]},{"dataType":"enum","enums":["PF1A"]},{"dataType":"enum","enums":["PF2A"]},{"dataType":"enum","enums":["PRT1A"]},{"dataType":"enum","enums":["PRT2A"]},{"dataType":"enum","enums":["SIL"]},{"dataType":"enum","enums":["SLA"]},{"dataType":"enum","enums":["SLF"]},{"dataType":"enum","enums":["SRAF"]},{"dataType":"enum","enums":["SRLA"]},{"dataType":"enum","enums":["VASC"]},{"dataType":"enum","enums":["VASM"]},{"dataType":"enum","enums":["VAST"]}],"validators":{}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "GenericResponse_WindowMaterialType-Array_": {
+        "dataType": "refObject",
+        "properties": {
+            "data": {"dataType":"array","array":{"dataType":"refAlias","ref":"WindowMaterialType"},"required":true},
+            "message": {"dataType":"string"},
+        },
+        "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 };
@@ -34,6 +43,35 @@ export function RegisterRoutes(app: Router) {
 
 
     
+        const argsProjectsController_drawableWindow: Record<string, TsoaRoute.ParameterSchema> = {
+        };
+        app.get('/api/windows/drawableWindow',
+            ...(fetchMiddlewares<RequestHandler>(ProjectsController)),
+            ...(fetchMiddlewares<RequestHandler>(ProjectsController.prototype.drawableWindow)),
+
+            async function ProjectsController_drawableWindow(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsProjectsController_drawableWindow, request, response });
+
+                const controller = new ProjectsController();
+
+              await templateService.apiHandler({
+                methodName: 'drawableWindow',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         const argsProjectsController_drawWindowImage: Record<string, TsoaRoute.ParameterSchema> = {
                 height: {"in":"query","name":"height","required":true,"dataType":"double"},
                 width: {"in":"query","name":"width","required":true,"dataType":"double"},

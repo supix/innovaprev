@@ -26,12 +26,13 @@ export class ModalService {
     };
   }
 
-  showPreviewModal(image: Blob): void {
+  showPreviewModal(title: string, image: Blob): void {
     const componentRef: ComponentRef<PreviewModalComponent> = createComponent(PreviewModalComponent, {
       environmentInjector: this.appRef.injector,
     });
 
     componentRef.instance.imageBlob = image;
+    componentRef.instance.title = title;
     componentRef.changeDetectorRef.detectChanges();
 
     const element = componentRef.location.nativeElement;

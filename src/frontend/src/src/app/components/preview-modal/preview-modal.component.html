@@ -3,7 +3,7 @@
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Anteprima Finestra</h5>
+        <h5 class="modal-title">Anteprima Finestra <span class="small-title" *ngIf="title">{{title}}</span></h5>
         <button type="button" class="btn-close" aria-label="Close" (click)="close()"></button>
       </div>
       <div class="modal-body text-center">

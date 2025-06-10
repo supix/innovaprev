@@ -10,13 +10,11 @@
 			"WindowMaterialType": {
 				"type": "string",
 				"enum": [
-					"CAS",
 					"F1A",
 					"F2A",
 					"FIX",
 					"FLD",
 					"FLS",
-					"FRO",
 					"PF1A",
 					"PF2A",
 					"PRT1A",
@@ -26,8 +24,28 @@
 					"SLF",
 					"SRAF",
 					"SRLA",
-					"VAS"
+					"VASC",
+					"VASM",
+					"VAST"
 				]
+			},
+			"GenericResponse_WindowMaterialType-Array_": {
+				"properties": {
+					"data": {
+						"items": {
+							"$ref": "#/components/schemas/WindowMaterialType"
+						},
+						"type": "array"
+					},
+					"message": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"data"
+				],
+				"type": "object",
+				"additionalProperties": false
 			}
 		},
 		"securitySchemes": {}
@@ -42,6 +60,29 @@
 		"contact": {}
 	},
 	"paths": {
+		"/windows/drawableWindow": {
+			"get": {
+				"operationId": "DrawableWindow",
+				"responses": {
+					"200": {
+						"description": "List of window type codes.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/GenericResponse_WindowMaterialType-Array_"
+								}
+							}
+						}
+					}
+				},
+				"summary": "Returns all the codes of the window types managed by the application.",
+				"tags": [
+					"Windows"
+				],
+				"security": [],
+				"parameters": []
+			}
+		},
 		"/windows/drawWindow": {
 			"get": {
 				"operationId": "DrawWindowImage",
@@ -50,7 +91,7 @@
 						"description": "No content"
 					}
 				},
-				"description": "Generates a raster image of a window based on height, width, and material type\r\nand returns it as a PNG stream response.\r\n\r\nThe image is scaled proportionally to match the input dimensions\r\nand reflects the visual representation of the specified window material type:\r\n\r\n- 'CAS': Cassonetto\r\n- 'F1A': Finestra 1 Anta\r\n- 'F2A': Finestra 2 Ante\r\n- 'FIX': Fisso centrale\r\n- 'FLD': Fisso laterale destro\r\n- 'FLS': Fisso laterale sinistro\r\n- 'FRO': Frontalino\r\n- 'PF1A': Portafinestra 1 Anta\r\n- 'PF2A': Portafinestra 2 Ante\r\n- 'PRT1A': Portoncino 1 Anta\r\n- 'PRT2A': Portoncino 2 Ante\r\n- 'SIL': Scorrevole in linea\r\n- 'SLA': Sopraluce apribile\r\n- 'SLF': Sopraluce fisso\r\n- 'SRAF': Scorrevole ribalta con anta fissa\r\n- 'SRLA': Scorrevole ribalta con laterale apribile\r\n- 'VAS': Vasistas",
+				"description": "Generates a raster image of a window based on height, width, and material type\r\nand returns it as a PNG stream response.\r\n\r\nThe image is scaled proportionally to match the input dimensions\r\nand reflects the visual representation of the specified window material type:\r\n\r\n- 'CAS': Cassonetto\r\n- 'F1A': Finestra 1 Anta\r\n- 'F2A': Finestra 2 Ante\r\n- 'FIX': Fisso centrale\r\n- 'FLD': Fisso laterale destro\r\n- 'FLS': Fisso laterale sinistro\r\n- 'FRO': Frontalino\r\n- 'PF1A': Portafinestra 1 Anta\r\n- 'PF2A': Portafinestra 2 Ante\r\n- 'PRT1A': Portoncino 1 Anta\r\n- 'PRT2A': Portoncino 2 Ante\r\n- 'SIL': Scorrevole in linea\r\n- 'SLA': Sopraluce apribile\r\n- 'SLF': Sopraluce fisso\r\n- 'SRAF': Scorrevole ribalta con anta fissa\r\n- 'SRLA': Scorrevole ribalta con laterale apribile\r\n- 'VASC': Vasistas (apertura a cricchetto)\r\n- 'VASM': Vasistas (apertura a motore)\r\n- 'VAST': Vasistas (apertura a martellina)",
 				"summary": "Generate and download window raster image as PNG",
 				"tags": [
 					"Windows"

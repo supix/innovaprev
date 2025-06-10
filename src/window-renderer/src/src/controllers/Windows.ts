@@ -2,11 +2,37 @@ import { Controller, Get, Query, Request, Route, Tags } from "tsoa";
 import { Request as ExRequest } from "express";
 import { Readable } from "stream";
 import { DrawService } from '../services/draw.service';
-import { WindowMaterialType } from '../interfaces/windows/windows.type';
+import { WINDOW_MATERIAL_TYPES, WindowMaterialType } from '../interfaces/windows/windows.type';
+import { GenericResponse } from '../interfaces/generic-response.interface';
 
 @Route("windows")
 @Tags("Windows")
 export class ProjectsController extends Controller {
+
+    private readonly drawService: DrawService;
+
+    constructor() {
+        super();
+        this.drawService = new DrawService();
+    }
+
+    /**
+     * @summary Returns all the codes of the window types managed by the application.
+     * @returns {Promise<GenericResponse<WindowMaterialType[]>>} List of window type codes.
+     */
+    @Get('/drawableWindow')
+    public async drawableWindow(): Promise<GenericResponse<WindowMaterialType[]>> {
+        try {
+            this.setStatus(200);
+            return {
+                data: [...WINDOW_MATERIAL_TYPES]
+            };
+        } catch (error) {
+            this.setStatus(500);
+            throw error;
+        }
+    }
+
     /**
      * Generates a raster image of a window based on height, width, and material type
      * and returns it as a PNG stream response.
@@ -30,7 +56,9 @@ export class ProjectsController extends Controller {
      * - 'SLF': Sopraluce fisso
      * - 'SRAF': Scorrevole ribalta con anta fissa
      * - 'SRLA': Scorrevole ribalta con laterale apribile
-     * - 'VAS': Vasistas
+     * - 'VASC': Vasistas (apertura a cricchetto)
+     * - 'VASM': Vasistas (apertura a motore)
+     * - 'VAST': Vasistas (apertura a martellina)
      *
      * @summary Generate and download window raster image as PNG
      * @param height Height of the window in millimeters
@@ -81,13 +109,6 @@ export class ProjectsController extends Controller {
             this.setStatus(500);
             throw err;
         }
-    }
-
-    private readonly drawService: DrawService;
-
-    constructor() {
-        super();
-        this.drawService = new DrawService();
     }
 
 }

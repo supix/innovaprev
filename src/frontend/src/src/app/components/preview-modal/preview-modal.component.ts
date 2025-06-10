@@ -11,6 +11,7 @@ import { CommonModule } from '@angular/common';
 })
 export class PreviewModalComponent {
   @Input() imageBlob!: Blob;
+  @Input() title!: string;
 
   constructor(private sanitizer: DomSanitizer) {}
 
