@@ -46,6 +46,49 @@
 				],
 				"type": "object",
 				"additionalProperties": false
+			},
+			"WindowInputBatch": {
+				"properties": {
+					"height": {
+						"type": "number",
+						"format": "double"
+					},
+					"width": {
+						"type": "number",
+						"format": "double"
+					},
+					"materialType": {
+						"$ref": "#/components/schemas/WindowMaterialType"
+					},
+					"wireCover": {
+						"type": "boolean"
+					},
+					"openingType": {
+						"type": "string",
+						"enum": [
+							"OT_DX",
+							"OT_SX"
+						]
+					},
+					"glassType": {
+						"type": "string",
+						"enum": [
+							"GT_TRASPARENTE",
+							"GT_OPACO"
+						]
+					},
+					"position": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"height",
+					"width",
+					"materialType",
+					"position"
+				],
+				"type": "object",
+				"additionalProperties": false
 			}
 		},
 		"securitySchemes": {}
@@ -163,6 +206,38 @@
 						}
 					}
 				]
+			}
+		},
+		"/windows/drawWindowsBatch": {
+			"post": {
+				"operationId": "DrawWindowsBatch",
+				"responses": {
+					"204": {
+						"description": "No content"
+					}
+				},
+				"description": "Generates and downloads a ZIP archive containing raster images for a set of windows.\r\n\r\nEach image is scaled and named based on the input parameters.\r\nThe response is streamed as a ZIP file with one PNG per window.",
+				"summary": "Generate and download multiple window previews as ZIP",
+				"tags": [
+					"Windows"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"description": "Array of window parameters",
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"items": {
+									"$ref": "#/components/schemas/WindowInputBatch"
+								},
+								"type": "array",
+								"description": "Array of window parameters"
+							}
+						}
+					}
+				}
 			}
 		}
 	},

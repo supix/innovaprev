@@ -714,6 +714,13 @@
       <button class="btn btn-outline-secondary btn-sm" (click)="debugWindowRowValidators(debugIndex)">Debug Row</button>
     </div>
 
+    <ng-container *ngIf="showPreviewButton">
+      <div class="vr mx-3 d-none d-md-block" style="height: 40px;"></div>
+      <div class="d-flex align-items-center gap-2">
+        <button class="btn btn-outline-secondary btn-sm" [disabled]="!getWindowInputPayload().length" (click)="debugDownloadZip()">Download Zip</button>
+      </div>
+    </ng-container>
+
   </div>
 </div>
 

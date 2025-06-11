@@ -18,7 +18,7 @@ import {
   Colors,
   CustomPayload,
   PricePayload,
-  Quotation,
+  Quotation, WindowInputBatch,
   WindowsPayload,
   WindowType
 } from '../../models';
@@ -31,8 +31,7 @@ import {
   startWith,
   Subject,
   Subscription,
-  switchMap,
-  tap
+  switchMap
 } from 'rxjs';
 import { PriceDisplayComponent } from '../price-display/price-display.component';
 import {
@@ -559,6 +558,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
         a.href = url;
         a.download = `estimate-${timestamp}.pdf`;
         a.click();
+        a.remove();
         window.URL.revokeObjectURL(url);
       });
     } else {
@@ -1059,6 +1059,49 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
+  getWindowInputPayload(): WindowInputBatch[] {
+    if (!this.form.valid) return [];
+    const windowsPayload: WindowsPayload = this.buildWindowsPayload();
+    if (!windowsPayload?.windowsData?.length) return [];
+
+    return windowsPayload.windowsData
+      .filter(w => this.drawableWindowTypes.includes(w.windowType))
+      .map(w => ({
+        position: '' + w.position,
+        height: w.height,
+        width: w.width,
+        wireCover: w.wireCover,
+        materialType: w.windowType,
+        openingType: w.openingType as "OT_DX" | "OT_SX" | undefined,
+        glassType: w.glassType as "GT_TRASPARENTE" | "GT_OPACO" | undefined
+      }));
+  }
+
+  debugDownloadZip(): void {
+    if (!this.form.valid) return;
+    this.isLoading = true;
+    const payload: WindowInputBatch[] = this.getWindowInputPayload();
+    if (!payload.length) {
+      this.isLoading = false;
+      return;
+    }
+
+    this.windowApiService.drawWindowsBatch(payload).pipe(
+      finalize(() => this.isLoading = false)
+    ).subscribe((response) => {
+      const blob = new Blob([response], {type: 'application/zip'});
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `windows-${Date.now()}.zip`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    });
+  }
+
+
   debugWindowRowValidators(index: number): void {
     const row = this.windows.at(index - 1) as FormGroup;
 
@@ -1236,10 +1279,6 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
       return environment.enableFillFormButton ?? false;
     }
   }
-
-  // private determineShowPreviewButton(): boolean {
-  //   return this.determineShowFillFormButton();
-  // }
 
 }
 

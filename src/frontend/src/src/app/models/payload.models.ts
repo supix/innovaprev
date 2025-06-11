@@ -58,3 +58,13 @@ export interface WindowsPayload {
 export interface CustomPayload {
   customData: CustomRow[];
 }
+
+export interface WindowInputBatch {
+  position: string;
+  height: number;
+  width: number;
+  materialType: string;
+  wireCover?: boolean;
+  openingType?: 'OT_DX' | 'OT_SX';
+  glassType?: 'GT_TRASPARENTE' | 'GT_OPACO';
+}

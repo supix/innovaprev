@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { WindowRow } from '../models';
+import { WindowInputBatch, WindowRow } from '../models';
 
 @Injectable({
   providedIn: 'root',
@@ -42,6 +42,16 @@ export class WindowApiService {
     return this.http.get<GenericResponse<string[]>>(url).pipe(
       map(resp => resp.data)
     );
+  }
+
+  /**
+   * Requires batch ZIP of window images
+   * @param inputs Input list (WindowInputBatch[])
+   * @returns Observable<Blob> (ZIP)
+   */
+  drawWindowsBatch(inputs: WindowInputBatch[]): Observable<Blob> {
+    const url = `${this.baseUrl}${this.endpoints.windows}/drawWindowsBatch`;
+    return this.http.post(url, inputs, { responseType: 'blob' });
   }
 
 

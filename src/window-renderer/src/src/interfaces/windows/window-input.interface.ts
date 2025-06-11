@@ -1,10 +1,14 @@
 import { WindowMaterialType } from './windows.type';
 
 export interface WindowInput {
-  height: number;                // altezza in mm
-  width: number;                 // larghezza in mm
+  height: number;
+  width: number;
   materialType: WindowMaterialType;
-  wireCover?: boolean;           // presenza coprifilo (opzionale)
-  openingType?: 'OT_DX' | 'OT_SX'; // direzione apertura vetro (destra/sinistra)
-  glassType?: 'GT_TRASPARENTE' | 'GT_OPACO'; // tipo vetro
+  wireCover?: boolean;
+  openingType?: 'OT_DX' | 'OT_SX';
+  glassType?: 'GT_TRASPARENTE' | 'GT_OPACO';
+}
+
+export interface WindowInputBatch extends WindowInput {
+  position: string;
 }

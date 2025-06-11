@@ -26,6 +26,20 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "WindowInputBatch": {
+        "dataType": "refObject",
+        "properties": {
+            "height": {"dataType":"double","required":true},
+            "width": {"dataType":"double","required":true},
+            "materialType": {"ref":"WindowMaterialType","required":true},
+            "wireCover": {"dataType":"boolean"},
+            "openingType": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["OT_DX"]},{"dataType":"enum","enums":["OT_SX"]}]},
+            "glassType": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["GT_TRASPARENTE"]},{"dataType":"enum","enums":["GT_OPACO"]}]},
+            "position": {"dataType":"string","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 };
 const templateService = new ExpressTemplateService(models, {"noImplicitAdditionalProperties":"throw-on-extras","bodyCoercion":true});
 
@@ -97,6 +111,37 @@ export function RegisterRoutes(app: Router) {
 
               await templateService.apiHandler({
                 methodName: 'drawWindowImage',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsProjectsController_drawWindowsBatch: Record<string, TsoaRoute.ParameterSchema> = {
+                inputs: {"in":"body","name":"inputs","required":true,"dataType":"array","array":{"dataType":"refObject","ref":"WindowInputBatch"}},
+                request: {"in":"request","name":"request","required":true,"dataType":"object"},
+        };
+        app.post('/api/windows/drawWindowsBatch',
+            ...(fetchMiddlewares<RequestHandler>(ProjectsController)),
+            ...(fetchMiddlewares<RequestHandler>(ProjectsController.prototype.drawWindowsBatch)),
+
+            async function ProjectsController_drawWindowsBatch(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsProjectsController_drawWindowsBatch, request, response });
+
+                const controller = new ProjectsController();
+
+              await templateService.apiHandler({
+                methodName: 'drawWindowsBatch',
                 controller,
                 response,
                 next,
