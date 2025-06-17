@@ -17,7 +17,7 @@
       "src/public",
       "src/routes.ts"
     ],
-    "exec": "npx tsoa spec-and-routes && ts-node -r tsconfig-paths/register ./src"
+    "exec": "npx tsoa spec-and-routes && ts-node -r tsconfig-paths/register ./src/index.ts"
   },
   "keywords": [],
   "author": "",
