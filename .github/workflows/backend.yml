@@ -50,7 +50,7 @@ jobs:
             echo ${{ secrets.HOST_PWD }} | sudo -S docker pull supix/innovaprev_be:latest
             echo ${{ secrets.HOST_PWD }} | sudo -S docker network inspect be_nw >/dev/null 2>&1 || echo ${{ secrets.HOST_PWD }} | docker network create be_nw
             echo ${{ secrets.HOST_PWD }} | sudo -S docker run -d \
-              --network=be_nw \
+              --network=be_nw --network=wr_nw \
               --name=${{ env.BE_CNT_NAME }} \
               -e wir_serverUri=${{ env.WIR_SERVERURI }} \
               --restart=unless-stopped \
