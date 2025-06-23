@@ -35,4 +35,4 @@ jobs:
           script: |
             echo ${{ secrets.HOST_PWD }} | sudo -S docker rm -f ${{ env.WR_CNT_NAME }}
             echo ${{ secrets.HOST_PWD }} | sudo -S docker pull supix/innovaprev_wr:latest
-            echo ${{ secrets.HOST_PWD }} | sudo -S docker run -d --network=wr_nw --name=${{ env.WR_CNT_NAME }} -e NODE_ENV=production -e wir_serverUri=${{ env.WIR_SERVERURI }} --restart=unless-stopped supix/innovaprev_wr:latest
+            echo ${{ secrets.HOST_PWD }} | sudo -S docker run -d --network=wr_nw --name=${{ env.WR_CNT_NAME }} -e NODE_ENV=production --restart=unless-stopped supix/innovaprev_wr:latest
