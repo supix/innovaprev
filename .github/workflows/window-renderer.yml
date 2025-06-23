@@ -26,15 +26,13 @@ jobs:
       - name: Pull newly published image and restart the container
         env:
           WR_CNT_NAME: ${{ github.ref_name == 'qa' && 'wr_qa' || 'wr_prod' }}
+          WIR_SERVERURI: ${{ env.WR_CNT_NAME }}:5000
         uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.HOST_ADDR }}
           username: ${{ secrets.HOST_USER }}
           key: ${{ secrets.HOST_KEY }}
           script: |
-            echo ${{ secrets.HOST_PWD }} | sudo -S docker rm -f ${{ env.WR_CNT_NAME }}1
+            echo ${{ secrets.HOST_PWD }} | sudo -S docker rm -f ${{ env.WR_CNT_NAME }}
             echo ${{ secrets.HOST_PWD }} | sudo -S docker pull supix/innovaprev_wr:latest
-            echo ${{ secrets.HOST_PWD }} | sudo -S docker run -d --network=wr_nw --name=${{ env.WR_CNT_NAME }}1 -eNODE_ENV=production --restart=unless-stopped supix/innovaprev_wr:latest
-            sleep 15
-            echo ${{ secrets.HOST_PWD }} | sudo -S docker rm -f ${{ env.WR_CNT_NAME }}2
-            echo ${{ secrets.HOST_PWD }} | sudo -S docker run -d --network=wr_nw --name=${{ env.WR_CNT_NAME }}2 -eNODE_ENV=production  --restart=unless-stopped supix/innovaprev_wr:latest
+            echo ${{ secrets.HOST_PWD }} | sudo -S docker run -d --network=wr_nw --name=${{ env.WR_CNT_NAME }} -e NODE_ENV=production -e wir_serverUri=${{ env.WIR_SERVERURI }} --restart=unless-stopped supix/innovaprev_wr:latest
