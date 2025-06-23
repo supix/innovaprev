@@ -52,6 +52,6 @@ jobs:
             echo ${{ secrets.HOST_PWD }} | sudo -S docker run -d \
               --network=be_nw --network=wr_nw \
               --name=${{ env.BE_CNT_NAME }} \
-              -e wir_serverUri=${{ env.WR_CNT_NAME }}:${{ env.WIR_PORT }} \
+              -e wir_serverUri=http://${{ env.WR_CNT_NAME }}:${{ env.WIR_PORT }} \
               --restart=unless-stopped \
               supix/innovaprev_be:latest
