@@ -7,7 +7,8 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "IMAGES_BASE_URL": "https://localhost/images",
-        "STAGE": "test"
+        "STAGE": "test",
+        "wir_serverUri": "http://localhost:3000"
       },
       "dotnetRunMessages": true,
       "applicationUrl": "http://localhost:5006"

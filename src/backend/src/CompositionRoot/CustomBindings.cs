@@ -18,7 +18,9 @@ namespace CompositionRoot
             container.Register<ICollectionProvider, CollectionProviderImpl>();
 
             container.Register<IProductImageProvider, FromResources>();
-            container.Register<IWindowImageRenderer>(() => new WindowImageRenderer("http://localhost:3000/api/windows"));
+
+            string windowImageRenderer_serverUri = Environment.GetEnvironmentVariable("wir_serverUri")!;
+            container.Register<IWindowImageRenderer>(() => new WindowImageRenderer(windowImageRenderer_serverUri));
         }
     }
 }

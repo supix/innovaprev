@@ -13,16 +13,16 @@ namespace WindowImageRenderer_WebService
 {
     class WindowImageRenderer : IWindowImageRenderer
     {
-        private readonly string baseUri;
+        private readonly string serverUri;
         private string[]? allowedMaterials = null;
-        public WindowImageRenderer(string baseUri)
+        public WindowImageRenderer(string serverUri)
         {
-            if (string.IsNullOrWhiteSpace(baseUri))
+            if (string.IsNullOrWhiteSpace(serverUri))
             {
-                throw new ArgumentException($"'{nameof(baseUri)}' non può essere Null o uno spazio vuoto.", nameof(baseUri));
+                throw new ArgumentException($"'{nameof(serverUri)}' non può essere Null o uno spazio vuoto.", nameof(serverUri));
             }
 
-            this.baseUri = baseUri;
+            this.serverUri = serverUri;
         }
 
         public bool CanRender(string materialType)
@@ -33,7 +33,7 @@ namespace WindowImageRenderer_WebService
 
         public byte[] Render(long height_mm, long width_mm, string materialType, bool wireCover, string openingType, string glassType)
         {
-            const string apiPath = "/drawWindow";
+            const string apiPath = "/api/windows/drawWindow";
 
             NameValueCollection queryString = HttpUtility.ParseQueryString(string.Empty);
             queryString.Add("height", height_mm.ToString());
@@ -43,7 +43,7 @@ namespace WindowImageRenderer_WebService
             queryString.Add("openingType", openingType);
             queryString.Add("glassType", glassType);
 
-            Uri uri = new Uri($"{baseUri}{apiPath}?{queryString.ToString()}");
+            Uri uri = new Uri($"{serverUri}{apiPath}?{queryString.ToString()}");
 
             using var client = new HttpClient();
             byte[] imageBytes = client.GetByteArrayAsync(uri).Result;
@@ -52,12 +52,12 @@ namespace WindowImageRenderer_WebService
 
         private void loadAllowedMaterials()
         {
-            const string apiPath = "/drawableWindow";
+            const string apiPath = "/api/windows/drawableWindow";
 
             if (this.allowedMaterials != null)
                 return;
 
-            Uri uri = new Uri($"{baseUri}{apiPath}");
+            Uri uri = new Uri($"{serverUri}{apiPath}");
 
             using var client = new HttpClient();
             var response = client.GetAsync(uri).Result;
