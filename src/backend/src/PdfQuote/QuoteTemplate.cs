@@ -5,6 +5,7 @@ using DomainModel.Classes.Products;
 using DomainModel.Services;
 using DomainModel.Services.CollectionsProvider;
 using DomainModel.Services.PriceCalculator;
+using DomainModel.Services.WindowImageRenderer;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
@@ -17,13 +18,15 @@ namespace PdfQuote
         private readonly PriceInfo priceInfo;
         private readonly ICollectionProvider collectionProvider;
         private readonly IProductImageProvider imageProvider;
+        private readonly IWindowImageRenderer wir;
 
-        public QuoteTemplate(Project project, PriceInfo priceInfo, ICollectionProvider collectionProvider, IProductImageProvider imageProvider)
+        public QuoteTemplate(Project project, PriceInfo priceInfo, ICollectionProvider collectionProvider, IProductImageProvider imageProvider, IWindowImageRenderer wir)
         {
             this.project = project ?? throw new ArgumentNullException(nameof(project));
             this.priceInfo = priceInfo ?? throw new ArgumentNullException(nameof(priceInfo));
             this.collectionProvider = collectionProvider ?? throw new ArgumentNullException(nameof(collectionProvider));
             this.imageProvider = imageProvider ?? throw new ArgumentNullException(nameof(imageProvider));
+            this.wir = wir ?? throw new ArgumentNullException(nameof(wir));
         }
         public void Compose(IDocumentContainer container)
         {
@@ -114,7 +117,7 @@ namespace PdfQuote
                     long m2 = wd.Width;
                     var material = MaterialFactory.CreateByCode(wd.WindowType, m1, m2, (wd.OpeningType != null && wd.OpeningType.Contains("SX")) ? "SX" : "DX", wd.GlassType == "GT_OPACO", wd.WireCover);
 
-                    var component = PdfComponentFactory.CreateComponent(++idx, material, wd, detailPrice, product.TrimSectionVisible);
+                    var component = PdfComponentFactory.CreateComponent(++idx, material, wd, detailPrice, product.TrimSectionVisible, wir);
                     column.Item()
                         .BorderBottom(1)
                         .BorderColor(Colors.Grey.Lighten2)

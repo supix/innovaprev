@@ -1,9 +1,11 @@
 ﻿using DomainModel.Services;
 using DomainModel.Services.CollectionsProvider;
 using DomainModel.Services.PriceCalculator;
+using DomainModel.Services.WindowImageRenderer;
 using PdfQuote;
 using ProductImages;
 using SimpleInjector;
+using WindowImageRenderer_WebService;
 
 namespace CompositionRoot
 {
@@ -15,8 +17,8 @@ namespace CompositionRoot
             container.Register<IPriceCalculator, PriceCalculatorImpl>();
             container.Register<ICollectionProvider, CollectionProviderImpl>();
 
-            // container.Register<IImageProvider, ImageProvider_Fake>();
             container.Register<IProductImageProvider, FromResources>();
+            container.Register<IWindowImageRenderer>(() => new WindowImageRenderer("http://localhost:3000/api/windows"));
         }
     }
 }

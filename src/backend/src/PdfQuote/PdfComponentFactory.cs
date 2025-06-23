@@ -2,16 +2,17 @@
 using DomainModel.Classes.Materials;
 using DomainModel.Classes.Materials.ConcreteMaterials;
 using DomainModel.Services.PriceCalculator;
+using DomainModel.Services.WindowImageRenderer;
 using QuestPDF.Infrastructure;
 
 namespace PdfQuote
 {
     internal static class PdfComponentFactory
     {
-        internal static IComponent CreateComponent(int idx, IMaterial material, WindowsData wd, DetailPrice detailPrice, bool trimSectionVisible)
+        internal static IComponent CreateComponent(int idx, IMaterial material, WindowsData wd, DetailPrice detailPrice, bool trimSectionVisible, IWindowImageRenderer wir)
         {
             if (material is DoubleDimMaterial)
-                return new DoubleDimMaterialPdfComponent(idx, (material as DoubleDimMaterial)!, wd, detailPrice, trimSectionVisible);
+                return new DoubleDimMaterialPdfComponent(idx, (material as DoubleDimMaterial)!, wd, detailPrice, trimSectionVisible, wir);
 
             if (material is SingleDimMaterial)
                 return new SingleDimMaterialPdfComponent(idx, (material as SingleDimMaterial)!, wd, detailPrice, trimSectionVisible);

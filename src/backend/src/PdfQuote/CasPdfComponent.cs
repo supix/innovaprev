@@ -29,33 +29,40 @@ namespace PdfQuote
 
         public void Compose(IContainer container)
         {
-            container.Column(c =>
+            container.Row(row =>
             {
-                c.Spacing(3);
+                row.Spacing(10);
 
-                // Type
-                c.Item().DefaultTextStyle(x => x.FontSize(16)).Row(r =>
+                row.ConstantItem(100).Text(string.Empty);
+
+                row.RelativeItem().Column(c =>
                 {
-                    r.ConstantItem(25).Text($"{index.ToString()}.");
-                    r.RelativeItem(1).Text($"{cas.Description}");
-                });
+                    c.Spacing(3);
 
-                // Lengths
-                c.Item().Row(r =>
-                {
-                    r.ConstantItem(25).Text(string.Empty);
-                    r.RelativeItem(2).Text($"q.tà: {this.wd.Quantity}");
+                    // Type
+                    c.Item().DefaultTextStyle(x => x.FontSize(16)).Row(r =>
+                    {
+                        r.ConstantItem(25).Text($"{index.ToString()}.");
+                        r.RelativeItem(1).Text($"{cas.Description}");
+                    });
 
-                    // Height + Width or Length
-                    r.RelativeItem(3).Text($"L (mm): {cas.Width_mm}");
-                    r.RelativeItem(3).Text($"H (mm): {cas.Height_mm}");
-                });
+                    // Lengths
+                    c.Item().Row(r =>
+                    {
+                        r.ConstantItem(25).Text(string.Empty);
+                        r.RelativeItem(2).Text($"q.tà: {this.wd.Quantity}");
 
-                // Prices
-                c.Item().Row(r =>
-                {
-                    r.RelativeItem(4).Text(string.Empty);
-                    r.RelativeItem(2).AlignRight().Text($"{detailPrice.NetPrice:c}").Bold();
+                        // Height + Width or Length
+                        r.RelativeItem(3).Text($"L (mm): {cas.Width_mm}");
+                        r.RelativeItem(3).Text($"H (mm): {cas.Height_mm}");
+                    });
+
+                    // Prices
+                    c.Item().Row(r =>
+                    {
+                        r.RelativeItem(4).Text(string.Empty);
+                        r.RelativeItem(2).AlignRight().Text($"{detailPrice.NetPrice:c}").Bold();
+                    });
                 });
             });
         }

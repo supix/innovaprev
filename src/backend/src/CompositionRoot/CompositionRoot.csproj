@@ -14,6 +14,7 @@
     <ProjectReference Include="..\DomainModel\DomainModel.csproj" />
     <ProjectReference Include="..\PdfQuote\PdfQuote.csproj" />
     <ProjectReference Include="..\ProductImages\ProductImages.csproj" />
+    <ProjectReference Include="..\WindowImageRenderer_WebService\WindowImageRenderer_WebService.csproj" />
   </ItemGroup>
 
 </Project>

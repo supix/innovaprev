@@ -17,9 +17,9 @@ namespace PdfQuote
 
         public SingleDimMaterialPdfComponent(
             int index,
-            SingleDimMaterial sdm, 
+            SingleDimMaterial sdm,
             WindowsData wd,
-            DetailPrice detailPrice, 
+            DetailPrice detailPrice,
             bool trimSectionVisible)
         {
             this.index = index;
@@ -31,7 +31,13 @@ namespace PdfQuote
 
         public void Compose(IContainer container)
         {
-            container.Column(c =>
+            container.Row(row =>
+            {
+                row.Spacing(10);
+
+                row.ConstantItem(100).Text(string.Empty);
+
+                row.RelativeItem().Column(c =>
             {
                 c.Spacing(3);
 
@@ -58,6 +64,7 @@ namespace PdfQuote
                     r.RelativeItem(4).Text(string.Empty);
                     r.RelativeItem(2).AlignRight().Text($"{detailPrice.NetPrice:c}").Bold();
                 });
+            });
             });
         }
     }

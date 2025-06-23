@@ -17,19 +17,28 @@ namespace PdfQuote
 
         public void Compose(IContainer container)
         {
-            container.Column(c =>
+            container.Row(row =>
             {
-                c.Item().DefaultTextStyle(x => x.FontSize(16)).Row(r =>
-                {
-                    r.ConstantItem(25).Text($"{index.ToString()}.");
-                    r.RelativeItem(3).Text(customData.Description);
-                });
+                row.Spacing(10);
 
-                c.Item().Row(r =>
+                row.ConstantItem(100).Text(string.Empty);
+
+                row.RelativeItem().Column(c =>
                 {
-                    r.ConstantItem(25).Text(string.Empty);
-                    r.RelativeItem(2).Text(customData.Quantity);
-                    r.RelativeItem(2).AlignRight().Text($"{customData.Price:c}").Bold();
+                    c.Spacing(3);
+
+                    c.Item().DefaultTextStyle(x => x.FontSize(16)).Row(r =>
+                    {
+                        r.ConstantItem(25).Text($"{index.ToString()}.");
+                        r.RelativeItem(3).Text(customData.Description);
+                    });
+
+                    c.Item().Row(r =>
+                    {
+                        r.ConstantItem(25).Text(string.Empty);
+                        r.RelativeItem(2).Text(customData.Quantity);
+                        r.RelativeItem(2).AlignRight().Text($"{customData.Price:c}").Bold();
+                    });
                 });
             });
         }
