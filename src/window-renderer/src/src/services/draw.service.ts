@@ -46,8 +46,44 @@ export class DrawService {
         ctx.translate(borderSize, borderSize);
 
         // Vetro (sfondo)
-        ctx.fillStyle = input.glassType === 'GT_OPACO' ? '#ccc' : '#cfefff';
+        ctx.fillStyle = '#cfefff'; // colore di base per entrambi
         ctx.fillRect(0, 0, width * this.scale, height * this.scale);
+
+        if (input.glassType === 'GT_OPACO') {
+            const glassW = width * this.scale;
+            const glassH = height * this.scale;
+
+            ctx.save();
+
+            // Definisci area del vetro come clipping region
+            ctx.beginPath();
+            ctx.rect(0, 0, glassW, glassH);
+            ctx.clip();
+
+            ctx.strokeStyle = '#aaa';
+            ctx.lineWidth = 0.5;
+            const spacing = 6;
+
+            // Diagonale ↘
+            for (let x = -glassH; x < glassW; x += spacing) {
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x + glassH, glassH);
+                ctx.stroke();
+            }
+
+            // Diagonale ↙
+            for (let x = 0; x < glassW + glassH; x += spacing) {
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x - glassH, glassH);
+                ctx.stroke();
+            }
+
+            ctx.restore();
+        }
+
+
 
         // Telaio tecnico
         this.drawTechnicalFrame(ctx, width * this.scale, height * this.scale);
