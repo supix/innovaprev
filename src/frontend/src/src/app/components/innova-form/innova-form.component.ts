@@ -442,7 +442,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.form.valid && this.quotation) {
       this.submitted = false;
       const payload: BillingPayload = this.buildBillingPayload();
-      this.toastr.info(`Preventivo ${this.quoteId ? 'aggiornato' : 'salvato'} correttamente.`, 'Successo', {
+      this.toastr.success(`Preventivo ${this.quoteId ? 'aggiornato' : 'salvato'} correttamente.`, 'Successo', {
         toastClass: 'custom-toastr ngx-toastr',
       });
       this.quoteId = this.savedQuotesService.upsert(this.quoteId, payload, this.quotation);
@@ -473,7 +473,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
     this.onReset();
     this.restoreCachedSupplierData();
     this.toastr.info('Inserisci i dati per un nuovo preventivo.', 'Nuovo Preventivo', {
-      toastClass: 'custom-toastr ngx-toastr',
+      toastClass: 'custom-toastr ngx-toastr'
     });
   }
 
