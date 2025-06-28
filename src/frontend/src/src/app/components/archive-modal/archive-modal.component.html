@@ -1,0 +1,46 @@
+<div class="modal-backdrop fade show"></div>
+<div class="modal fade show" tabindex="-1" role="dialog" style="display: block;" id="app-preview-modal">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Preventivi salvati</h5>
+        <button type="button" class="btn-close" aria-label="Close" (click)="close()"></button>
+      </div>
+      <div class="modal-body">
+
+        <ng-container *ngIf="quotes.length > 0; else noQuotes">
+          <div class="table-responsive">
+            <table class="table table-sm align-middle">
+              <tbody>
+              <tr *ngFor="let item of quotes">
+                <td>
+                  <div class="fw-semibold">{{ item.billingPayload.customerData.companyName }}</div>
+                  <div class="text-muted small">
+                    {{ item.createdAt | date:'dd/MM/yyyy HH:mm' }} • {{ item.updatedAt | date:'dd/MM/yyyy HH:mm' }}
+                  </div>
+                </td>
+                <td class="text-end align-middle fw-semibold">
+                  {{ item.quotation.amount | currency:'EUR':'symbol':'1.2-2' }}
+                </td>
+                <td class="text-end align-middle">
+                  <a href="#" class="text-decoration-none me-3" (click)="openItem(item); $event.preventDefault()">Apri</a>
+                  <a href="#" class="text-danger text-decoration-none" (click)="deleteItem(item); $event.preventDefault()">Elimina</a>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="text-end mt-3">
+            <button class="btn btn-outline-danger btn-sm" (click)="deleteAll()">Elimina tutti i preventivi</button>
+          </div>
+        </ng-container>
+
+        <ng-template #noQuotes>
+          <p class="text-muted text-center my-4">Nessun preventivo salvato al momento.</p>
+        </ng-template>
+
+      </div>
+    </div>
+  </div>
+</div>

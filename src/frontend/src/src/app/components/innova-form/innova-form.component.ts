@@ -47,6 +47,8 @@ import { environment } from '../../../environments/environment';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { WindowApiService } from '../../services/window-api.service';
 import { ModalService } from '../../services/modal.service';
+import { SavedQuote, SavedQuotesService } from '../../services/saved-quotes.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-innova-form',
@@ -86,6 +88,8 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
 
   debugIndex: number = 1;
 
+  quoteId: string | null = null;
+
   private isLoading: boolean = false;
   private selectedProductId!: string | null;
   private calculatePriceSubject = new Subject<PricePayload | null>();
@@ -109,7 +113,8 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
 
   constructor(private sanitizer: DomSanitizer, private fb: FormBuilder,
               private config: NgSelectConfig, private apiService: ApiService,
-              private windowApiService: WindowApiService, private modalService: ModalService) {
+              private windowApiService: WindowApiService, private modalService: ModalService,
+              private savedQuotesService: SavedQuotesService, private toastr: ToastrService) {
     this.config.bindLabel = 'desc';
     this.config.bindValue = 'id';
     this.config.notFoundText = 'Nessun elemento trovato';
@@ -150,11 +155,6 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit(): void {
     this.isCollectionsLoading = true;
-    const cached = localStorage.getItem('cachedSupplierData');
-    if (cached) {
-      const data = JSON.parse(cached);
-      this.fillSupplierForm(data);
-    }
     forkJoin({
       collections: this.apiService.getCollectionsData().pipe(
         catchError(() => of({
@@ -181,6 +181,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
         this.setupPriceCalculationSubscription();
         this.subscribeToFormChanges();
         this.subscribeToSupplierDataChanges();
+        this.restoreCachedSupplierData();
         this.showFillFormButton = this.determineShowFillFormButton();
       });
   }
@@ -436,6 +437,45 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
+  saveQuotes(): void {
+    this.submitted = true;
+    if (this.form.valid && this.quotation) {
+      this.submitted = false;
+      const payload: BillingPayload = this.buildBillingPayload();
+      this.toastr.info(`Preventivo ${this.quoteId ? 'aggiornato' : 'salvato'} correttamente.`, 'Successo', {
+        toastClass: 'custom-toastr ngx-toastr',
+      });
+      this.quoteId = this.savedQuotesService.upsert(this.quoteId, payload, this.quotation);
+    } else {
+      this.showWarningToastr();
+      this.markAllTouchedAndValidate();
+    }
+  }
+
+  async openModalArchive(): Promise<void> {
+    const id = await this.modalService.showArchiveModal();
+    if (!id) return;
+    this.quoteId = id;
+    const item = this.savedQuotesService.getById(id);
+    if (!item) {
+      console.warn('Preventivo non trovato!');
+      return;
+    }
+    this.toastr.info('Preventivo caricato con successo.', 'Caricamento completato', {
+      toastClass: 'custom-toastr ngx-toastr',
+    });
+    this.patchFormFromQuote(item);
+  }
+
+  newQuote(): void {
+    this.submitted = false;
+    this.quoteId = null;
+    this.onReset();
+    this.restoreCachedSupplierData();
+    this.toastr.info('Inserisci i dati per un nuovo preventivo.', 'Nuovo Preventivo', {
+      toastClass: 'custom-toastr ngx-toastr',
+    });
+  }
 
   // Updates the value of the `position` field for each row in the FormArray.
   updateWindowPositions(): void {
@@ -567,8 +607,12 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
         a.click();
         a.remove();
         window.URL.revokeObjectURL(url);
+        this.toastr.info('Download del preventivo completato.', 'Scaricato', {
+          toastClass: 'custom-toastr ngx-toastr',
+        });
       });
     } else {
+      this.showWarningToastr();
       this.markAllTouchedAndValidate();
     }
   }
@@ -774,6 +818,79 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
     this.calculatePriceSubject.next(null);
   }
 
+  private showWarningToastr(): void {
+    this.toastr.warning('Alcuni campi del preventivo non sono stati compilati.', 'Attenzione', {
+      toastClass: 'custom-toastr ngx-toastr',
+    });
+  }
+
+  private patchFormFromQuote(item: SavedQuote): void {
+    if (!this.collections) {
+      console.error('Collections non caricate');
+      return;
+    }
+
+    const { billingPayload } = item;
+
+    const product = billingPayload.productData?.product;
+    const productExists = !!this.collections.product.find(p => p.id === product);
+
+    if (!productExists) {
+      console.warn('Prodotto non più disponibile:', product);
+      return;
+    }
+
+    this.onReset();
+
+    this.onChangeProduct(product);
+
+    this.form.patchValue({
+      supplierData: billingPayload.supplierData,
+      customerData: billingPayload.customerData,
+      productData: billingPayload.productData
+    });
+    this.windows.removeAt(0);
+
+    billingPayload.windowsData.forEach( (win, i) => {
+        const row = this.fb.group({
+          position: [win.position],
+          height: [win.height],
+          width: [win.width],
+          length: [win.length],
+          quantity: [win.quantity],
+          windowType: [win.windowType],
+          openingType: [win.openingType],
+          glassType: [win.glassType],
+          wireCover: [win.wireCover],
+          leftTrim: [win.leftTrim],
+          rightTrim: [win.rightTrim],
+          upperTrim: [win.upperTrim],
+          belowThreshold: [win.belowThreshold]
+        });
+        this.windows.push(row);
+        this.subscribeToWindowRowValueChanges(row, i);
+    });
+
+    this.updateWindowPositions();
+
+
+    billingPayload.customData.forEach((comp, i) => {
+      const row = this.fb.group({
+        position: [comp.position],
+        quantity: [comp.quantity],
+        description: [comp.description],
+        price: [comp.price]
+      });
+      this.customData.push(row);
+      this.subscribeToCustomRowValueChanges(row, i);
+    });
+    this.updateCustomPositions();
+
+    this.hasTriggeredWindowsValidation = false;
+    this.hasTriggeredCustomValidation = false;
+  }
+
+
   private fillSupplierForm(data: any): void {
     this.supplierData.patchValue({
       companyName: data.companyName || '',
@@ -785,6 +902,13 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
+  private restoreCachedSupplierData(): void {
+    const cached = localStorage.getItem('cachedSupplierData');
+    if (cached) {
+      const data = JSON.parse(cached);
+      this.fillSupplierForm(data);
+    }
+  }
 
   // Handler to calculate the price based on valid rows
   private calculatePriceHandler(): void {
@@ -1119,7 +1243,6 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
       window.URL.revokeObjectURL(url);
     });
   }
-
 
   debugWindowRowValidators(index: number): void {
     const row = this.windows.at(index - 1) as FormGroup;

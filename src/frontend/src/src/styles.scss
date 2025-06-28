@@ -1,5 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
 @import 'custom-variables.scss';
+@import 'ngx-toastr/toastr';
 
 .btn-primary {
   background-color: $primary;
@@ -103,7 +104,7 @@
   height: 16px !important;
 }
 
-.icon-download-pdf {
+.icon-default {
   width: 32px;
   height: 32px;
   color: white;
@@ -111,3 +112,28 @@
   stroke: currentColor;
 }
 
+.btn-secondary-light {
+  background-color: #adb5bd; /* grigio chiaro - Bootstrap gray-600 */
+  color: white;
+  border: none;
+}
+
+.btn-secondary-light:hover {
+  background-color: #6c757d; /* colore standard btn-secondary */
+}
+
+.custom-toastr {
+  border-radius: 0.75rem!important;
+
+  width: 340px!important;
+}
+
+.toast-warning {
+  background-color: #CC594D !important;
+}
+
+.toast-info {
+  background-color: #d4edda!important;
+  color: #155724!important;
+  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCA1MTIgNTEyJyB3aWR0aD0nNTEyJyBoZWlnaHQ9JzUxMic+PHBhdGggZmlsbD0nIzE1NTcyNCcgZD0nTTI1NiA4QzExOS4wNDMgOCA4IDExOS4wODMgOCAyNTZjMCAxMzYuOTk3IDExMS4wNDMgMjQ4IDI0OCAyNDhzMjQ4LTExMS4wMDMgMjQ4LTI0OEM1MDQgMTE5LjA4MyAzOTIuOTU3IDggMjU2IDh6bTAgMTEwYzIzLjE5NiAwIDQyIDE4LjgwNCA0MiA0MnMtMTguODA0IDQyLTQyIDQyLTQyLTE4LjgwNC00Mi00MiAxOC44MDQtNDIgNDItNDJ6bTU2IDI1NGMwIDYuNjI3LTUuMzczIDEyLTEyIDEyaC04OGMtNi42MjcgMC0xMi01LjM3My0xMi0xMnYtMjRjMC02LjYyNyA1LjM3My0xMiAxMi0xMmgxMnYtNjRoLTEyYy02LjYyNyAwLTEyLTUuMzczLTEyLTEydi0yNGMwLTYuNjI3IDUuMzczLTEyIDEyLTEyaDY0YzYuNjI3IDAgMTIgNS4zNzMgMTIgMTJ2MTAwaDEyYzYuNjI3IDAgMTIgNS4zNzMgMTIgMTJ2MjR6Jy8+PC9zdmc+")!important;
+}

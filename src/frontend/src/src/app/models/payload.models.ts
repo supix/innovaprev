@@ -36,6 +36,7 @@ export interface WindowRow {
 }
 
 export interface CustomRow {
+  position: string;
   description: string;
   quantity: string;
   price: number;

@@ -32,7 +32,8 @@
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "node_modules/@ng-select/ng-select/themes/default.theme.css",
               "src/styles.scss",
-              "src/custom-variables.scss"
+              "src/custom-variables.scss",
+              "node_modules/ngx-toastr/toastr.css"
             ],
             "scripts": [
               "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"

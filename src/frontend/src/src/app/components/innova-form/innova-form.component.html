@@ -1,15 +1,40 @@
 <div class="container mt-3">
   <!-- Header -->
   <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
-    <div class="order-2 order-md-1 mb-2 mb-md-0 mx-4 text-center text-md-start d-grid d-md-block">
-      <button class="btn btn-secondary" (mouseenter)="onEnterTooltip($event, 'tooltip-download-pdf')"
+    <div class="order-2 order-md-1 mb-2 mb-md-0 mx-md-4 text-center text-md-start d-md-block">
+      <button class="btn btn-secondary me-2" (mouseenter)="onEnterTooltip($event, 'tooltip-download-pdf')"
               (mouseleave)="onLeaveTooltip('tooltip-download-pdf')" (click)="downloadPdf()"
               [disabled]="hasErrorsAndNotLoading()">
-        <svg class="icon-download-pdf">
+        <svg class="icon-default">
           <use xlink:href="#icon-download-pdf"></use>
         </svg>
       </button>
       <div class="tooltip" [id]="'tooltip-download-pdf'">Scarica il preventivo in PDF
+      </div>
+      <button class="btn btn-secondary me-2" (mouseenter)="onEnterTooltip($event, 'tooltip-save')"
+              (mouseleave)="onLeaveTooltip('tooltip-save')" (click)="saveQuotes()"
+              [disabled]="hasErrorsAndNotLoading()">
+        <svg class="icon-default">
+          <use xlink:href="#icon-save"></use>
+        </svg>
+      </button>
+      <div class="tooltip" [id]="'tooltip-save'">Salva il preventivo
+      </div>
+      <button class="btn btn-secondary me-2" (mouseenter)="onEnterTooltip($event, 'tooltip-archive')"
+              (mouseleave)="onLeaveTooltip('tooltip-archive')" (click)="openModalArchive()">
+        <svg class="icon-default">
+          <use xlink:href="#icon-archive"></use>
+        </svg>
+      </button>
+      <div class="tooltip" [id]="'tooltip-archive'">Carica preventivo
+      </div>
+      <button class="btn btn-secondary" (mouseenter)="onEnterTooltip($event, 'tooltip-new')"
+              (mouseleave)="onLeaveTooltip('tooltip-new')" (click)="newQuote()">
+        <svg class="icon-default">
+          <use xlink:href="#icon-new-quote"></use>
+        </svg>
+      </button>
+      <div class="tooltip" [id]="'tooltip-new'">Nuovo preventivo
       </div>
     </div>
     <app-price-display

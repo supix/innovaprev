@@ -13,14 +13,6 @@ export class PriceDisplayComponent {
   @Input() amount: number | null | undefined = null;
   @Input() tax: number | null | undefined = null;
 
-  get formattedIntegerPart(): string {
-    return this.formatInteger(this.grandTotal);
-  }
-
-  get formattedDecimalPart(): string {
-    return this.formatDecimal(this.grandTotal);
-  }
-
   get formattedAmountIntegerPart(): string {
     return this.formatInteger(this.amount);
   }

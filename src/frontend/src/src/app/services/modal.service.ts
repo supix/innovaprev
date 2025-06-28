@@ -1,6 +1,7 @@
 import { ApplicationRef, ComponentRef, createComponent, Injectable } from '@angular/core';
 import { ErrorModalComponent } from "../components/error-modal/error-modal.component";
 import { PreviewModalComponent } from '../components/preview-modal/preview-modal.component';
+import { ArchiveModalComponent } from '../components/archive-modal/archive-modal.component';
 
 @Injectable({providedIn: 'root'})
 export class ModalService {
@@ -43,5 +44,31 @@ export class ModalService {
       componentRef.destroy();
     };
   }
+
+  showArchiveModal(): Promise<string | null> {
+    return new Promise<string | null>((resolve) => {
+      const componentRef: ComponentRef<ArchiveModalComponent> = createComponent(ArchiveModalComponent, {
+        environmentInjector: this.appRef.injector,
+      });
+
+      componentRef.changeDetectorRef.detectChanges();
+
+      const element = componentRef.location.nativeElement;
+      document.body.appendChild(element);
+
+      componentRef.instance.confirmCallback = (id: string) => {
+        document.body.removeChild(element);
+        componentRef.destroy();
+        resolve(id);
+      };
+
+      componentRef.instance.close = () => {
+        document.body.removeChild(element);
+        componentRef.destroy();
+        resolve(null);
+      };
+    });
+  }
+
 
 }
