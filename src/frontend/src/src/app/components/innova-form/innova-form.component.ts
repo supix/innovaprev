@@ -65,27 +65,12 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
   collections: CollectionsResponse | null = null;
   isCollectionsLoading: boolean = false;
 
-  windowSubscriptions: Subscription[] = [];
-  customSubscriptions: Subscription[] = [];
-
   submitted: boolean = false;
   hasTriggeredWindowsValidation: boolean = false;
   hasTriggeredCustomValidation: boolean = false;
-  isLoading: boolean = false;
 
   currentTab: TabNames = TabNames.supplier;
   tabNames = TabNames;
-
-  maxValues: { [key: string]: number } = {
-    height: 5000,
-    width: 5000,
-    length: 5000,
-    quantity: 500,
-    leftTrim: 500,
-    rightTrim: 500,
-    upperTrim: 500,
-    belowThreshold: 500
-  };
 
   showFillFormButton = false;
   showPreviewButton = false;
@@ -99,13 +84,28 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
     {label: 'No', value: false}
   ];
 
-  drawableWindowTypes: string[] = [];
-
   debugIndex: number = 1;
 
+  private isLoading: boolean = false;
   private selectedProductId!: string | null;
   private calculatePriceSubject = new Subject<PricePayload | null>();
   private previousPayloadHash: string | null = null;
+  private formChangesSub?: Subscription;
+  private supplierDataFormChangesSub?: Subscription;
+  private windowSubscriptions: Subscription[] = [];
+  private customSubscriptions: Subscription[] = [];
+  private drawableWindowTypes: string[] = [];
+
+  private maxValues: { [key: string]: number } = {
+    height: 5000,
+    width: 5000,
+    length: 5000,
+    quantity: 500,
+    leftTrim: 500,
+    rightTrim: 500,
+    upperTrim: 500,
+    belowThreshold: 500
+  };
 
   constructor(private sanitizer: DomSanitizer, private fb: FormBuilder,
               private config: NgSelectConfig, private apiService: ApiService,
@@ -150,7 +150,11 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit(): void {
     this.isCollectionsLoading = true;
-
+    const cached = localStorage.getItem('cachedSupplierData');
+    if (cached) {
+      const data = JSON.parse(cached);
+      this.fillSupplierForm(data);
+    }
     forkJoin({
       collections: this.apiService.getCollectionsData().pipe(
         catchError(() => of({
@@ -176,6 +180,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
         this.showPreviewButton = Array.isArray(windowTypes) && windowTypes.length > 0;
         this.setupPriceCalculationSubscription();
         this.subscribeToFormChanges();
+        this.subscribeToSupplierDataChanges();
         this.showFillFormButton = this.determineShowFillFormButton();
       });
   }
@@ -190,6 +195,8 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnDestroy(): void {
     this.windowSubscriptions.forEach(subscription => subscription.unsubscribe());
     this.customSubscriptions.forEach(subscription => subscription.unsubscribe());
+    this.formChangesSub?.unsubscribe();
+    this.supplierDataFormChangesSub?.unsubscribe();
   }
 
   // Getter for the supplier FormGroup
@@ -767,6 +774,18 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
     this.calculatePriceSubject.next(null);
   }
 
+  private fillSupplierForm(data: any): void {
+    this.supplierData.patchValue({
+      companyName: data.companyName || '',
+      address: data.address || '',
+      taxCode: data.taxCode || '',
+      phone: data.phone || '',
+      mail: data.mail || '',
+      iban: data.iban || ''
+    });
+  }
+
+
   // Handler to calculate the price based on valid rows
   private calculatePriceHandler(): void {
     const validWindowRows = this.getValidWindowsData();
@@ -1256,7 +1275,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // Subscribe to changes in both the 'windows' FormArray and the 'productData' FormGroup
   private subscribeToFormChanges(): void {
-    combineLatest([
+    this.formChangesSub = combineLatest([
       this.windows.valueChanges,
       this.customData.valueChanges.pipe(startWith(this.customData.value)),
       this.productData.valueChanges
@@ -1264,6 +1283,18 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
       this.calculatePriceHandler();
     });
   }
+
+  private subscribeToSupplierDataChanges(): void {
+    this.supplierDataFormChangesSub = this.supplierData.valueChanges
+      .pipe(debounceTime(300), startWith(this.supplierData.value))
+      .subscribe(data => {
+        const hasSomeData = Object.values(data).some(v => !!v);
+        if (hasSomeData) {
+          localStorage.setItem('cachedSupplierData', JSON.stringify(data));
+        }
+      });
+  }
+
 
   // Function to calculate the SHA-256 hash of the payload
   private calculateHash(payload: PricePayload): string {
