@@ -1220,7 +1220,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
   private buildPayload(): PricePayload {
     return {
       productData: {
-        ...this.form.value.productData
+        ...this.form.get('productData')?.getRawValue()
       },
       ...this.buildWindowsPayload(),
       ...this.buildCustomPayload()
