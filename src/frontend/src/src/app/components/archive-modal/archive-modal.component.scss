@@ -17,3 +17,20 @@
 .text-muted.small {
   font-size: 0.775rem;
 }
+
+.scrollable-body {
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.scrollable-body::-webkit-scrollbar {
+  width: 6px;
+}
+.scrollable-body::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+}
+
+.modal-lg {
+  max-height: 70vh;
+}

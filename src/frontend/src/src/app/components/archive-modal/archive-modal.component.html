@@ -6,8 +6,7 @@
         <h5 class="modal-title">Preventivi salvati</h5>
         <button type="button" class="btn-close" aria-label="Close" (click)="close()"></button>
       </div>
-      <div class="modal-body">
-
+      <div class="modal-body scrollable-body">
         <ng-container *ngIf="quotes.length > 0; else noQuotes">
           <div class="table-responsive">
             <table class="table table-sm align-middle">
@@ -30,16 +29,13 @@
               </tbody>
             </table>
           </div>
-
-          <div class="text-end mt-3">
-            <button class="btn btn-outline-danger btn-sm" (click)="deleteAll()">Elimina tutti i preventivi</button>
-          </div>
         </ng-container>
-
         <ng-template #noQuotes>
           <p class="text-muted text-center my-4">Nessun preventivo salvato al momento.</p>
         </ng-template>
-
+      </div>
+      <div class="modal-footer justify-content-end">
+        <button class="btn btn-outline-danger btn-sm" (click)="deleteAll()">Elimina tutti i preventivi</button>
       </div>
     </div>
   </div>
