@@ -8,7 +8,7 @@ namespace DomainModel.Classes.Frames
 {
     public abstract class AbstractFrame : IFrame
     {
-        public abstract string Code { get; }
+        public string Code => GetType().Name;
         public abstract string Description { get; }
     }
 }

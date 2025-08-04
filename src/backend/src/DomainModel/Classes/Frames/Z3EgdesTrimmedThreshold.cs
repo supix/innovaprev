@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DomainModel.Classes.Frames
+﻿namespace DomainModel.Classes.Frames
 {
-    public class Z3EgdesTrimmedThreshold
+    public class Z3EgdesTrimmedThreshold : AbstractFrame
     {
+        public override string Description => "3 lati Z soglia rifilata";
     }
 }
