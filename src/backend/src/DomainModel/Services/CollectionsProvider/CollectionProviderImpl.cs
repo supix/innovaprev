@@ -1,4 +1,5 @@
 ﻿using DomainModel.Classes.Colors;
+using DomainModel.Classes.Frames;
 using DomainModel.Classes.Materials;
 using DomainModel.Classes.Products;
 
@@ -27,6 +28,7 @@ namespace DomainModel.Services.CollectionsProvider
                     new CollectionItem() { Id = "GT_TRASPARENTE", Desc = "Trasparente" },
                     new CollectionItem() { Id = "GT_OPACO", Desc = "Opaco" },
                 },
+                FrameTypes = GetFrameCollItems()
             };
         }
 
@@ -62,6 +64,13 @@ namespace DomainModel.Services.CollectionsProvider
         {
             return ColorFactory.GetAll()
                 .Select(c => new ColorCollectionItem() { Id = c.Code, Desc = c.Description, InternalColorForProduct = c.InternalColorForProducts, ExternalColorForProduct = c.ExternalColorForProducts })
+                .ToArray();
+        }
+
+        private FrameCollectionItem[] GetFrameCollItems()
+        {
+            return FrameFactory.GetAll()
+                .Select(f => new FrameCollectionItem() { Id = f.Code, Desc = f.Description, FrameForProduct = f.FrameForProduct })
                 .ToArray();
         }
     }
