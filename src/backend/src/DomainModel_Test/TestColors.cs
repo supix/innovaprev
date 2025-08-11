@@ -20,7 +20,7 @@ public class TestColors
         var products = c.ExternalColorForProducts;
         Assert.That(products, Is.EquivalentTo(new[] { typeof(ELA).Name, typeof(RALT).Name, typeof(AATT).Name, typeof(AALAM).Name }));
     }
-    
+
     [Test]
     public void Test_AluminumBrown8017ColorAsExternalColor_GivesWoodAluProducts()
     {

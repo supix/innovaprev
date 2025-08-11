@@ -1,6 +1,4 @@
-﻿using DomainModel.Classes.Products.Visitor;
-
-namespace DomainModel.Classes.Colors.ConcreteColors
+﻿namespace DomainModel.Classes.Colors.ConcreteColors
 {
     public class LucidToulipier1013 : BrushedDecapeToulipierWoodColor
     {

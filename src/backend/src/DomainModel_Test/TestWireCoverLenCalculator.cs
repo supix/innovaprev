@@ -1,5 +1,4 @@
-﻿using DomainModel.Classes.Colors.ConcreteColors;
-using DomainModel.Services.WireCoverLenCalculator;
+﻿using DomainModel.Services.WireCoverLenCalculator;
 namespace DomainModel_Test;
 
 public class TestWireCoverLenCalculator

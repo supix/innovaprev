@@ -1,5 +1,4 @@
-﻿using System;
-namespace DomainModel.Classes.Frames
+﻿namespace DomainModel.Classes.Frames
 {
     public interface IFrame
     {

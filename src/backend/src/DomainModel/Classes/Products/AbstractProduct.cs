@@ -45,7 +45,7 @@ namespace DomainModel.Classes.Products
             var wireCoverPrice = 0M;
             if (wireCover)
             {
-                var totLen = this.WireCoverLenCalculator.GetLen(height_mm, width_mm);
+                var totLen = WireCoverLenCalculator.GetLen(height_mm, width_mm);
                 wireCoverPrice = totLen / 1000M * ic.GetPrice_COP_m(this);
             }
 

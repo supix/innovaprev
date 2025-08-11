@@ -15,8 +15,8 @@ namespace DomainModel.Classes.Colors
             {
                 return ProductFactory.GetAll()
                     .Where(p =>
-                      (p.GetType().IsAssignableTo(typeof(WoodAbstractProduct)) && this.GetType().IsAssignableTo(typeof(WoodColor))) ||
-                      (p.GetType().IsAssignableTo(typeof(PvcAbstractProduct)) && this.GetType().IsAssignableTo(typeof(PvcColor)))
+                      (p.GetType().IsAssignableTo(typeof(WoodAbstractProduct)) && GetType().IsAssignableTo(typeof(WoodColor))) ||
+                      (p.GetType().IsAssignableTo(typeof(PvcAbstractProduct)) && GetType().IsAssignableTo(typeof(PvcColor)))
                     )
                     .Select(p => p.Code)
                     .ToArray();
@@ -28,8 +28,8 @@ namespace DomainModel.Classes.Colors
             {
                 return ProductFactory.GetAll()
                     .Where(p =>
-                      (p.GetType().IsAssignableTo(typeof(WoodAbstractProduct)) && this.GetType().IsAssignableTo(typeof(AluminumColor))) ||
-                      (p.GetType().IsAssignableTo(typeof(PvcAbstractProduct)) && this.GetType().IsAssignableTo(typeof(PvcColor)))
+                      (p.GetType().IsAssignableTo(typeof(WoodAbstractProduct)) && GetType().IsAssignableTo(typeof(AluminumColor))) ||
+                      (p.GetType().IsAssignableTo(typeof(PvcAbstractProduct)) && GetType().IsAssignableTo(typeof(PvcColor)))
                     )
                     .Select(p => p.Code)
                     .ToArray();

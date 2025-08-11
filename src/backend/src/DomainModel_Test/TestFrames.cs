@@ -1,6 +1,4 @@
-﻿using DomainModel.Classes.Colors.ConcreteColors;
-using DomainModel.Classes.Frames.ConcreteFrames;
-using DomainModel.Classes.Products.ConcreteProducts;
+﻿using DomainModel.Classes.Frames.ConcreteFrames;
 
 namespace DomainModel_Test;
 
@@ -29,7 +27,7 @@ public class TestFrames
         var products = frame.FrameForProduct;
         Assert.That(products, Is.EquivalentTo(new[] { "IPC", "IPCAM", "IPN" }));
     }
-    
+
     [Test]
     public void Test_Z3EgdesLThreshold_HasCorrectProducts()
     {

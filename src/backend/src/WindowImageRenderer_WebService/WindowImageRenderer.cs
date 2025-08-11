@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Specialized;
 using System.Text.Json;
-using System.Threading.Tasks;
 using System.Web;
-using DomainModel.Classes;
 using DomainModel.Services.WindowImageRenderer;
 
 namespace WindowImageRenderer_WebService
@@ -27,8 +21,8 @@ namespace WindowImageRenderer_WebService
 
         public bool CanRender(string materialType)
         {
-            this.loadAllowedMaterials();
-            return this.allowedMaterials!.Contains(materialType);
+            loadAllowedMaterials();
+            return allowedMaterials!.Contains(materialType);
         }
 
         public byte[] Render(long height_mm, long width_mm, string materialType, bool wireCover, string openingType, string glassType)
@@ -54,7 +48,7 @@ namespace WindowImageRenderer_WebService
         {
             const string apiPath = "/api/windows/drawableWindow";
 
-            if (this.allowedMaterials != null)
+            if (allowedMaterials != null)
                 return;
 
             Uri uri = new Uri($"{serverUri}{apiPath}");
@@ -74,7 +68,7 @@ namespace WindowImageRenderer_WebService
                 values[i] = dataArray[i].GetString()!;
             }
 
-            this.allowedMaterials = values;
+            allowedMaterials = values;
         }
     }
 }

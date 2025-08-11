@@ -251,7 +251,7 @@ namespace DomainModel_Test
             var price = p.GetMaterialPrice(fro);
             Assert.That(Math.Abs(price - 202M * 3M), Is.LessThan(1e-3M));
         }
-        
+
         [Test]
         public void Test_FROWithWoodDecapeColorSupplement_PriceIsCorrect()
         {

@@ -1,5 +1,4 @@
-﻿using System.Runtime.Intrinsics.Arm;
-using DomainModel.Classes;
+﻿using DomainModel.Classes;
 using DomainModel.Classes.Materials;
 using DomainModel.Services.PriceCalculator;
 using QuestPDF.Fluent;
@@ -52,7 +51,7 @@ namespace PdfQuote
                 c.Item().Row(r =>
                 {
                     r.ConstantItem(25).Text(string.Empty);
-                    r.RelativeItem(2).Text($"q.tà: {this.wd.Quantity}");
+                    r.RelativeItem(2).Text($"q.tà: {wd.Quantity}");
 
                     // Height + Width or Length
                     r.RelativeItem(3).Text($"L (mm): {sdm.Length_mm}");

@@ -1,7 +1,4 @@
-﻿using DomainModel.Classes.Materials;
-using DomainModel.Classes.Materials.ConcreteMaterials;
-
-namespace DomainModel.Classes.Products.Visitor
+﻿namespace DomainModel.Classes.Products.Visitor
 {
     public interface IColorVisitor
     {

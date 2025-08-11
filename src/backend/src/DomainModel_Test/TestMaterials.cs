@@ -1,6 +1,4 @@
-﻿using DomainModel.Classes.Colors.ConcreteColors;
-using DomainModel.Classes.Materials.ConcreteMaterials;
-using DomainModel.Classes.Products.ConcreteProducts;
+﻿using DomainModel.Classes.Materials.ConcreteMaterials;
 
 namespace DomainModel_Test;
 
@@ -106,7 +104,7 @@ public class TestMaterials
         var mat = new PRT1A(1000, 1550, "SX", false, false);
         Assert.That(mat.OpeningType, Is.EqualTo("SX"));
     }
-    
+
     [Test]
     public void Test_SrafDescriptionLessOrEqualThan240_DescriptionIsCorrect()
     {

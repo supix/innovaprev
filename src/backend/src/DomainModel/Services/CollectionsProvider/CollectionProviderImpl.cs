@@ -40,12 +40,13 @@ namespace DomainModel.Services.CollectionsProvider
         private MaterialCollectionItem[] GetWindowTypesCollItems()
         {
             return MaterialFactory.GetAll()
-                .Select(m => new MaterialCollectionItem() { 
-                    Id = m.Code, 
-                    Desc = m.Description, 
-                    NumOfDims = m.NumberOfDimensions, 
-                    MaterialForProduct = m.MaterialForProduct, 
-                    glassTypeVisible = m.glassTypeVisible, 
+                .Select(m => new MaterialCollectionItem()
+                {
+                    Id = m.Code,
+                    Desc = m.Description,
+                    NumOfDims = m.NumberOfDimensions,
+                    MaterialForProduct = m.MaterialForProduct,
+                    glassTypeVisible = m.glassTypeVisible,
                     openingTypeVisible = m.openingTypeVisible,
                     wireCoverVisible = m.wireCoverVisible,
                     MinAllowedHeight_mm = m.MinAllowedHeight_mm,

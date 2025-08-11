@@ -1,6 +1,4 @@
-﻿using System.Runtime.Intrinsics.Arm;
-using DomainModel.Classes;
-using DomainModel.Classes.Materials;
+﻿using DomainModel.Classes;
 using DomainModel.Classes.Materials.ConcreteMaterials;
 using DomainModel.Services.PriceCalculator;
 using QuestPDF.Fluent;
@@ -16,8 +14,8 @@ namespace PdfQuote
         private readonly DetailPrice detailPrice;
 
         public CasPdfComponent(
-            int index, 
-            CAS cas, 
+            int index,
+            CAS cas,
             WindowsData wd,
             DetailPrice detailPrice)
         {
@@ -50,7 +48,7 @@ namespace PdfQuote
                     c.Item().Row(r =>
                     {
                         r.ConstantItem(25).Text(string.Empty);
-                        r.RelativeItem(2).Text($"q.tà: {this.wd.Quantity}");
+                        r.RelativeItem(2).Text($"q.tà: {wd.Quantity}");
 
                         // Height + Width or Length
                         r.RelativeItem(3).Text($"L (mm): {cas.Width_mm}");

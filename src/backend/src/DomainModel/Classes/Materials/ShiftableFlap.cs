@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DomainModel.Classes.Products.Visitor;
+﻿using DomainModel.Classes.Products.Visitor;
 
 namespace DomainModel.Classes.Materials
 {
-    public abstract class ShiftableFlap: DoubleDimMaterial
+    public abstract class ShiftableFlap : DoubleDimMaterial
     {
         private const long ForcedMechanismThreshold = 2400;
 

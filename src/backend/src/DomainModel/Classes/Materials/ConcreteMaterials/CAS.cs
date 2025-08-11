@@ -19,7 +19,7 @@ namespace DomainModel.Classes.Materials.ConcreteMaterials
         public override int Order => 200;
         public override decimal GetPrice(IMaterialVisitor visitor)
         {
-            return visitor.GetPrice_CAS(this, this.DimensionToQuote);
+            return visitor.GetPrice_CAS(this, DimensionToQuote);
         }
         public override bool glassTypeVisible => false;
         public override bool wireCoverVisible => false;
@@ -30,11 +30,13 @@ namespace DomainModel.Classes.Materials.ConcreteMaterials
 
         public override bool openingTypeVisible => false;
 
-        public override long DimensionToQuote { get
+        public override long DimensionToQuote
+        {
+            get
             {
-                var allowedWidth = this.ClampMinValue.HasValue && Width_mm < this.ClampMinValue ? this.ClampMinValue.Value : Width_mm;
+                var allowedWidth = ClampMinValue.HasValue && Width_mm < ClampMinValue ? ClampMinValue.Value : Width_mm;
                 return allowedWidth;
-            } 
+            }
         }
     }
 
