@@ -11,9 +11,6 @@
         public string? OpeningType { get; set; }
         public string? GlassType { get; set; }
         public bool WireCover { get; set; }
-        public long LeftTrim { get; set; }
-        public long RightTrim { get; set; }
-        public long UpperTrim { get; set; }
-        public long BelowThreshold { get; set; }
+        public required string FrameCode { get; set; }
     }
 }

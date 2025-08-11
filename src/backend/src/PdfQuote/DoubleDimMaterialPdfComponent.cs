@@ -69,10 +69,7 @@ namespace PdfQuote
                     c.Item().Row(r =>
                     {
                         r.ConstantItem(200).Text(string.Empty);
-                        r.RelativeItem(25).ShowIf(trimSectionVisible).AlignRight().Text($"sx: {wd.LeftTrim}");
-                        r.RelativeItem(25).ShowIf(trimSectionVisible).AlignRight().Text($"dx: {wd.RightTrim}");
-                        r.RelativeItem(25).ShowIf(trimSectionVisible).AlignRight().Text($"sop: {wd.UpperTrim}");
-                        r.RelativeItem(25).ShowIf(trimSectionVisible).AlignRight().Text($"sot: {wd.BelowThreshold}");
+                        r.RelativeItem(25).ShowIf(!string.IsNullOrWhiteSpace(wd.FrameCode)).AlignRight().Text($"Telaio: {wd.FrameCode}");
                     });
 
                     // General properties
