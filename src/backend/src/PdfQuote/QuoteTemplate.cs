@@ -1,5 +1,6 @@
 ﻿using DomainModel.Classes;
 using DomainModel.Classes.Colors;
+using DomainModel.Classes.Frames;
 using DomainModel.Classes.Materials;
 using DomainModel.Classes.Products;
 using DomainModel.Services;
@@ -112,12 +113,21 @@ namespace PdfQuote
                     var externalColor = ColorFactory.CreateByCode(pd.ExternalColor ?? pd.InternalColor);
                     var product = ProductFactory.CreateByCode(pd.Product, internalColor, externalColor);
 
+                    //create frame
+                    IFrame? frame = null;
+                    string frameDescription = string.Empty;
+                    if (!string.IsNullOrWhiteSpace(wd.FrameCode))
+                    {
+                        frame = FrameFactory.CreateByCode(wd.FrameCode);
+                        frameDescription = frame.Description;
+                    }
+
                     // create material
                     long m1 = wd.Length != 0 ? wd.Length : wd.Height;
                     long m2 = wd.Width;
-                    var material = MaterialFactory.CreateByCode(wd.WindowType, m1, m2, (wd.OpeningType != null && wd.OpeningType.Contains("SX")) ? "SX" : "DX", wd.GlassType == "GT_OPACO", wd.WireCover);
+                    var material = MaterialFactory.CreateByCode(wd.WindowType, m1, m2, (wd.OpeningType != null && wd.OpeningType.Contains("SX")) ? "SX" : "DX", wd.GlassType == "GT_OPACO", wd.WireCover, frame);
 
-                    var component = PdfComponentFactory.CreateComponent(++idx, material, wd, detailPrice, product.TrimSectionVisible, wir);
+                    var component = PdfComponentFactory.CreateComponent(++idx, material, wd, detailPrice, product.TrimSectionVisible, frameDescription, wir);
                     column.Item()
                         .BorderBottom(1)
                         .BorderColor(Colors.Grey.Lighten2)

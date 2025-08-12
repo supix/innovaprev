@@ -1,10 +1,11 @@
-﻿using DomainModel.Classes.Materials.ConcreteMaterials;
+﻿using DomainModel.Classes.Frames;
+using DomainModel.Classes.Materials.ConcreteMaterials;
 
 namespace DomainModel.Classes.Materials
 {
     public static class MaterialFactory
     {
-        public static IMaterial CreateByCode(string code, long m1, long m2, string openingType, bool opaqueGlass, bool wireCover)
+        public static IMaterial CreateByCode(string code, long m1, long m2, string openingType, bool opaqueGlass, bool wireCover, IFrame? frame)
         {
             var t = AppDomain.CurrentDomain.GetAssemblies()
                 .SelectMany(domainAssembly => domainAssembly.GetTypes())
@@ -24,7 +25,7 @@ namespace DomainModel.Classes.Materials
                 if (m1 == 0 || m2 == 0)
                     throw new InvalidOperationException($"For a double dimension material m1 and m2 must not be zero. Material code: {code}");
 
-                return (AbstractMaterial)Activator.CreateInstance(t, m1, m2, openingType, opaqueGlass, wireCover)!;
+                return (AbstractMaterial)Activator.CreateInstance(t, m1, m2, openingType, opaqueGlass, wireCover, frame)!;
             }
 
             if (t == typeof(CAS))

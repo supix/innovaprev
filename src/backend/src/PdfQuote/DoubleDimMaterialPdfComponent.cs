@@ -14,6 +14,7 @@ namespace PdfQuote
         private readonly WindowsData wd;
         private readonly DetailPrice detailPrice;
         private readonly bool trimSectionVisible;
+        private readonly string frameDescription;
         private readonly IWindowImageRenderer wir;
 
         public DoubleDimMaterialPdfComponent(
@@ -22,6 +23,7 @@ namespace PdfQuote
             WindowsData wd,
             DetailPrice detailPrice,
             bool trimSectionVisible,
+            string frameDescription,
             IWindowImageRenderer wir)
         {
             this.index = index;
@@ -29,6 +31,7 @@ namespace PdfQuote
             this.wd = wd ?? throw new ArgumentNullException(nameof(wd));
             this.detailPrice = detailPrice ?? throw new ArgumentNullException(nameof(detailPrice));
             this.trimSectionVisible = trimSectionVisible;
+            this.frameDescription = frameDescription;
             this.wir = wir ?? throw new ArgumentNullException(nameof(wir));
         }
 
@@ -66,12 +69,6 @@ namespace PdfQuote
                         r.RelativeItem(5).Text(string.Empty);
                     });
 
-                    c.Item().Row(r =>
-                    {
-                        r.ConstantItem(200).Text(string.Empty);
-                        r.RelativeItem(25).ShowIf(!string.IsNullOrWhiteSpace(wd.FrameCode)).AlignRight().Text($"Telaio: {wd.FrameCode}");
-                    });
-
                     // General properties
                     c.Item().Row(r =>
                     {
@@ -89,6 +86,12 @@ namespace PdfQuote
                     {
                         r.ConstantItem(25).Text(string.Empty);
                         r.RelativeItem(3).Text($"Coprifilo: {(ddm.WireCover ? "SI" : "NO")}");
+                    });
+
+                    c.Item().Row(r =>
+                    {
+                        r.ConstantItem(25).Text(string.Empty);
+                        r.RelativeItem(3).Text($"Telaio: {this.frameDescription}");
                     });
 
                     // Prices

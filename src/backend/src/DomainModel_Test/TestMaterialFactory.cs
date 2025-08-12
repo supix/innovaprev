@@ -13,7 +13,7 @@ public class TestMaterialFactory
     [Test]
     public void CAS_CanBeCreated()
     {
-        var cas = MaterialFactory.CreateByCode("CAS", 1234, 4321, "SX", false, false);
+        var cas = MaterialFactory.CreateByCode("CAS", 1234, 4321, "SX", false, false, null);
         Assert.That(cas.GetType() == typeof(CAS));
         Assert.That((cas as CAS)!.Height_mm, Is.EqualTo(1234));
         Assert.That((cas as CAS)!.Width_mm, Is.EqualTo(4321));
