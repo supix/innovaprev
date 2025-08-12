@@ -11,6 +11,7 @@ namespace DomainModel.Classes.Materials
         bool openingTypeVisible { get; }
         bool glassTypeVisible { get; }
         bool wireCoverVisible { get; }
+        bool frameTypeVisible { get; }
         string[] MaterialForProduct { get; }
         long? MinAllowedWidth_mm => null;
         long? MinAllowedHeight_mm => null;

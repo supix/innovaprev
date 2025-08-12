@@ -13,6 +13,7 @@ namespace DomainModel.Classes.Materials
         public override sealed bool openingTypeVisible => false;
         public sealed override bool glassTypeVisible => false;
         public sealed override bool wireCoverVisible => false;
+        public override bool frameTypeVisible => false;
         public long Length_mm { get; set; }
         public override sealed long DimensionToQuote
         {

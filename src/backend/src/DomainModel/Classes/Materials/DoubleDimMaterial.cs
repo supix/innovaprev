@@ -24,6 +24,7 @@ namespace DomainModel.Classes.Materials
         public override bool openingTypeVisible => true;
         public override bool glassTypeVisible => true;
         public override bool wireCoverVisible => true;
+        public override bool frameTypeVisible => true;
         public override sealed long DimensionToQuote
         {
             get

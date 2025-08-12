@@ -51,6 +51,7 @@ namespace DomainModel.Services.CollectionsProvider
                     glassTypeVisible = m.glassTypeVisible,
                     openingTypeVisible = m.openingTypeVisible,
                     wireCoverVisible = m.wireCoverVisible,
+                    frameTypeVisible = m.frameTypeVisible,
                     MinAllowedHeight_mm = m.MinAllowedHeight_mm,
                     MinAllowedLength_mm = m.MinAllowedLength_mm,
                     MinAllowedWidth_mm = m.MinAllowedWidth_mm,
