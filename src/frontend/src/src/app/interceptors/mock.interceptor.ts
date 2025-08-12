@@ -81,9 +81,9 @@ function validatePayload(payload: any): string[] {
 // Function to generate mock collections data
 const getMockCollections = (): CollectionsResponse => ({
   product: [
-    {id: 'PRO_GIALLO', desc: 'Giallo', trimSectionVisible: false, extDesc: 'Descrizione Giallo', singleColor: true, descTitle: ''},
-    {id: 'PRO_VERDE', desc: 'Verde', trimSectionVisible: false, extDesc: 'Descrizione Verde', singleColor: true, descTitle: ''},
-    {id: 'PRO_ROSSO', desc: 'Rosso', trimSectionVisible: false, extDesc: 'Descrizione Rosso', singleColor: false, descTitle: ''},
+    {id: 'PRO_GIALLO', desc: 'Giallo', extDesc: 'Descrizione Giallo', singleColor: true, descTitle: ''},
+    {id: 'PRO_VERDE', desc: 'Verde', extDesc: 'Descrizione Verde', singleColor: true, descTitle: ''},
+    {id: 'PRO_ROSSO', desc: 'Rosso', extDesc: 'Descrizione Rosso', singleColor: false, descTitle: ''},
   ],
   colors: [
     {id: 'IC_GIALLO', desc: 'Giallo', internalColorForProduct: ['PRO_GIALLO'], externalColorForProduct: []},
@@ -96,9 +96,9 @@ const getMockCollections = (): CollectionsResponse => ({
     {id: 'AC_ROSSO', desc: 'Rosso'},
   ],
   windowTypes: [
-    {id: 'WT_GRANDE', desc: 'Grande', numOfDims: 1, materialForProduct: ['PRO_GIALLO', 'PRO_VERDE', 'PRO_ROSSO'], glassTypeVisible: true, openingTypeVisible: true, wireCoverVisible: true},
-    {id: 'WT_MEDIA', desc: 'Media', numOfDims: 2, materialForProduct: ['PRO_GIALLO', 'PRO_ROSSO'], glassTypeVisible: true, openingTypeVisible: false, wireCoverVisible: true},
-    {id: 'WT_PICCOLA', desc: 'Piccola', numOfDims: 1, materialForProduct: ['PRO_VERDE', 'PRO_ROSSO'], glassTypeVisible: true, openingTypeVisible: true, wireCoverVisible: false},
+    {id: 'WT_GRANDE', desc: 'Grande', numOfDims: 1, materialForProduct: ['PRO_GIALLO', 'PRO_VERDE', 'PRO_ROSSO'], glassTypeVisible: true, openingTypeVisible: true, wireCoverVisible: true, frameTypeVisible: true},
+    {id: 'WT_MEDIA', desc: 'Media', numOfDims: 2, materialForProduct: ['PRO_GIALLO', 'PRO_ROSSO'], glassTypeVisible: true, openingTypeVisible: false, wireCoverVisible: true, frameTypeVisible: true},
+    {id: 'WT_PICCOLA', desc: 'Piccola', numOfDims: 1, materialForProduct: ['PRO_VERDE', 'PRO_ROSSO'], glassTypeVisible: true, openingTypeVisible: true, wireCoverVisible: false, frameTypeVisible: false},
   ],
   openingTypes: [
     {id: 'OT_DX', desc: 'SX'},
@@ -109,9 +109,7 @@ const getMockCollections = (): CollectionsResponse => ({
     {id: 'GT_OPACO', desc: 'Opaco'},
     {id: 'GT_AZZURRATO', desc: 'Azzurrato'},
   ],
-  crosspieces: [
-    {id: 'CRO_ALTA', desc: 'Alta'},
-    {id: 'CRO_MEDIA', desc: 'Media'},
-    {id: 'CRO_BASSA', desc: 'Bassa'},
-  ],
+  frameTypes: [
+    {id: 'A_FRAME', desc: 'Frame A', frameForProduct: []}
+  ]
 });

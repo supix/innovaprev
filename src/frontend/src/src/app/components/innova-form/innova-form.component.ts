@@ -17,8 +17,10 @@ import {
   CollectionsResponse,
   Colors,
   CustomPayload,
+  FrameType,
   PricePayload,
-  Quotation, WindowInputBatch,
+  Quotation,
+  WindowInputBatch,
   WindowsPayload,
   WindowType
 } from '../../models';
@@ -27,7 +29,9 @@ import {
   debounceTime,
   EMPTY,
   filter,
-  finalize, forkJoin, of,
+  finalize,
+  forkJoin,
+  of,
   startWith,
   Subject,
   Subscription,
@@ -39,7 +43,8 @@ import {
   generateValidItalianVat,
   italianVatValidator,
   minNumber,
-  phoneNumberValidator, validatorNumber
+  phoneNumberValidator,
+  validatorNumber
 } from '../../validators/innova.validator';
 import { catchError } from 'rxjs/operators';
 import CryptoJS from 'crypto-js';
@@ -80,6 +85,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
   externalColorList: Colors[] = [];
   internalColorList: Colors[] = [];
   windowTypeList: WindowType[] = [];
+  frameTypeList: FrameType[] = [];
 
   yesNoOptions = [
     {label: 'Sì', value: true},
@@ -104,11 +110,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
     height: 5000,
     width: 5000,
     length: 5000,
-    quantity: 500,
-    leftTrim: 500,
-    rightTrim: 500,
-    upperTrim: 500,
-    belowThreshold: 500
+    quantity: 500
   };
 
   constructor(private sanitizer: DomSanitizer, private fb: FormBuilder,
@@ -164,7 +166,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
           windowTypes: [],
           openingTypes: [],
           glassTypes: [],
-          crosspieces: []
+          frameTypes: []
         }))
       ),
       windowTypes: this.windowApiService.getDrawableWindowTypes().pipe(
@@ -230,9 +232,8 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
     return this.sanitizer.bypassSecurityTrustHtml(htmlContent);
   }
 
-  isTrimSectionVisible(): boolean {
-    const currentProduct = this.productData.value['product'];
-    return this.collections?.product.some(p => p.id === currentProduct && p.trimSectionVisible) || false;
+  isFrameSectionVisible(): boolean {
+    return !!this.frameTypeList.length;
   }
 
   isWindowRowValid(index: number): boolean {
@@ -342,6 +343,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
     this.internalColorList = this.getInternalColors();
     this.externalColorList = this.getExternalColors();
     this.windowTypeList = this.getWindowTypes();
+    this.frameTypeList = this.getFrameTypes();
     this.updateFormState();
     this.updateWindowsFormState();
   }
@@ -385,6 +387,15 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
       .sort((a, b) => a.id.localeCompare(b.id));
   }
 
+  getFrameTypes(): FrameType[] {
+    if (!this.selectedProductId || !this.collections?.frameTypes) {
+      return [];
+    }
+
+    return this.collections.frameTypes
+      .filter(type => type.frameForProduct.includes(this.selectedProductId as string));
+  }
+
   // Add a new row to the windows FormArray
   addWindowRow(skipFirst?: boolean): void {
     if (!skipFirst) {
@@ -401,10 +412,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
         openingType: [{value: null, disabled: true}, Validators.required],
         glassType: [{value: null, disabled: true}, Validators.required],
         wireCover: [{value: null, disabled: true}, Validators.required],
-        leftTrim: [null, minNumber(0)],
-        rightTrim: [null, minNumber(0)],
-        upperTrim: [null, minNumber(0)],
-        belowThreshold: [null, minNumber(0)],
+        frameCode: [{value: null, disabled: true}, Validators.required]
       });
       this.windows.push(row);
       this.updateWindowPositions();
@@ -668,6 +676,11 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
       return windowTypeList?.length > 0 ? windowTypeList[Math.floor(Math.random() * windowTypeList.length)].id : 'defaultType';
     }
 
+    const getRandomFrameType = (): string => {
+      const frameTypes = this.getFrameTypes();
+      return frameTypes?.length > 0 ? frameTypes[Math.floor(Math.random() * frameTypes.length)].id : 'defaultType';
+    }
+
     const getRandomInternalColor = (): string => {
       const internalColorList = this.getInternalColors();
       return internalColorList?.length > 0 ? internalColorList[Math.floor(Math.random() * internalColorList.length)].id : 'defaultInternalColor';
@@ -714,10 +727,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
         openingType: [getRandomItem(this.collections.openingTypes, 'defaultOpening'), Validators.required],
         glassType: [getRandomItem(this.collections.glassTypes, 'defaultGlass'), Validators.required],
         wireCover: [getRandomBoolean(), Validators.required],
-        leftTrim: [getRandomNumber(20)],
-        rightTrim: [getRandomNumber(20)],
-        upperTrim: [getRandomNumber(20)],
-        belowThreshold: [getRandomNumber(20)]
+        frameCode: [getRandomFrameType(), Validators.required]
       });
       this.windows.push(row);
       this.subscribeToWindowRowValueChanges(row, this.windows.length - 1);
@@ -862,10 +872,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
           openingType: [win.openingType],
           glassType: [win.glassType],
           wireCover: [win.wireCover],
-          leftTrim: [win.leftTrim],
-          rightTrim: [win.rightTrim],
-          upperTrim: [win.upperTrim],
-          belowThreshold: [win.belowThreshold]
+          frameCode: [win.frameCode]
         });
         this.windows.push(row);
         this.subscribeToWindowRowValueChanges(row, i);
@@ -1101,6 +1108,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
           openingTypeVisible,
           glassTypeVisible,
           wireCoverVisible,
+          frameTypeVisible,
           minAllowedHeight_mm,
           minAllowedLength_mm,
           minAllowedWidth_mm,
@@ -1127,6 +1135,16 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
           row.get('glassType')?.setValidators(null);
           row.get('glassType')?.disable({emitEvent: false});
           row.patchValue({glassType: null}, {emitEvent: false});
+        }
+
+        // Frame Code
+        if (frameTypeVisible) {
+          row.get('frameCode')?.setValidators([Validators.required]);
+          row.get('frameCode')?.enable({emitEvent: false});
+        } else {
+          row.get('frameCode')?.setValidators(null);
+          row.get('frameCode')?.disable({emitEvent: false});
+          row.patchValue({frameCode: null}, {emitEvent: false});
         }
 
         // Wire Cover
@@ -1194,6 +1212,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
         row.get('glassType')?.updateValueAndValidity({emitEvent: false});
         row.get('wireCover')?.updateValueAndValidity({emitEvent: false});
         row.get('openingType')?.updateValueAndValidity({emitEvent: false});
+        row.get('frameCode')?.updateValueAndValidity({emitEvent: false});
       }
 
       if (row.valid && this.hasTriggeredWindowsValidation) {
@@ -1252,7 +1271,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
       return;
     }
 
-    const fields = ['height', 'width', 'length', 'glassType', 'wireCover', 'openingType'];
+    const fields = ['height', 'width', 'length', 'glassType', 'wireCover', 'openingType', 'frameCode'];
 
     console.group(`Active validators for row ${index}`);
 
@@ -1319,24 +1338,13 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // Helper function to get valid rows from the FormArray
   private getValidWindowsData(): any[] {
-    // List of keys to process
-    const keysToProcess = ['leftTrim', 'rightTrim', 'upperTrim', 'belowThreshold'];
 
     // Filter valid rows and process their values
     return this.windows.controls
       .filter(row => row.valid) // Keep only valid rows
       .map(row => {
         // Create a copy of the row's value
-        const processedRow = {...row.value};
-
-        // Cast null or undefined values to 0 for specified keys
-        for (const key of keysToProcess) {
-          if (processedRow[key] === null || processedRow[key] === undefined) {
-            processedRow[key] = 0;
-          }
-        }
-
-        return processedRow;
+        return {...row.value};
       });
   }
 

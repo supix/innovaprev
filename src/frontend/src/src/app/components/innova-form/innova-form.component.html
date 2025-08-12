@@ -385,33 +385,23 @@
             <table class="table table-sm table-bordered">
               <thead>
               <tr>
-                <th [attr.rowspan]="isTrimSectionVisible() ? '2' : '1'" style="width: 6%;">Pos.</th>
-                <th [attr.rowspan]="isTrimSectionVisible() ? '2' : '1'"
-                    [ngStyle]="{ width: isTrimSectionVisible() ? '8%' : '12%' }">Tipologia
+                <th style="width: 6%;">Pos.</th>
+                <th [ngStyle]="{ width: isFrameSectionVisible() ? '8%' : '12%' }">Tipologia
                 </th>
-                <th [attr.rowspan]="isTrimSectionVisible() ? '2' : '1'" style="width: 8%;">Largh.<small> (mm)</small>
+                <th style="width: 8%;">Largh.<small> (mm)</small>
                 </th>
-                <th [attr.rowspan]="isTrimSectionVisible() ? '2' : '1'" style="width: 8%;">Alt.<small> (mm)</small></th>
-                <th [attr.rowspan]="isTrimSectionVisible() ? '2' : '1'" style="width: 8%;">Lungh.<small> (mm)</small>
+                <th style="width: 8%;">Alt.<small> (mm)</small></th>
+                <th style="width: 8%;">Lungh.<small> (mm)</small>
                 </th>
-                <th [attr.rowspan]="isTrimSectionVisible() ? '2' : '1'" style="width: 8%;">Q.tà</th>
-                <th [attr.rowspan]="isTrimSectionVisible() ? '2' : '1'"
-                    [ngStyle]="{ width: isTrimSectionVisible() ? '8%' : '12%' }">Apertura
+                <th style="width: 8%;">Q.tà</th>
+                <th [ngStyle]="{ width: isFrameSectionVisible() ? '8%' : '12%' }">Apertura
                 </th>
-                <th [attr.rowspan]="isTrimSectionVisible() ? '2' : '1'"
-                    [ngStyle]="{ width: isTrimSectionVisible() ? '8%' : '12%' }">Vetro
+                <th [ngStyle]="{ width: isFrameSectionVisible() ? '8%' : '12%' }">Vetro
                 </th>
-                <th [attr.rowspan]="isTrimSectionVisible() ? '2' : '1'"
-                    [ngStyle]="{ width: isTrimSectionVisible() ? '8%' : '12%' }">Coprifilo
+                <th [ngStyle]="{ width: isFrameSectionVisible() ? '8%' : '12%' }">Coprifilo
                 </th>
-                <th *ngIf="isTrimSectionVisible()" colspan="4" style="width: 20%;">Rifilo Battuta</th>
-                <th [attr.rowspan]="isTrimSectionVisible() ? '2' : '1'" [ngStyle]="{ width: showPreviewButton ? '8%' : '6%' }"></th>
-              </tr>
-              <tr *ngIf="isTrimSectionVisible()">
-                <th style="width: 5%;font-size: 0.8rem;">Sx</th>
-                <th style="width: 5%;font-size: 0.8rem;">Dx</th>
-                <th style="width: 5%;font-size: 0.8rem;">Sopra</th>
-                <th style="width: 5%;font-size: 0.8rem;">Sotto</th>
+                <th *ngIf="isFrameSectionVisible()" style="width: 20%;">Telaio</th>
+                <th [ngStyle]="{ width: showPreviewButton ? '8%' : '6%' }"></th>
               </tr>
               </thead>
               <tbody>
@@ -471,29 +461,11 @@
                     *ngTemplateOutlet="wireCoverInput; context: { index: i, form: row, tableLg: true }"></ng-container>
                 </td>
 
-                <ng-container *ngIf="isTrimSectionVisible()">
-                  <!-- Rifilo Battuta Sx -->
+                <ng-container *ngIf="isFrameSectionVisible()">
+                  <!-- Telaio -->
                   <td>
                     <ng-container
-                      *ngTemplateOutlet="leftTrimInput; context: { index: i, form: row, tableLg: true }"></ng-container>
-                  </td>
-
-                  <!-- Rifilo Battuta Dx -->
-                  <td>
-                    <ng-container
-                      *ngTemplateOutlet="rightTrimInput; context: { index: i, form: row, tableLg: true }"></ng-container>
-                  </td>
-
-                  <!-- Rifilo Battuta Sopra -->
-                  <td>
-                    <ng-container
-                      *ngTemplateOutlet="upperTrimInput; context: { index: i, form: row, tableLg: true }"></ng-container>
-                  </td>
-
-                  <!-- Rifilo Battuta Sotto -->
-                  <td>
-                    <ng-container
-                      *ngTemplateOutlet="belowThresholdInput; context: { index: i, form: row, tableLg: true }"></ng-container>
+                      *ngTemplateOutlet="frameCodeInput; context: { index: i, form: row, tableLg: true }"></ng-container>
                   </td>
                 </ng-container>
                 <td class="text-center align-middle">
@@ -567,29 +539,16 @@
                 <label class="form-label">Coprifilo</label>
                 <ng-container *ngTemplateOutlet="wireCoverInput; context: { index: i, form: row }"></ng-container>
               </div>
-              <ng-container *ngIf="isTrimSectionVisible()">
+              <ng-container *ngIf="isFrameSectionVisible()">
                 <hr class="section-separator"/>
 
-                <!-- Rifilo Battuta Section -->
+                <!-- Telaio Section -->
                 <div class="mb-3">
-                  <h6 class="form-label">Rifilo Battuta</h6>
+                  <h6 class="form-label">Telaio</h6>
                   <div class="row">
-                    <div class="col-6 col-md-3">
-                      <label class="form-label">Sx</label>
-                      <ng-container *ngTemplateOutlet="leftTrimInput; context: { index: i, form: row }"></ng-container>
-                    </div>
-                    <div class="col-6 col-md-3">
-                      <label class="form-label">Dx</label>
-                      <ng-container *ngTemplateOutlet="rightTrimInput; context: { index: i, form: row }"></ng-container>
-                    </div>
                     <div class="col-6 col-md-3 mt-2 mt-md-0">
-                      <label class="form-label">Sopra</label>
-                      <ng-container *ngTemplateOutlet="upperTrimInput; context: { index: i, form: row }"></ng-container>
-                    </div>
-                    <div class="col-6 col-md-3 mt-2 mt-md-0">
-                      <label class="form-label">Sotto</label>
                       <ng-container
-                        *ngTemplateOutlet="belowThresholdInput; context: { index: i, form: row }"></ng-container>
+                        *ngTemplateOutlet="frameCodeInput; context: { index: i, form: row }"></ng-container>
                     </div>
                   </div>
                 </div>
@@ -963,79 +922,46 @@
     </ng-container>
   </ng-container>
 </ng-template>
-<ng-template #leftTrimInput let-tableLg="tableLg" let-i="index" let-form="form">
+<ng-template #frameCodeInput let-tableLg="tableLg" let-i="index" let-form="form">
   <ng-container [formGroup]="form">
-    <ng-container *ngIf="form.get('leftTrim') as leftTrimControl">
-      <input type="text" inputmode="numeric" formControlName="leftTrim" class="form-control" autocomplete="off"
-             (mouseenter)="onEnterTooltip($event, 'tooltip-leftTrim-' + i)"
-             (mouseleave)="onLeaveTooltip('tooltip-leftTrim-' + i)"
-             [ngClass]="{ 'is-invalid': (leftTrimControl.touched || hasTriggeredWindowsValidation) && leftTrimControl.invalid }"
-             (input)="onWindowsRowInputNumber($event, i, 'leftTrim')"/>
-      <div *ngIf="(leftTrimControl.touched || hasTriggeredWindowsValidation) && leftTrimControl.invalid && !tableLg"
-           class="invalid-feedback">Il rifilo sinistro{{ leftTrimControl.getError('invalidValue')?.reason }}.
-      </div>
-      <div *ngIf="(leftTrimControl.touched || hasTriggeredWindowsValidation) && leftTrimControl.invalid && tableLg"
-           class="tooltip danger" [id]="'tooltip-leftTrim-' + i">
-        Il rifilo sinistro{{ leftTrimControl.getError('invalidValue')?.reason }}.
-      </div>
-    </ng-container>
-  </ng-container>
-</ng-template>
-<ng-template #rightTrimInput let-tableLg="tableLg" let-i="index" let-form="form">
-  <ng-container [formGroup]="form">
-    <ng-container *ngIf="form.get('rightTrim') as rightTrimControl">
-      <input type="text" inputmode="numeric" formControlName="rightTrim" class="form-control" autocomplete="off"
-             (mouseenter)="onEnterTooltip($event, 'tooltip-rightTrim-' + i)"
-             (mouseleave)="onLeaveTooltip('tooltip-rightTrim-' + i)"
-             [ngClass]="{ 'is-invalid': (rightTrimControl.touched || hasTriggeredWindowsValidation) && rightTrimControl.invalid }"
-             (input)="onWindowsRowInputNumber($event, i, 'rightTrim')"/>
-      <div *ngIf="(rightTrimControl.touched || hasTriggeredWindowsValidation) && rightTrimControl.invalid && !tableLg"
-           class="invalid-feedback">Il rifilo destro{{ rightTrimControl.getError('invalidValue')?.reason }}.
-      </div>
-      <div *ngIf="(rightTrimControl.touched || hasTriggeredWindowsValidation) && rightTrimControl.invalid && tableLg"
-           class="tooltip danger" [id]="'tooltip-rightTrim-' + i">
-        Il rifilo destro{{ rightTrimControl.getError('invalidValue')?.reason }}.
-      </div>
-    </ng-container>
-  </ng-container>
-</ng-template>
-<ng-template #upperTrimInput let-tableLg="tableLg" let-i="index" let-form="form">
-  <ng-container [formGroup]="form">
-    <ng-container *ngIf="form.get('upperTrim') as upperTrimControl">
-      <input type="text" inputmode="numeric" formControlName="upperTrim" class="form-control" autocomplete="off"
-             (mouseenter)="onEnterTooltip($event, 'tooltip-upperTrim-' + i)"
-             (mouseleave)="onLeaveTooltip('tooltip-upperTrim-' + i)"
-             [ngClass]="{ 'is-invalid': (upperTrimControl.touched || hasTriggeredWindowsValidation) && upperTrimControl.invalid }"
-             (input)="onWindowsRowInputNumber($event, i, 'upperTrim')"/>
-      <div *ngIf="(upperTrimControl.touched || hasTriggeredWindowsValidation) && upperTrimControl.invalid && !tableLg"
-           class="invalid-feedback">Il rifilo sopra{{ upperTrimControl.getError('invalidValue')?.reason }}.
-      </div>
-      <div *ngIf="(upperTrimControl.touched || hasTriggeredWindowsValidation) && upperTrimControl.invalid && tableLg"
-           class="tooltip danger" [id]="'tooltip-upperTrim-' + i">
-        Il rifilo sopra{{ upperTrimControl.getError('invalidValue')?.reason }}.
-      </div>
-    </ng-container>
-  </ng-container>
-</ng-template>
-<ng-template #belowThresholdInput let-tableLg="tableLg" let-i="index" let-form="form">
-  <ng-container [formGroup]="form">
-    <ng-container *ngIf="form.get('belowThreshold') as belowThresholdControl">
-      <input type="text" inputmode="numeric" formControlName="belowThreshold" class="form-control" autocomplete="off"
-             (mouseenter)="onEnterTooltip($event, 'tooltip-belowThreshold-' + i)"
-             (mouseleave)="onLeaveTooltip('tooltip-belowThreshold-' + i)"
-             [ngClass]="{ 'is-invalid': (belowThresholdControl.touched || hasTriggeredWindowsValidation) && belowThresholdControl.invalid }"
-             (input)="onWindowsRowInputNumber($event, i, 'belowThreshold')"/>
+    <ng-container *ngIf="form.get('frameCode') as frameCodeControl">
+      <ng-select
+        (mouseenter)="onEnterTooltip($event, 'tooltip-frameCode-' + i)"
+        (mouseleave)="onLeaveTooltip('tooltip-frameCode-' + i)"
+        (open)="ngSelectHandleFocus(tableLg)"
+        [items]="frameTypeList"
+        [searchable]="true"
+        [clearable]="false"
+        formControlName="frameCode"
+        appendTo="body"
+        class="custom-table"
+        [class.ng-invalid]="false"
+        [ngClass]="{ 'is-invalid': (frameCodeControl.touched || hasTriggeredWindowsValidation) && frameCodeControl.invalid }"
+        [loading]="isCollectionsLoading">
+<!--        <ng-container *ngIf="tableLg">-->
+<!--          <ng-template ng-label-tmp let-item="item">-->
+<!--            <div>{{ item.id }}</div>-->
+<!--            <div class="tooltip" [id]="'tooltip-frameCode-' + i">{{ item.desc }}</div>-->
+<!--          </ng-template>-->
+<!--        </ng-container>-->
+<!--        <ng-template ng-option-tmp let-item="item">-->
+<!--          <div class="dropdown-item">-->
+<!--            <span class="item-id">{{ item.id }}</span>-->
+<!--            <span class="item-desc">{{ item.desc }}</span>-->
+<!--          </div>-->
+<!--        </ng-template>-->
+      </ng-select>
       <div
-        *ngIf="(belowThresholdControl.touched || hasTriggeredWindowsValidation) && belowThresholdControl.invalid && !tableLg"
-        class="invalid-feedback">Il rifilo sotto{{ belowThresholdControl.getError('invalidValue')?.reason }}.
+        *ngIf="(frameCodeControl.touched || hasTriggeredWindowsValidation) && frameCodeControl.invalid && !tableLg"
+        class="invalid-feedback">Il telaio è obbligatorio.
       </div>
       <div
-        *ngIf="(belowThresholdControl.touched || hasTriggeredWindowsValidation) && belowThresholdControl.invalid && tableLg"
-        class="tooltip danger" [id]="'tooltip-belowThreshold-' + i">
-        Il rifilo sotto{{ belowThresholdControl.getError('invalidValue')?.reason }}.
+        *ngIf="(frameCodeControl.touched || hasTriggeredWindowsValidation) && frameCodeControl.invalid && tableLg"
+        class="tooltip danger" [id]="'tooltip-windowType-' + i">Il telaio è obbligatorio.
       </div>
     </ng-container>
   </ng-container>
+
 </ng-template>
 <ng-template #positionCustomInput let-tableLg="tableLg" let-form="form" let-i="index">
   <ng-container [formGroup]="form">

@@ -28,10 +28,7 @@ export interface WindowRow {
   windowType: string;
   openingType: string;
   glassType: string;
-  leftTrim: number;
-  rightTrim: number;
-  upperTrim: number;
-  belowThreshold: number;
+  frameCode: string;
   wireCover: boolean;
 }
 

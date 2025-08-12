@@ -17,7 +17,6 @@ export interface CollectionBaseItem {
 }
 
 export interface Product extends CollectionBaseItem {
-  trimSectionVisible: boolean;
   extDesc: string;
   descTitle: string;
   singleColor: boolean;
@@ -42,6 +41,7 @@ export interface WindowType extends CollectionBaseItem {
   openingTypeVisible: boolean;
   glassTypeVisible: boolean;
   wireCoverVisible: boolean;
+  frameTypeVisible: boolean;
   materialForProduct: string[];
 }
 
@@ -51,7 +51,8 @@ export interface OpeningType extends CollectionBaseItem {
 export interface GlassType extends CollectionBaseItem {
 }
 
-export interface Crosspiece extends CollectionBaseItem {
+export interface FrameType extends CollectionBaseItem {
+  frameForProduct: string[];
 }
 
 // Main Collections interface
@@ -62,5 +63,5 @@ export interface CollectionsResponse {
   windowTypes: WindowType[];
   openingTypes: OpeningType[];
   glassTypes: GlassType[];
-  crosspieces: Crosspiece[];
+  frameTypes: FrameType[];
 }
