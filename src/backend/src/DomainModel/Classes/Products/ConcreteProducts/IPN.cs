@@ -16,11 +16,11 @@ namespace DomainModel.Classes.Products.ConcreteProducts
         public override int Order => 60;
         public override decimal GetPrice_DoubleDim(DoubleDimMaterial m, long area_sqmm)
         {
-            return GetFullDoubleDimensionPrice(528M, area_sqmm, m.OpaqueGlass, m.WireCover, m.Height_mm, m.Width_mm);
+            return GetFullDoubleDimensionPrice(528M, area_sqmm, m.OpaqueGlass, m.WireCover, m.Height_mm, m.Width_mm, m.FrameType);
         }
         public override decimal GetPrice_DoubleDimFixed(DoubleDimFixedMaterial m, long area_sqmm)
         {
-            return GetFullDoubleDimensionPrice(385M, area_sqmm, m.OpaqueGlass, m.WireCover, m.Height_mm, m.Width_mm);
+            return GetFullDoubleDimensionPrice(385M, area_sqmm, m.OpaqueGlass, m.WireCover, m.Height_mm, m.Width_mm, m.FrameType);
         }
     }
 }

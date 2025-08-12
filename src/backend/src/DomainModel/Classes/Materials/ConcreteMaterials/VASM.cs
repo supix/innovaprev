@@ -1,10 +1,11 @@
-﻿using DomainModel.Classes.Products.Visitor;
+﻿using DomainModel.Classes.Frames;
+using DomainModel.Classes.Products.Visitor;
 
 namespace DomainModel.Classes.Materials.ConcreteMaterials
 {
     public class VASM : DoubleDimMaterial
     {
-        public VASM(long height_mm, long width_mm, string openingType, bool opaqueGlass, bool wireCover) : base(height_mm, width_mm, openingType, opaqueGlass, wireCover)
+        public VASM(long height_mm, long width_mm, string openingType, bool opaqueGlass, bool wireCover, IFrame frameType) : base(height_mm, width_mm, openingType, opaqueGlass, wireCover, frameType)
         {
         }
         public override bool openingTypeVisible => false;

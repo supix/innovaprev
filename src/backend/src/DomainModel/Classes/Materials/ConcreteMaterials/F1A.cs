@@ -1,8 +1,10 @@
-﻿namespace DomainModel.Classes.Materials.ConcreteMaterials
+﻿using DomainModel.Classes.Frames;
+
+namespace DomainModel.Classes.Materials.ConcreteMaterials
 {
     public class F1A : DoubleDimMaterial
     {
-        public F1A(long height_mm, long width_mm, string openingType, bool opaqueGlass, bool wireCover) : base(height_mm, width_mm, openingType, opaqueGlass, wireCover)
+        public F1A(long height_mm, long width_mm, string openingType, bool opaqueGlass, bool wireCover, IFrame frameType) : base(height_mm, width_mm, openingType, opaqueGlass, wireCover, frameType)
         {
         }
 

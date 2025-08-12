@@ -52,7 +52,7 @@ namespace DomainModel.Classes.Materials
 
                     if (t.IsSubclassOf(typeof(DoubleDimMaterial)))
                     {
-                        return (AbstractMaterial)Activator.CreateInstance(t, 0, 0, string.Empty, false, false)!;
+                        return (AbstractMaterial)Activator.CreateInstance(t, 0, 0, string.Empty, false, false, null)!;
                     }
 
                     if (t == typeof(CAS))

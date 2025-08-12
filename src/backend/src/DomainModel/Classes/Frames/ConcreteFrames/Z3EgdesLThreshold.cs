@@ -4,5 +4,9 @@
     {
         public override string Description => "3 lati Z soglia L";
         public override int Order => 50;
+        public override decimal GetPrice_sqm()
+        {
+            return 8;
+        }
     }
 }

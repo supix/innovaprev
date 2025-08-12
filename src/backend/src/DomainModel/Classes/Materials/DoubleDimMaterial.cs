@@ -1,4 +1,5 @@
-﻿using DomainModel.Classes.Products;
+﻿using DomainModel.Classes.Frames;
+using DomainModel.Classes.Products;
 using DomainModel.Classes.Products.ConcreteProducts;
 using DomainModel.Classes.Products.Visitor;
 
@@ -6,13 +7,14 @@ namespace DomainModel.Classes.Materials
 {
     public abstract class DoubleDimMaterial : AbstractMaterial
     {
-        protected DoubleDimMaterial(long height_mm, long width_mm, string openingType, bool opaqueGlass, bool wireCover)
+        protected DoubleDimMaterial(long height_mm, long width_mm, string openingType, bool opaqueGlass, bool wireCover, IFrame frameType)
         {
             Height_mm = height_mm;
             Width_mm = width_mm;
             OpeningType = openingType;
             OpaqueGlass = opaqueGlass;
             WireCover = wireCover;
+            FrameType = frameType;
         }
 
         public override sealed int NumberOfDimensions => 2;
@@ -21,6 +23,7 @@ namespace DomainModel.Classes.Materials
         public string OpeningType { get; }
         public bool OpaqueGlass { get; }
         public bool WireCover { get; }
+        public IFrame FrameType { get; }
         public override bool openingTypeVisible => true;
         public override bool glassTypeVisible => true;
         public override bool wireCoverVisible => true;

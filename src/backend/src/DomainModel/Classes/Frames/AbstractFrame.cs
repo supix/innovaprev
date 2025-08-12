@@ -6,5 +6,9 @@
         public abstract string Description { get; }
         public abstract int Order { get; }
         public abstract string[] FrameForProduct { get; }
+        public virtual decimal GetPrice_sqm()
+        {
+            return 0;
+        }
     }
 }
