@@ -11,6 +11,6 @@
         public string? OpeningType { get; set; }
         public string? GlassType { get; set; }
         public bool WireCover { get; set; }
-        public required string FrameCode { get; set; }
+        public string? FrameCode { get; set; }
     }
 }
