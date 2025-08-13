@@ -42,7 +42,7 @@ namespace DomainModel.Classes.Products
             const decimal TRANSPARENT_GLASS_PRICE_SQM = 38M;
             const decimal OPAQUE_GLASS_PRICE_SQM = 48M;
             decimal glassPrice_sqm = opaqueGlass ? OPAQUE_GLASS_PRICE_SQM : TRANSPARENT_GLASS_PRICE_SQM;
-            decimal framePrice_sqm = frame != null ? frame.GetPrice_sqm(this) : 0M;
+            decimal framePrice_sqm = frame.GetPrice_sqm(this);
 
             var wireCoverPrice = 0M;
             if (wireCover)

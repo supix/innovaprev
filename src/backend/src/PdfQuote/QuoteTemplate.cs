@@ -1,6 +1,7 @@
 ﻿using DomainModel.Classes;
 using DomainModel.Classes.Colors;
 using DomainModel.Classes.Frames;
+using DomainModel.Classes.Frames.ConcreteFrames;
 using DomainModel.Classes.Materials;
 using DomainModel.Classes.Products;
 using DomainModel.Services;
@@ -114,13 +115,8 @@ namespace PdfQuote
                     var product = ProductFactory.CreateByCode(pd.Product, internalColor, externalColor);
 
                     //create frame
-                    IFrame? frame = null;
-                    string frameDescription = string.Empty;
-                    if (!string.IsNullOrWhiteSpace(wd.FrameCode))
-                    {
-                        frame = FrameFactory.CreateByCode(wd.FrameCode);
-                        frameDescription = frame.Description;
-                    }
+                    IFrame frame = string.IsNullOrWhiteSpace(wd.FrameCode) ? new NullFrame() : FrameFactory.CreateByCode(wd.FrameCode);
+                    var frameDescription = frame.Description;
 
                     // create material
                     long m1 = wd.Length != 0 ? wd.Length : wd.Height;

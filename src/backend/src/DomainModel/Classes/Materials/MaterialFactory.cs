@@ -5,7 +5,7 @@ namespace DomainModel.Classes.Materials
 {
     public static class MaterialFactory
     {
-        public static IMaterial CreateByCode(string code, long m1, long m2, string openingType, bool opaqueGlass, bool wireCover, IFrame? frame)
+        public static IMaterial CreateByCode(string code, long m1, long m2, string openingType, bool opaqueGlass, bool wireCover, IFrame frame)
         {
             var t = AppDomain.CurrentDomain.GetAssemblies()
                 .SelectMany(domainAssembly => domainAssembly.GetTypes())

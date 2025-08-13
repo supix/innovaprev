@@ -4,7 +4,7 @@ namespace DomainModel.Classes.Frames.ConcreteFrames
 {
     public class NullFrame : AbstractFrame
     {
-        public override string Description => throw new NotImplementedException();
+        public override string Description => string.Empty;
 
         public override int Order => 9999;
 

@@ -1,6 +1,7 @@
 ﻿using DomainModel.Classes;
 using DomainModel.Classes.Colors;
 using DomainModel.Classes.Frames;
+using DomainModel.Classes.Frames.ConcreteFrames;
 using DomainModel.Classes.Materials;
 using DomainModel.Classes.Products;
 
@@ -24,7 +25,7 @@ namespace DomainModel.Services.PriceCalculator
                 {
                     long m1 = wd.Length != 0 ? wd.Length : wd.Height;
                     long m2 = wd.Width;
-                    var frame = string.IsNullOrWhiteSpace(wd.FrameCode) ? null : FrameFactory.CreateByCode(wd.FrameCode);
+                    var frame = string.IsNullOrWhiteSpace(wd.FrameCode) ? new NullFrame() : FrameFactory.CreateByCode(wd.FrameCode);
                     var material = MaterialFactory.CreateByCode(wd.WindowType, m1, m2, (wd.OpeningType != null && wd.OpeningType.Contains("SX")) ? "SX" : "DX", wd.GlassType == "GT_OPACO", wd.WireCover, frame);
                     var netPrice = product.GetMaterialPrice(material);
                     var totalMaterialPrice = netPrice * wd.Quantity;
