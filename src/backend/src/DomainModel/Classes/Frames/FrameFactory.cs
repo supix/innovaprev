@@ -1,4 +1,6 @@
-﻿namespace DomainModel.Classes.Frames
+﻿using DomainModel.Classes.Frames.ConcreteFrames;
+
+namespace DomainModel.Classes.Frames
 {
     public static class FrameFactory
     {
@@ -6,7 +8,7 @@
         {
             return AppDomain.CurrentDomain.GetAssemblies()
                 .SelectMany(domainAssembly => domainAssembly.GetTypes())
-                .Where(type => type.IsSubclassOf(typeof(AbstractFrame)) && !type.IsAbstract)
+                .Where(type => type.IsSubclassOf(typeof(AbstractFrame)) && !type.IsAbstract && type != typeof(NullFrame))
                 .Select(t =>
                 {
                     return (AbstractFrame)Activator.CreateInstance(t)!;
