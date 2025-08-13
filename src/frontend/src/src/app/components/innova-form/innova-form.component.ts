@@ -1063,7 +1063,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
             } = this.collections?.windowTypes.find(value => value.id === selectedWindowType as unknown as string) as WindowType || {};
             const isValidFrameCode = this.frameTypeList.some((type: FrameType) => type.id === selectedFrameCode);
 
-            if (!frameTypeVisible) {
+            if (!frameTypeVisible || this.frameTypeList.length === 0) {
               frameCodeControl.disable();
               frameCodeControl.setValue(null, {emitEvent: false});
               frameCodeControl.clearValidators();
@@ -1177,7 +1177,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
         }
 
         // Frame Code
-        if (frameTypeVisible) {
+        if (frameTypeVisible && this.frameTypeList.length > 0) {
           row.get('frameCode')?.setValidators([Validators.required]);
           row.get('frameCode')?.enable({emitEvent: false});
         } else {
