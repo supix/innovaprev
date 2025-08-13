@@ -73,5 +73,21 @@ namespace DomainModel.Classes.Products
         }
         public override sealed bool SingleColor => false;
         protected override sealed IWireCoverLenCalculator WireCoverLenCalculator => new WoodWireCoverLenCalculator();
+        public override decimal GetPrice_Z3EgdesLThreshold_sqm()
+        {
+            return 8;
+        }
+        public override decimal GetPrice_AbstractWoodFrame_sqm()
+        {
+            return 0;
+        }
+        public override decimal GetPrice_AbstractInnovaFrame_sqm()
+        {
+            throw new InvalidOperationException("Frame not allowed for this product");
+        }
+        public override decimal GetPrice_NullFrame_sqm()
+        {
+            throw new InvalidOperationException("Frame not allowed for this product");
+        }
     }
 }

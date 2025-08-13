@@ -1,4 +1,6 @@
-﻿namespace DomainModel.Classes.Frames
+﻿using DomainModel.Classes.Products.Visitors;
+
+namespace DomainModel.Classes.Frames
 {
     public interface IFrame
     {
@@ -6,6 +8,6 @@
         string Description { get; }
         int Order { get; }
         string[] FrameForProduct { get; }
-        decimal GetPrice_sqm();
+        decimal GetPrice_sqm(IFrameVisitor visitor);
     }
 }

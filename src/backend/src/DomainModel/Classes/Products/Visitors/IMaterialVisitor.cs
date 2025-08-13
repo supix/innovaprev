@@ -1,7 +1,7 @@
 ﻿using DomainModel.Classes.Materials;
 using DomainModel.Classes.Materials.ConcreteMaterials;
 
-namespace DomainModel.Classes.Products.Visitor
+namespace DomainModel.Classes.Products.Visitors
 {
     public interface IMaterialVisitor
     {

@@ -2,12 +2,12 @@
 using DomainModel.Classes.Frames;
 using DomainModel.Classes.Materials;
 using DomainModel.Classes.Materials.ConcreteMaterials;
-using DomainModel.Classes.Products.Visitor;
+using DomainModel.Classes.Products.Visitors;
 using DomainModel.Services.WireCoverLenCalculator;
 
 namespace DomainModel.Classes.Products
 {
-    public abstract class AbstractProduct : IProduct, IMaterialVisitor, IColorVisitor
+    public abstract class AbstractProduct : IProduct, IMaterialVisitor, IColorVisitor, IFrameVisitor
     {
         protected readonly IColor ic;
         protected readonly IColor ec;
@@ -42,7 +42,7 @@ namespace DomainModel.Classes.Products
             const decimal TRANSPARENT_GLASS_PRICE_SQM = 38M;
             const decimal OPAQUE_GLASS_PRICE_SQM = 48M;
             decimal glassPrice_sqm = opaqueGlass ? OPAQUE_GLASS_PRICE_SQM : TRANSPARENT_GLASS_PRICE_SQM;
-            decimal framePrice_sqm = frame != null ? frame.GetPrice_sqm() : 0M;
+            decimal framePrice_sqm = frame != null ? frame.GetPrice_sqm(this) : 0M;
 
             var wireCoverPrice = 0M;
             if (wireCover)
@@ -73,6 +73,11 @@ namespace DomainModel.Classes.Products
         public abstract decimal GetPrice_FRO_PvcWoodEffect_m();
         public abstract decimal GetPrice_COP_PvcWhite_m();
         public abstract decimal GetPrice_COP_PvcWoodEffect_m();
+        public abstract decimal GetPrice_Z3EgdesLThreshold_sqm();
+        public abstract decimal GetPrice_AbstractWoodFrame_sqm();
+        public abstract decimal GetPrice_AbstractInnovaFrame_sqm();
+        public abstract decimal GetPrice_NullFrame_sqm();
+
         protected abstract IWireCoverLenCalculator WireCoverLenCalculator { get; }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace DomainModel.Classes.Products.Visitor
+﻿namespace DomainModel.Classes.Products.Visitors
 {
     public interface IColorVisitor
     {

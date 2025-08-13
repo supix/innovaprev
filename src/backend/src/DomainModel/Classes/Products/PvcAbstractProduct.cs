@@ -73,6 +73,21 @@ namespace DomainModel.Classes.Products
             return 9M;
         }
         protected override sealed IWireCoverLenCalculator WireCoverLenCalculator => new PvcWireCoverLenCalculator();
-
+        public override decimal GetPrice_Z3EgdesLThreshold_sqm()
+        {
+            throw new InvalidOperationException("Frame not allowed for this product");
+        }
+        public override decimal GetPrice_AbstractWoodFrame_sqm()
+        {
+            throw new InvalidOperationException("Frame not allowed for this product");
+        }
+        public override decimal GetPrice_AbstractInnovaFrame_sqm()
+        {
+            throw new InvalidOperationException("Frame not allowed for this product");
+        }
+        public override decimal GetPrice_NullFrame_sqm()
+        {
+            return 0;
+        }
     }
 }

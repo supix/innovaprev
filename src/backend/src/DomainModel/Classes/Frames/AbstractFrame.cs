@@ -1,4 +1,6 @@
-﻿namespace DomainModel.Classes.Frames
+﻿using DomainModel.Classes.Products.Visitors;
+
+namespace DomainModel.Classes.Frames
 {
     public abstract class AbstractFrame : IFrame
     {
@@ -6,9 +8,6 @@
         public abstract string Description { get; }
         public abstract int Order { get; }
         public abstract string[] FrameForProduct { get; }
-        public virtual decimal GetPrice_sqm()
-        {
-            return 0;
-        }
+        public abstract decimal GetPrice_sqm(IFrameVisitor visitor);
     }
 }

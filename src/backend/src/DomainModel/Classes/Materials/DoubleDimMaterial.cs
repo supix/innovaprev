@@ -1,7 +1,7 @@
 ﻿using DomainModel.Classes.Frames;
 using DomainModel.Classes.Products;
 using DomainModel.Classes.Products.ConcreteProducts;
-using DomainModel.Classes.Products.Visitor;
+using DomainModel.Classes.Products.Visitors;
 
 namespace DomainModel.Classes.Materials
 {

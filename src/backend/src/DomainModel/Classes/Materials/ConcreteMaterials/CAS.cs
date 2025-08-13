@@ -1,4 +1,4 @@
-﻿using DomainModel.Classes.Products.Visitor;
+﻿using DomainModel.Classes.Products.Visitors;
 
 namespace DomainModel.Classes.Materials.ConcreteMaterials
 {

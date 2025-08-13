@@ -85,7 +85,7 @@ namespace DomainModel_Test
         public void Test_PvcWithColorSupplement_PriceIsCorrect()
         {
             var p = new IPC(new DarkWood());
-            var f1a = new F1A(2000L, 3000L, "SX", false, false, new L4Egdes());
+            var f1a = new F1A(2000L, 3000L, "SX", false, false, new Z4Egdes());
             var price = p.GetMaterialPrice(f1a);
             const int glassSupplement = 38;
             const decimal colorSupplement = 89M;
@@ -141,7 +141,7 @@ namespace DomainModel_Test
         public void Test_IPCWithDoubleAllowedLength_PriceIsCorrect()
         {
             var p = new IPC(new Ral1013());
-            var f1a = new F1A(5000L, 4000L, "SX", false, false, new L4Egdes());
+            var f1a = new F1A(5000L, 4000L, "SX", false, false, new Z4Egdes());
             var price = p.GetMaterialPrice(f1a);
             Assert.That(Math.Abs(price - (528 + 38) * 5M * 4M), Is.LessThan(1e-3M));
         }
@@ -150,7 +150,7 @@ namespace DomainModel_Test
         public void Test_IPNWithDoubleAllowedLength_PriceIsCorrect()
         {
             var p = new IPN(new Ral1013());
-            var f1a = new F1A(5000L, 4000L, "SX", false, false, new L4Egdes());
+            var f1a = new F1A(5000L, 4000L, "SX", false, false, new Z4Egdes());
             var price = p.GetMaterialPrice(f1a);
             Assert.That(Math.Abs(price - (528 + 38) * 5M * 4M), Is.LessThan(1e-3M));
         }
@@ -159,9 +159,53 @@ namespace DomainModel_Test
         public void Test_SPWithFIXALowLength_PriceIsCorrect()
         {
             var p = new SP(new Ral1013());
-            var f1a = new F1A(1500L, 1200L, "SX", false, false, new L4Egdes());
+            var f1a = new F1A(1500L, 1200L, "SX", false, false, new NullFrame());
             var price = p.GetMaterialPrice(f1a);
             Assert.That(Math.Abs(price - (635 + 38) * 1.5M * 1.2M), Is.LessThan(1e-3M));
+        }
+
+        [Test]
+        public void Test_NullFrameForInnovaProduct_RaisesException()
+        {
+            var p = new IPC(new Ral1013());
+            var f1a = new F1A(1500L, 1200L, "SX", false, false, new NullFrame());
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                var price = p.GetMaterialPrice(f1a);
+            });
+        }
+
+        [Test]
+        public void Test_NullFrameForWoodProduct_RaisesException()
+        {
+            var p = new ELA(new Ral1013(), new Ral1013());
+            var f1a = new F1A(1500L, 1200L, "SX", false, false, new NullFrame());
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                var price = p.GetMaterialPrice(f1a);
+            });
+        }
+
+        [Test]
+        public void Test_WoodFrameForInnovaProduct_RaisesException()
+        {
+            var p = new IPC(new Ral1013());
+            var f1a = new F1A(1500L, 1200L, "SX", false, false, new Z3EgdesLThreshold());
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                var price = p.GetMaterialPrice(f1a);
+            });
+        }
+
+        [Test]
+        public void Test_InnovaFrameForWoodProduct_RaisesException()
+        {
+            var p = new ELA(new Ral1013(), new Ral1013());
+            var f1a = new F1A(1500L, 1200L, "SX", false, false, new L4EgdesTwitch());
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                var price = p.GetMaterialPrice(f1a);
+            });
         }
 
         [Test]
@@ -213,7 +257,7 @@ namespace DomainModel_Test
         public void Test_IPCWithFixed_PriceIsCorrect()
         {
             var p = new IPC(new Ral1013());
-            var fls = new FLS(1300L, 1800L, "SX", false, false, new L4Egdes());
+            var fls = new FLS(1300L, 1800L, "SX", false, false, new Z4Egdes());
             var price = p.GetMaterialPrice(fls);
             Assert.That(Math.Abs(price - (385 + 38) * 1.3M * 1.8M), Is.LessThan(1e-3M));
         }
@@ -389,7 +433,7 @@ namespace DomainModel_Test
         public void Test_PRT1AWithPvcAntaMax_PriceIsCorrect()
         {
             var p = new IPCAM(new Ral1013());
-            var prt1a = new PRT1A(3000L, 4500L, "SX", false, false, new L4Egdes());
+            var prt1a = new PRT1A(3000L, 4500L, "SX", false, false, new Z4Egdes());
             var price = p.GetMaterialPrice(prt1a);
             var expected = (635M + 38M) * 3M * 4.5M + 616M;
             Assert.That(Math.Abs(price - expected), Is.LessThan(1e-3M));
@@ -399,7 +443,7 @@ namespace DomainModel_Test
         public void Test_PRT1AWithPvcAntaMaxLowArea_PriceIsCorrect()
         {
             var p = new IPCAM(new Ral1013());
-            var prt1a = new PRT1A(1000L, 1000L, "SX", false, false, new L4Egdes());
+            var prt1a = new PRT1A(1000L, 1000L, "SX", false, false, new Z4Egdes());
             var price = p.GetMaterialPrice(prt1a);
             var expected = (635M + 38M) * 1.5M + 616M;
             Assert.That(Math.Abs(price - expected), Is.LessThan(1e-3M));
@@ -409,7 +453,7 @@ namespace DomainModel_Test
         public void Test_PRT2AWithPvcAntaMax_PriceIsCorrect()
         {
             var p = new IPCAM(new Ral1013());
-            var prt2a = new PRT2A(3000L, 4500L, "SX", false, false, new L4Egdes());
+            var prt2a = new PRT2A(3000L, 4500L, "SX", false, false, new Z4Egdes());
             var price = p.GetMaterialPrice(prt2a);
             var expected = (635M + 38M) * 3M * 4.5M + 616M;
             Assert.That(Math.Abs(price - expected), Is.LessThan(1e-3M));
@@ -419,7 +463,7 @@ namespace DomainModel_Test
         public void Test_PRT2AWithPvcAntaMaxLowArea_PriceIsCorrect()
         {
             var p = new IPCAM(new Ral1013());
-            var prt2a = new PRT2A(1000L, 1000L, "SX", false, false, new L4Egdes());
+            var prt2a = new PRT2A(1000L, 1000L, "SX", false, false, new Z4Egdes());
             var price = p.GetMaterialPrice(prt2a);
             var expected = (635M + 38M) * 1.8M + 616M;
             Assert.That(Math.Abs(price - expected), Is.LessThan(1e-3M));
@@ -470,7 +514,7 @@ namespace DomainModel_Test
         public void Test_PvcWithWireCover_PriceIsCorrect()
         {
             var p = new IPC(new White9010());
-            var mat = new F1A(2000L, 2000L, "SX", false, true, new L4Egdes());
+            var mat = new F1A(2000L, 2000L, "SX", false, true, new Z4Egdes());
             var price = p.GetMaterialPrice(mat);
             const decimal windowPrice = (528M + 38M) * 4M;
             const decimal wireCoverPrice = 6.5M * 5.5M;
