@@ -1,4 +1,5 @@
-﻿using DomainModel.Classes.Materials;
+﻿using DomainModel.Classes.Frames.ConcreteFrames;
+using DomainModel.Classes.Materials;
 using DomainModel.Classes.Materials.ConcreteMaterials;
 
 namespace DomainModel_Test;
@@ -13,7 +14,7 @@ public class TestMaterialFactory
     [Test]
     public void CAS_CanBeCreated()
     {
-        var cas = MaterialFactory.CreateByCode("CAS", 1234, 4321, "SX", false, false, null);
+        var cas = MaterialFactory.CreateByCode("CAS", 1234, 4321, "SX", false, false, new NullFrame());
         Assert.That(cas.GetType() == typeof(CAS));
         Assert.That((cas as CAS)!.Height_mm, Is.EqualTo(1234));
         Assert.That((cas as CAS)!.Width_mm, Is.EqualTo(4321));
