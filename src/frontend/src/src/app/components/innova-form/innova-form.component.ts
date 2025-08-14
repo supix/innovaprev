@@ -1044,6 +1044,45 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
 
         windowTypeControl.updateValueAndValidity({emitEvent: false});
       }
+
+      // Apply the same validation/enable/disable logic for frameCode based on frameTypeList
+      const frameCodeControl = windowGroup.get('frameCode');
+      if (frameCodeControl) {
+        const selectedFrameCode = frameCodeControl.value;
+
+        if (this.frameTypeList.length === 0) {
+          frameCodeControl.disable();
+          frameCodeControl.setValue(null, {emitEvent: false});
+          frameCodeControl.clearValidators();
+        } else {
+          const windowTypeControl = windowGroup.get('windowType');
+          if (windowTypeControl) {
+            const selectedWindowType = windowTypeControl.value;
+            const {
+              frameTypeVisible
+            } = this.collections?.windowTypes.find(value => value.id === selectedWindowType as unknown as string) as WindowType || {};
+            const isValidFrameCode = this.frameTypeList.some((type: FrameType) => type.id === selectedFrameCode);
+
+            if (!frameTypeVisible || this.frameTypeList.length === 0) {
+              frameCodeControl.disable();
+              frameCodeControl.setValue(null, {emitEvent: false});
+              frameCodeControl.clearValidators();
+            } else {
+              if (!isValidFrameCode) {
+                frameCodeControl.setValue(null, {emitEvent: false});
+              }
+              frameCodeControl.enable();
+              frameCodeControl.setValidators([Validators.required]);
+            }
+          } else {
+            frameCodeControl.disable();
+            frameCodeControl.setValue(null, {emitEvent: false});
+            frameCodeControl.clearValidators();
+          }
+        }
+
+        frameCodeControl.updateValueAndValidity({emitEvent: false});
+      }
     });
   }
 
@@ -1138,7 +1177,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
         }
 
         // Frame Code
-        if (frameTypeVisible) {
+        if (frameTypeVisible && this.frameTypeList.length > 0) {
           row.get('frameCode')?.setValidators([Validators.required]);
           row.get('frameCode')?.enable({emitEvent: false});
         } else {
