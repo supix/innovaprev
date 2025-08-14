@@ -1,5 +1,7 @@
-﻿using DomainModel.Classes.Frames.ConcreteFrames;
+﻿using DomainModel.Classes.Colors.ConcreteColors;
+using DomainModel.Classes.Frames.ConcreteFrames;
 using DomainModel.Classes.Materials.ConcreteMaterials;
+using DomainModel.Classes.Products.ConcreteProducts;
 
 namespace DomainModel_Test;
 
@@ -29,7 +31,7 @@ public class TestMaterials
     [Test]
     public void PRT1A_ProductsAreCorrect()
     {
-        var correctProducts = new[] { "AALAM", "IPCAM" };
+        var correctProducts = new[] { "AALAM", "IPCAM", "IPC", "AATT" };
         var mat = new PRT1A(1000, 1000, "SX", false, false, new L4Egdes());
         Assert.That(mat.MaterialForProduct, Is.EquivalentTo(correctProducts));
     }
@@ -46,6 +48,39 @@ public class TestMaterials
     public void CAS_HeightLessThan500_Throws()
     {
         Assert.Catch(typeof(InvalidOperationException), () => new CAS(400, 1000));
+    }
+
+    [Test]
+    public void SILMaterialWithIPCProduct_IsCompatible()
+    {
+        var sil = new SIL(2000, 2000, "SX", false, false, new L4EgdesTwitch());
+        var ipc = new IPC(new DarkWood());
+        Assert.DoesNotThrow(() =>
+        {
+            var price = sil.GetPrice(ipc);
+        });
+    }
+
+    [Test]
+    public void SILMaterialWithIPNProduct_IsCompatible()
+    {
+        var sil = new SIL(2000, 2000, "SX", false, false, new L4EgdesTwitch());
+        var ipn = new IPN(new DarkWood());
+        Assert.DoesNotThrow(() =>
+        {
+            var price = sil.GetPrice(ipn);
+        });
+    }
+
+    [Test]
+    public void PRT1AMaterialWithIPCProduct_IsCompatible()
+    {
+        var prt1a = new PRT1A(2000, 2000, "SX", false, false, new L4EgdesTwitch());
+        var ipc = new IPC(new DarkWood());
+        Assert.DoesNotThrow(() =>
+        {
+            var price = prt1a.GetPrice(ipc);
+        });
     }
 
     [Test]
