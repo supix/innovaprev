@@ -42,7 +42,7 @@ namespace PdfQuote
                 row.Spacing(10);
 
                 if (wir.CanRender(wd.WindowType))
-                    row.ConstantItem(100).Image(wir.Render(wd.Height, wd.Width, wd.WindowType, wd.WireCover, wd.OpeningType!, wd.GlassType!));
+                    row.ConstantItem(100).Image(wir.Render(wd.Height, wd.Width, wd.WindowType, wd.WireCover, wd.OpeningType!, wd.GlassType!)).FitArea();
                 else
                     row.ConstantItem(100).Text(string.Empty);
 
