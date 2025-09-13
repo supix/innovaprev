@@ -34,24 +34,38 @@ export class DrawService {
             throw new Error(`Invalid dimensions: width=${width}, height=${height}`);
         }
 
+        // Calcola una scala dinamica per far stare la finestra (vetro + cornice esterna) dentro un canvas 400x400
+        // Altezza totale = h * s + 2 * 0.08 * w * s = (h + 0.16w) * s
+        // Larghezza totale = w * s + 2 * 0.08 * w * s = (1.16w) * s
+        const TARGET = 400;
+        const scaleForHeight = TARGET / (height + 0.16 * width);
+        const scaleForWidth = TARGET / (1.16 * width);
+        const dynamicScale = Math.min(scaleForHeight, scaleForWidth);
+
         // Dimensioni telaio "fuori" dal vetro
-        const borderSize = 0.08 * width * this.scale; // deve essere uguale a outerFrame!
-        const canvasWidth = width * this.scale + 2 * borderSize;
-        const canvasHeight = height * this.scale + 2 * borderSize;
+        const borderSize = 0.08 * width * dynamicScale; // deve essere uguale a outerFrame!
+        const totalOuterWidth = width * dynamicScale + 2 * borderSize;   // = 1.16 * width * s
+        const totalOuterHeight = height * dynamicScale + 2 * borderSize; // = (height + 0.16 * width) * s
+
+        // Canvas fisso 400x400
+        const canvasWidth = TARGET;
+        const canvasHeight = TARGET;
 
         const canvas = createCanvas(canvasWidth, canvasHeight);
         const ctx = canvas.getContext('2d');
 
-        // Sposta tutti i disegni verso il centro, lasciando spazio alla cornice fuori
-        ctx.translate(borderSize, borderSize);
+        // Posiziona centrato orizzontalmente e appoggiato in basso (scalato dal basso)
+        const offsetX = (canvasWidth - totalOuterWidth) / 2 + borderSize;
+        const offsetY = (canvasHeight - totalOuterHeight) + borderSize;
+        ctx.translate(offsetX, offsetY);
 
         // Vetro (sfondo)
         ctx.fillStyle = '#cfefff'; // colore di base per entrambi
-        ctx.fillRect(0, 0, width * this.scale, height * this.scale);
+        ctx.fillRect(0, 0, width * dynamicScale, height * dynamicScale);
 
         if (input.glassType === 'GT_OPACO') {
-            const glassW = width * this.scale;
-            const glassH = height * this.scale;
+            const glassW = width * dynamicScale;
+            const glassH = height * dynamicScale;
 
             ctx.save();
 
@@ -83,17 +97,15 @@ export class DrawService {
             ctx.restore();
         }
 
-
-
         // Telaio tecnico
-        this.drawTechnicalFrame(ctx, width * this.scale, height * this.scale);
+        this.drawTechnicalFrame(ctx, width * dynamicScale, height * dynamicScale);
 
         // Maniglie
         if (['F1A', 'PF1A', 'PRT1A'].includes(materialType)) {
-            this.drawHandle(ctx, width * this.scale, height * this.scale, openingType === 'OT_SX' ? 'right' : 'left');
+            this.drawHandle(ctx, width * dynamicScale, height * dynamicScale, openingType === 'OT_SX' ? 'right' : 'left');
         }
         if (['F2A', 'PF2A', 'PRT2A'].includes(materialType)) {
-            this.drawHandle(ctx, width * this.scale, height * this.scale, 'center');
+            this.drawHandle(ctx, width * dynamicScale, height * dynamicScale, 'center');
         }
 
         // Wire cover
@@ -105,8 +117,8 @@ export class DrawService {
             ctx.strokeRect(
               -wireCoverPadding,
               -wireCoverPadding,
-              width * this.scale + 2 * wireCoverPadding,
-              height * this.scale + 2 * wireCoverPadding
+              width * dynamicScale + 2 * wireCoverPadding,
+              height * dynamicScale + 2 * wireCoverPadding
             );
             ctx.restore();
         }
@@ -114,9 +126,9 @@ export class DrawService {
         // Tratteggi/diagrammi di apertura
         const renderer = this.materialRenderMap[materialType];
         if (renderer) {
-            renderer.call(this, ctx, width * this.scale, height * this.scale, input);
+            renderer.call(this, ctx, width * dynamicScale, height * dynamicScale, input);
         } else {
-            this.drawUnknown(ctx, width * this.scale, height * this.scale, input);
+            this.drawUnknown(ctx, width * dynamicScale, height * dynamicScale, input);
         }
 
         return canvas.toBuffer('image/png');
