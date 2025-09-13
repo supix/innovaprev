@@ -7,7 +7,8 @@ namespace DomainModel.Classes.Materials
     {
         public override decimal GetPrice(IMaterialVisitor visitor)
         {
-            return base.GetPrice(visitor) + 616M;
+            const decimal doorLockPrice = 616M;
+            return base.GetPrice(visitor) + doorLockPrice;
         }
     }
 }
