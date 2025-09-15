@@ -125,6 +125,7 @@ namespace PdfQuote
 
                     var component = PdfComponentFactory.CreateComponent(++idx, material, wd, detailPrice, product.TrimSectionVisible, frameDescription, wir);
                     column.Item()
+                        .PreventPageBreak()
                         .BorderBottom(1)
                         .BorderColor(Colors.Grey.Lighten2)
                         .PaddingBottom(7)
