@@ -6,9 +6,6 @@ namespace DomainModel.Classes.Materials.ConcreteMaterials
     {
         public CAS(long height_mm, long width_mm)
         {
-            if (height_mm < 500)
-                throw new InvalidOperationException("CAS height must be greater or equal than 500 mm");
-
             Height_mm = height_mm;
             Width_mm = width_mm;
         }
