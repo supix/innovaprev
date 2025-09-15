@@ -25,7 +25,8 @@ namespace DomainModel.Classes.Materials.ConcreteMaterials
         public override bool wireCoverVisible => false;
         public override bool frameTypeVisible => false;
         public override string[] MaterialForProduct => base.GetAllProductCodes();
-        public override long? MinAllowedHeight_mm => 500;
+        public override long? MaxAllowedHeight_mm => 500;
+        public override long? MinAllowedHeight_mm => 300;
 
         public override int NumberOfDimensions => 2;
 
