@@ -1414,12 +1414,17 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
   // Build Billing Data payload for API
   private buildBillingPayload(): BillingPayload {
     const activeLogo = this.logoStorage.list().find(l => l.active)?.dataUrl;
-    return {
+    const payload: BillingPayload = {
       supplierData: this.form.value.supplierData,
       customerData: this.form.value.customerData,
-      ...this.buildPayload(),
-      logoDataUrl: activeLogo
+      ...this.buildPayload()
     };
+
+    if (activeLogo) {
+      payload.logoDataUrl = activeLogo;
+    }
+
+    return payload;
   }
 
   // Build Data payload for API

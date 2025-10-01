@@ -87,16 +87,27 @@ export class LogoStorageService {
     return this.getAll().length;
   }
 
-  setActive(id: string): void {
+  setActive(id: string, active = true): void {
     const all = this.getAll();
     let changed = false;
-    all.forEach(item => {
-      const shouldBeActive = item.id === id;
-      if ((item.active ?? false) !== shouldBeActive) {
-        item.active = shouldBeActive;
-        changed = true;
-      }
-    });
+
+    if (active) {
+      all.forEach(item => {
+        const shouldBeActive = item.id === id;
+        if ((item.active ?? false) !== shouldBeActive) {
+          item.active = shouldBeActive;
+          changed = true;
+        }
+      });
+    } else {
+      all.forEach(item => {
+        if (item.active) {
+          item.active = false;
+          changed = true;
+        }
+      });
+    }
+
     if (changed) this.saveAll(all);
   }
 
@@ -107,3 +118,4 @@ export class LogoStorageService {
     return value;
   }
 }
+

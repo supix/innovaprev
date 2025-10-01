@@ -186,8 +186,8 @@ export class LogoManagerModalComponent {
     alert('Logo salvato!');
   }
 
-  setActive(item: SavedLogo): void {
-    this.logoStorage.setActive(item.id);
+  toggleActive(item: SavedLogo, checked: boolean): void {
+    this.logoStorage.setActive(item.id, checked);
     this.loadLogos();
     this.cdr.detectChanges();
   }
@@ -211,3 +211,4 @@ export class LogoManagerModalComponent {
     }
   }
 }
+

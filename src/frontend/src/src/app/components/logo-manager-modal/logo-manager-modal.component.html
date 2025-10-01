@@ -37,7 +37,14 @@
             <div class="logo-item" *ngFor="let item of logos">
               <img [src]="item.dataUrl" alt="logo salvato" />
               <div class="form-check mt-1 d-flex align-items-center justify-content-center">
-                <input class="form-check-input me-1" type="radio" name="activeLogo" [checked]="item.active" (change)="setActive(item)" aria-label="Imposta attivo" />
+                <input
+                  #cb
+                  class="form-check-input me-1"
+                  type="checkbox"
+                  [checked]="item.active"
+                  (change)="toggleActive(item, cb.checked)"
+                  aria-label="Attiva o disattiva"
+                />
                 <label class="form-check-label small">Attivo</label>
               </div>
               <button class="btn btn-sm btn-outline-danger mt-1" (click)="deleteLogo(item)">Elimina</button>
@@ -52,3 +59,4 @@
     </div>
   </div>
 </div>
+
