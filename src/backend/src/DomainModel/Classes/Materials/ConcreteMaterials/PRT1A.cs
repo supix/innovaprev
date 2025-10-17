@@ -2,7 +2,7 @@
 
 namespace DomainModel.Classes.Materials.ConcreteMaterials
 {
-    public class PRT1A : NeedsLockMaterial
+    public class PRT1A : NeedsLockMaterial, IAntaMaxPrice
     {
         public PRT1A(long height_mm, long width_mm, string openingType, bool opaqueGlass, bool wireCover, IFrame frameType) : base(height_mm, width_mm, openingType, opaqueGlass, wireCover, frameType)
         {

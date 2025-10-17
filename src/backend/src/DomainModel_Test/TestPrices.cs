@@ -420,6 +420,16 @@ namespace DomainModel_Test
         }
 
         [Test]
+        public void Test_PRT2AWithWood_PriceIsCorrect()
+        {
+            var p = new AATT(new Ral1013(), new Ral1013());
+            var prt2a = new PRT2A(3000L, 4500L, "SX", false, false, new L4Egdes());
+            var price = p.GetMaterialPrice(prt2a);
+            var expected = (876M + 38M) * 3M * 4.5M + 616M;
+            Assert.That(Math.Abs(price - expected), Is.LessThan(1e-3M));
+        }
+
+        [Test]
         public void Test_PRT2AWithWoodAntaMaxLowArea_PriceIsCorrect()
         {
             var p = new AALAM(new Ral1013(), new Ral1013());
@@ -456,6 +466,16 @@ namespace DomainModel_Test
             var prt2a = new PRT2A(3000L, 4500L, "SX", false, false, new Z4Egdes());
             var price = p.GetMaterialPrice(prt2a);
             var expected = (635M + 38M) * 3M * 4.5M + 616M;
+            Assert.That(Math.Abs(price - expected), Is.LessThan(1e-3M));
+        }
+
+        [Test]
+        public void Test_PRT2AWithPvcAntaClassic_PriceIsCorrect()
+        {
+            var p = new IPC(new Ral1013());
+            var mat = new PRT2A(2500L, 1200L, "SX", false, false, new Z3EgdesTrimmedThreshold());
+            var price = p.GetMaterialPrice(mat);
+            var expected = (635M + 38M) * 3M + 616M;
             Assert.That(Math.Abs(price - expected), Is.LessThan(1e-3M));
         }
 
