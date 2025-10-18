@@ -17,6 +17,10 @@ namespace DomainModel.Classes.Materials
         public abstract int Order { get; }
         public abstract string[] MaterialForProduct { get; }
         public abstract decimal GetPrice(IMaterialVisitor visitor);
+        public virtual bool ForceAntaMaxPrice()
+        {
+            return false;
+        }
         protected string[] GetAllProductCodes()
         {
             return ProductFactory.GetAll()

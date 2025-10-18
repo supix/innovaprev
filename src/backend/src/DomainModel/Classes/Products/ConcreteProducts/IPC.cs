@@ -16,7 +16,7 @@ namespace DomainModel.Classes.Products.ConcreteProducts
         public override int Order => 50;
         public override decimal GetPrice_DoubleDim(DoubleDimMaterial m, long area_sqmm)
         {
-            var price_sqm = m is IAntaMaxPrice ? 635M : 528M;
+            var price_sqm = m.ForceAntaMaxPrice() ? 635M : 528M;
             return GetFullDoubleDimensionPrice(price_sqm, area_sqmm, m.OpaqueGlass, m.WireCover, m.Height_mm, m.Width_mm, m.FrameType);
         }
         public override decimal GetPrice_DoubleDimFixed(DoubleDimFixedMaterial m, long area_sqmm)
