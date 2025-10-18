@@ -60,6 +60,13 @@ namespace DomainModel.Classes.Materials
                 .Select(p => p.Code)
                 .ToArray();
         }
+        protected string[] GetProdCodesCompatibleWithAntaMax()
+        {
+            return ProductFactory.GetAll()
+                .Where(p => p is IAntaMaxCompatible)
+                .Select(p => p.Code)
+                .ToArray();
+        }
         protected string[] GetAntaMaxProductCodes()
         {
             return ProductFactory.GetAll()

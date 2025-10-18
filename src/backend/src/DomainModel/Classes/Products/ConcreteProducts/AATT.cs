@@ -3,7 +3,7 @@ using DomainModel.Classes.Materials;
 
 namespace DomainModel.Classes.Products.ConcreteProducts
 {
-    public class AATT(IColor ic, IColor ec) : WoodAbstractProduct(ic, ec)
+    public class AATT(IColor ic, IColor ec) : WoodAbstractProduct(ic, ec), IAntaMaxCompatible
     {
         public override string Description => "Armonia Alluminio/Legno";
 

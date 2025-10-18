@@ -3,7 +3,7 @@ using DomainModel.Classes.Materials;
 
 namespace DomainModel.Classes.Products.ConcreteProducts
 {
-    public class IPC(IColor color) : PvcInnovaAbstractProduct(color)
+    public class IPC(IColor color) : PvcInnovaAbstractProduct(color), IAntaMaxCompatible
     {
         public override string Description => "Innova PVC/A Classic";
 

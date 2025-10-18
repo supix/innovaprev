@@ -10,7 +10,7 @@ namespace DomainModel.Classes.Materials.ConcreteMaterials
         public override string Description => "Portoncino 2 ante";
         protected override long? ClampMinValue => 1800000;
         public override int Order => 120;
-        public override string[] MaterialForProduct => base.GetAntaMaxProductCodes().Concat(["AATT", "IPC"]).ToArray();
+        public override string[] MaterialForProduct => base.GetAntaMaxProductCodes().Concat(base.GetProdCodesCompatibleWithAntaMax()).ToArray();
         public override bool ForceAntaMaxPrice()
         {
             return true;
