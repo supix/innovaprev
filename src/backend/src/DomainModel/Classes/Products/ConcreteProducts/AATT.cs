@@ -21,7 +21,7 @@ namespace DomainModel.Classes.Products.ConcreteProducts
         }
         public override decimal GetPrice_DoubleDimFixed(DoubleDimFixedMaterial m, long area_sqmm)
         {
-            return GetFullDoubleDimensionPrice(501M, area_sqmm, m.OpaqueGlass, m.WireCover, m.Height_mm, m.Width_mm, m.FrameType);
+            return GetFullDoubleDimensionPrice(526M, area_sqmm, m.OpaqueGlass, m.WireCover, m.Height_mm, m.Width_mm, m.FrameType);
         }
     }
 }

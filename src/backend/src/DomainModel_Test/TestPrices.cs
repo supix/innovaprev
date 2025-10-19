@@ -241,7 +241,7 @@ namespace DomainModel_Test
             var p = new AATT(new Ral1013(), new Ral1013());
             var fld = new FLD(1780L, 1500L, "SX", false, false, new L4Egdes());
             var price = p.GetMaterialPrice(fld);
-            Assert.That(Math.Abs(price - (501 + 38) * 1.78M * 1.5M), Is.LessThan(1e-3M));
+            Assert.That(Math.Abs(price - (526 + 38) * 1.78M * 1.5M), Is.LessThan(1e-3M));
         }
 
         [Test]
@@ -250,7 +250,7 @@ namespace DomainModel_Test
             var p = new AATT(new Ral1013(), new Ral1013());
             var fld = new FLD(1780L, 1500L, "SX", false, false, new Z3EgdesLThreshold());
             var price = p.GetMaterialPrice(fld);
-            Assert.That(Math.Abs(price - (501 + 38 + 8) * 1.78M * 1.5M), Is.LessThan(1e-3M));
+            Assert.That(Math.Abs(price - (526 + 38 + 8) * 1.78M * 1.5M), Is.LessThan(1e-3M));
         }
 
         [Test]
@@ -386,6 +386,26 @@ namespace DomainModel_Test
             var prt1a = new PRT1A(3000L, 4500L, "SX", false, false, new L4Egdes());
             var price = p.GetMaterialPrice(prt1a);
             var expected = (876M + 38M) * 3M * 4.5M + 616M;
+            Assert.That(Math.Abs(price - expected), Is.LessThan(1e-3M));
+        }
+
+        [Test]
+        public void Test_PRT1AWithWoodAATT_PriceIsCorrect()
+        {
+            var p = new AATT(new Ral1013(), new Green6005());
+            var mat = new PRT1A(2500L, 1100L, "SX", false, false, new Z3EgdesLThreshold());
+            var price = p.GetMaterialPrice(mat);
+            var expected = (876M + 38M + 18M + 8M) * 2.5M * 1.1M + 616M;
+            Assert.That(Math.Abs(price - expected), Is.LessThan(1e-3M));
+        }
+
+        [Test]
+        public void Test_FIXWithWoodAATT_PriceIsCorrect()
+        {
+            var p = new AATT(new Ral1013(), new Green6005());
+            var mat = new FIX(1800L, 800L, "SX", false, false, new Z3EgdesLThreshold());
+            var price = p.GetMaterialPrice(mat);
+            var expected = (526M + 38M + 18M + 8M) * 1.8M * 0.8M;
             Assert.That(Math.Abs(price - expected), Is.LessThan(1e-3M));
         }
 
