@@ -35,6 +35,7 @@ namespace DomainModel.Classes.Products
             return GetFullSingleDimensionPrice(price_m, length_mm);
         }
         public abstract decimal GetPrice_DoubleDim(DoubleDimMaterial m, long area_sqmm);
+        public abstract decimal GetPrice_DoubleDimScorrevole(DoubleDimMaterial m, long area_sqmm);
         public abstract decimal GetPrice_DoubleDimFixed(DoubleDimFixedMaterial m, long area_sqmm);
 
         protected decimal GetFullDoubleDimensionPrice(decimal price_sqm, long area_sqmm, bool opaqueGlass, bool wireCover, long height_mm, long width_mm, IFrame frame)

@@ -475,7 +475,17 @@ namespace DomainModel_Test
             var p = new IPC(new Ral1013());
             var mat = new PRT2A(2500L, 1200L, "SX", false, false, new Z3EgdesTrimmedThreshold());
             var price = p.GetMaterialPrice(mat);
-            var expected = (635M + 38M) * 3M + 616M;
+            var expected = (635M + 38M) * 2.5M * 1.2M + 616M;
+            Assert.That(Math.Abs(price - expected), Is.LessThan(1e-3M));
+        }
+
+        [Test]
+        public void Test_SILWithPvcAntaClassic_PriceIsCorrect()
+        {
+            var p = new IPC(new Ral1013());
+            var mat = new SIL(2500L, 1100L, "SX", false, false, new Z3EgdesTrimmedThreshold());
+            var price = p.GetMaterialPrice(mat);
+            var expected = (635M + 38M) * 2.5M * 1.1M;
             Assert.That(Math.Abs(price - expected), Is.LessThan(1e-3M));
         }
 

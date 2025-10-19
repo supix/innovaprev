@@ -18,6 +18,10 @@ namespace DomainModel.Classes.Products.ConcreteProducts
         {
             return GetFullDoubleDimensionPrice(635M, area_sqmm, m.OpaqueGlass, m.WireCover, m.Height_mm, m.Width_mm, m.FrameType);
         }
+        public override decimal GetPrice_DoubleDimScorrevole(DoubleDimMaterial m, long area_sqmm)
+        {
+            throw new InvalidOperationException($"Scorrevole material not allowed with this product. Product: {Code} - Material: {m.Code}");
+        }
         public override decimal GetPrice_DoubleDimFixed(DoubleDimFixedMaterial m, long area_sqmm)
         {
             throw new InvalidOperationException($"Fixed materials not allowed with this product. Product: {Code} - Material: {m.Code}");

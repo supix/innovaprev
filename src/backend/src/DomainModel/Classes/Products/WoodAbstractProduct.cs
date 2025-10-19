@@ -1,4 +1,5 @@
 ﻿using DomainModel.Classes.Colors;
+using DomainModel.Classes.Materials;
 using DomainModel.Classes.Materials.ConcreteMaterials;
 using DomainModel.Services.WireCoverLenCalculator;
 
@@ -88,6 +89,10 @@ namespace DomainModel.Classes.Products
         public override decimal GetPrice_NullFrame_sqm()
         {
             throw new InvalidOperationException("Frame not allowed for this product");
+        }
+        public override decimal GetPrice_DoubleDimScorrevole(DoubleDimMaterial m, long area_sqmm)
+        {
+            throw new InvalidOperationException($"Scorrevole material not allowed with this product. Product: {Code} - Material: {m.Code}");
         }
     }
 }
