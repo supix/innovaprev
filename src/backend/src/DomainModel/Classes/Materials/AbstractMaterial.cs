@@ -21,10 +21,6 @@ namespace DomainModel.Classes.Materials
         {
             return false;
         }
-        public virtual bool ForceScorrevolePrice()
-        {
-            return false;
-        }
         protected string[] GetAllProductCodes()
         {
             return ProductFactory.GetAll()

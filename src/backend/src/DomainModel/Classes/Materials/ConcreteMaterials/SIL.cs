@@ -13,10 +13,6 @@ namespace DomainModel.Classes.Materials.ConcreteMaterials
         protected override long? ClampMinValue => 2500000;
         public override int Order => 30;
         public override string[] MaterialForProduct => new[] { typeof(SP).Name , typeof(IPC).Name, typeof(IPN).Name };
-        public override bool ForceScorrevolePrice()
-        {
-            return true;
-        }
         public override decimal GetPrice(IMaterialVisitor visitor)
         {
             return visitor.GetPrice_DoubleDimScorrevole(this, GetAllowedArea_sqmm);
