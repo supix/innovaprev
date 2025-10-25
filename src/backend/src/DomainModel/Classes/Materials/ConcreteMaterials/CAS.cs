@@ -4,10 +4,13 @@ namespace DomainModel.Classes.Materials.ConcreteMaterials
 {
     public class CAS : AbstractMaterial
     {
+        private const int _minAllowedLength = 500;
+        private const int _maxAllowedLength = 1500;
+
         public CAS(long height_mm, long width_mm)
         {
-            if (height_mm < 500)
-                throw new InvalidOperationException($"CAS material cannot have height less than 500. It is {height_mm}.");
+            if (height_mm < _minAllowedLength)
+                throw new InvalidOperationException($"CAS material cannot have height less than {_minAllowedLength}. It is {height_mm}.");
             Height_mm = height_mm;
             Width_mm = width_mm;
         }
@@ -24,8 +27,8 @@ namespace DomainModel.Classes.Materials.ConcreteMaterials
         public override bool wireCoverVisible => false;
         public override bool frameTypeVisible => false;
         public override string[] MaterialForProduct => base.GetAllProductCodes();
-        public override long? MaxAllowedHeight_mm => 500;
-        public override long? MinAllowedHeight_mm => 300;
+        public override long? MaxAllowedHeight_mm => 1500;
+        public override long? MinAllowedHeight_mm => _minAllowedLength;
 
         public override int NumberOfDimensions => 2;
 
