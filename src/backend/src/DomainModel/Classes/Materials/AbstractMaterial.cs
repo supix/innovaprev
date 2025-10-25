@@ -30,7 +30,7 @@ namespace DomainModel.Classes.Materials
 
         public virtual string GetGlassDescription(IMaterialVisitor product)
         {
-            throw new InvalidOperationException($"This material has not glass. Material: { this.Code }");
+            return string.Empty;
         }
 
         public virtual long? MinAllowedWidth_mm => null;

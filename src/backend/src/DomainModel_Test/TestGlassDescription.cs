@@ -123,14 +123,11 @@ public class TestGlassDescription
     }
 
     [Test]
-    public void CASWithAATT_Throws()
+    public void CASWithAATT_EmptyDesc()
     {
         var mat = new CAS(2500, 600);
         var prd = new AALAM(new Ral1013(), new Ral1013());
-        Assert.Throws<InvalidOperationException>(() => 
-        {
-            prd.GetGlassDescription(mat);
-        });
+        Assert.That(prd.GetGlassDescription(mat), Is.Empty);
     }
 
     [Test]
@@ -138,9 +135,6 @@ public class TestGlassDescription
     {
         var mat = new FRO(2500);
         var prd = new AALAM(new Ral1013(), new Ral1013());
-        Assert.Throws<InvalidOperationException>(() =>
-        {
-            prd.GetGlassDescription(mat);
-        });
+        Assert.That(prd.GetGlassDescription(mat), Is.Empty);
     }
 }
