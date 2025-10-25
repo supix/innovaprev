@@ -27,6 +27,12 @@ namespace DomainModel.Classes.Materials
                 .Select(p => p.Code)
                 .ToArray();
         }
+
+        public virtual string GetGlassDescription(IMaterialVisitor product)
+        {
+            throw new InvalidOperationException($"This material has not glass. Material: { this.Code }");
+        }
+
         public virtual long? MinAllowedWidth_mm => null;
         public virtual long? MinAllowedHeight_mm => null;
         public virtual long? MinAllowedLength_mm => null;

@@ -16,6 +16,7 @@ namespace PdfQuote
         private readonly bool trimSectionVisible;
         private readonly string frameDescription;
         private readonly IWindowImageRenderer wir;
+        private readonly string glassDescription;
 
         public DoubleDimMaterialPdfComponent(
             int index,
@@ -24,6 +25,7 @@ namespace PdfQuote
             DetailPrice detailPrice,
             bool trimSectionVisible,
             string frameDescription,
+            string glassDescription,
             IWindowImageRenderer wir)
         {
             this.index = index;
@@ -32,6 +34,7 @@ namespace PdfQuote
             this.detailPrice = detailPrice ?? throw new ArgumentNullException(nameof(detailPrice));
             this.trimSectionVisible = trimSectionVisible;
             this.frameDescription = frameDescription;
+            this.glassDescription = glassDescription ?? throw new ArgumentNullException(nameof(glassDescription));
             this.wir = wir ?? throw new ArgumentNullException(nameof(wir));
         }
 
@@ -79,7 +82,7 @@ namespace PdfQuote
                     c.Item().Row(r =>
                     {
                         r.ConstantItem(25).Text(string.Empty);
-                        r.RelativeItem(3).Text($"Vetro: {(ddm.OpaqueGlass ? "Opaco" : "Trasparente")}");
+                        r.RelativeItem(3).Text($"Vetro: { this.glassDescription }");
                     });
 
                     c.Item().Row(r =>

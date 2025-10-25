@@ -1,4 +1,5 @@
 ﻿using DomainModel.Classes.Frames;
+using DomainModel.Classes.Products.Visitors;
 
 namespace DomainModel.Classes.Materials.ConcreteMaterials
 {
@@ -14,6 +15,10 @@ namespace DomainModel.Classes.Materials.ConcreteMaterials
         public override bool ForceAntaMaxPrice()
         {
             return true;
+        }
+        public override string GetGlassDescription(IMaterialVisitor product)
+        {
+            return base.GetGlassDescriptionFixedAndAntaMax(product);
         }
     }
 }

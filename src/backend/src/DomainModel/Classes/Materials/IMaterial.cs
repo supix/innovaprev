@@ -1,4 +1,5 @@
-﻿using DomainModel.Classes.Products.Visitors;
+﻿using DomainModel.Classes.Products;
+using DomainModel.Classes.Products.Visitors;
 
 namespace DomainModel.Classes.Materials
 {
@@ -7,6 +8,7 @@ namespace DomainModel.Classes.Materials
         string Code { get; }
         string Description { get; }
         decimal GetPrice(IMaterialVisitor visitor);
+        string GetGlassDescription(IMaterialVisitor product);
         int NumberOfDimensions { get; }
         bool openingTypeVisible { get; }
         bool glassTypeVisible { get; }

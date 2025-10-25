@@ -9,10 +9,10 @@ namespace PdfQuote
 {
     internal static class PdfComponentFactory
     {
-        internal static IComponent CreateComponent(int idx, IMaterial material, WindowsData wd, DetailPrice detailPrice, bool trimSectionVisible, string frameDescription, IWindowImageRenderer wir)
+        internal static IComponent CreateComponent(int idx, IMaterial material, WindowsData wd, DetailPrice detailPrice, bool trimSectionVisible, string frameDescription, string glassDescription, IWindowImageRenderer wir)
         {
             if (material is DoubleDimMaterial)
-                return new DoubleDimMaterialPdfComponent(idx, (material as DoubleDimMaterial)!, wd, detailPrice, trimSectionVisible, frameDescription, wir);
+                return new DoubleDimMaterialPdfComponent(idx, (material as DoubleDimMaterial)!, wd, detailPrice, trimSectionVisible, frameDescription, glassDescription, wir);
 
             if (material is SingleDimMaterial)
                 return new SingleDimMaterialPdfComponent(idx, (material as SingleDimMaterial)!, wd, detailPrice, trimSectionVisible);

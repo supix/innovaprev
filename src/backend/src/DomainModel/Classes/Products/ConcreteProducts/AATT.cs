@@ -23,5 +23,13 @@ namespace DomainModel.Classes.Products.ConcreteProducts
         {
             return GetFullDoubleDimensionPrice(526M, area_sqmm, m.OpaqueGlass, m.WireCover, m.Height_mm, m.Width_mm, m.FrameType);
         }
+        public override string GetGlassDescriptionNormal()
+        {
+            return "33.1 selettivo/15argon/33.1 be";
+        }
+        public override string GetGlassDescriptionFixAndAntaMax()
+        {
+            return "33.1 selettivo/20argon/33.1 be";
+        }
     }
 }

@@ -10,5 +10,7 @@ namespace DomainModel.Classes.Products.Visitors
         decimal GetPrice_DoubleDimFixed(DoubleDimFixedMaterial m, long area_sqmm);
         decimal GetPrice_CAS(CAS m, long length_mm);
         decimal GetPrice_FRO(FRO m, long length_mm);
+        string GetGlassDescriptionNormal();
+        string GetGlassDescriptionFixAndAntaMax();
     }
 }

@@ -11,5 +11,6 @@ namespace DomainModel.Classes.Products
         string ExtendedDescriptionTitle { get; }
         string ExtendedDescription { get; }
         decimal GetMaterialPrice(IMaterial material);
+        string GetGlassDescription(IMaterial material);
     }
 }

@@ -122,8 +122,9 @@ namespace PdfQuote
                     long m1 = wd.Length != 0 ? wd.Length : wd.Height;
                     long m2 = wd.Width;
                     var material = MaterialFactory.CreateByCode(wd.WindowType, m1, m2, (wd.OpeningType != null && wd.OpeningType.Contains("SX")) ? "SX" : "DX", wd.GlassType == "GT_OPACO", wd.WireCover, frame);
+                    var glassDescription = product.GetGlassDescription(material);
 
-                    var component = PdfComponentFactory.CreateComponent(++idx, material, wd, detailPrice, product.TrimSectionVisible, frameDescription, wir);
+                    var component = PdfComponentFactory.CreateComponent(++idx, material, wd, detailPrice, product.TrimSectionVisible, frameDescription, glassDescription, wir);
                     column.Item()
                         .PreventPageBreak()
                         .BorderBottom(1)

@@ -23,5 +23,13 @@ namespace DomainModel.Classes.Products.ConcreteProducts
         {
             throw new InvalidOperationException($"Fixed materials not allowed with this product. Product: {Code} - Material: {m.Code}");
         }
+        public override string GetGlassDescriptionNormal()
+        {
+            return "33.1 selettivo/15argon/33.1 be";
+        }
+        public override string GetGlassDescriptionFixAndAntaMax()
+        {
+            return "33.1 selettivo/20argon/33.1 be";
+        }
     }
 }

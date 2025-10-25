@@ -74,5 +74,23 @@ namespace DomainModel.Classes.Materials
                 .Select(p => p.Code)
                 .ToArray();
         }
+
+        public override string GetGlassDescription(IMaterialVisitor product)
+        {
+            return this.GetGlassDescriptionNormal(product);
+        }
+        protected string GetGlassDescriptionNormal(IMaterialVisitor product)
+        {
+            return product.GetGlassDescriptionNormal() + opaqueGlassDescription();
+        }
+        protected string GetGlassDescriptionFixedAndAntaMax(IMaterialVisitor product)
+        {
+            return product.GetGlassDescriptionFixAndAntaMax() + opaqueGlassDescription();
+        }
+
+        protected string opaqueGlassDescription()
+        {
+            return this.OpaqueGlass ? " " + "vetro OPACO" : string.Empty;
+        }
     }
 }

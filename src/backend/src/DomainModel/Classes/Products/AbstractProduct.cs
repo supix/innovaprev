@@ -78,7 +78,18 @@ namespace DomainModel.Classes.Products
         public abstract decimal GetPrice_AbstractWoodFrame_sqm();
         public abstract decimal GetPrice_AbstractInnovaFrame_sqm();
         public abstract decimal GetPrice_NullFrame_sqm();
-
+        public virtual string GetGlassDescriptionNormal()
+        {
+            return "33.1 selettivo/15argon/33.1 be";
+        }
+        public virtual string GetGlassDescriptionFixAndAntaMax()
+        {
+            return "33.1 selettivo/15argon/33.1 be";
+        }
         protected abstract IWireCoverLenCalculator WireCoverLenCalculator { get; }
+        public string GetGlassDescription(IMaterial material)
+        {
+            return material.GetGlassDescription(this);
+        }
     }
 }
