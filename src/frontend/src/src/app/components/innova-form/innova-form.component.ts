@@ -54,6 +54,7 @@ import { WindowApiService } from '../../services/window-api.service';
 import { ModalService } from '../../services/modal.service';
 import { SavedQuote, SavedQuotesService } from '../../services/saved-quotes.service';
 import { ToastrService } from 'ngx-toastr';
+import { LogoStorageService } from '../../services/logo-storage.service';
 
 @Component({
   selector: 'app-innova-form',
@@ -96,7 +97,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
 
   quoteId: string | null = null;
 
-  private isLoading: boolean = false;
+  isLoading: boolean = false;
   private selectedProductId!: string | null;
   private calculatePriceSubject = new Subject<PricePayload | null>();
   private previousPayloadHash: string | null = null;
@@ -116,7 +117,8 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(private sanitizer: DomSanitizer, private fb: FormBuilder,
               private config: NgSelectConfig, private apiService: ApiService,
               private windowApiService: WindowApiService, private modalService: ModalService,
-              private savedQuotesService: SavedQuotesService, private toastr: ToastrService) {
+              private savedQuotesService: SavedQuotesService, private toastr: ToastrService,
+              private logoStorage: LogoStorageService) {
     this.config.bindLabel = 'desc';
     this.config.bindValue = 'id';
     this.config.notFoundText = 'Nessun elemento trovato';
@@ -475,6 +477,10 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
     this.patchFormFromQuote(item);
   }
 
+  openLogoManager(): void {
+    this.modalService.showLogoManagerModal();
+  }
+
   newQuote(): void {
     this.submitted = false;
     this.quoteId = null;
@@ -829,7 +835,16 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private showWarningToastr(): void {
-    this.toastr.warning('Alcuni campi del preventivo non sono stati compilati.', 'Attenzione', {
+    const problems: string[] = [];
+    if (this.hasErrors(this.supplierData)) problems.push('Fornitore');
+    if (this.hasErrors(this.customerData)) problems.push('Cliente');
+    if (this.hasErrors(this.productData)) problems.push('Serie');
+    if (!this.areAllWindowRowsValid()) problems.push('Misure');
+    if (!this.areAllCustomRowsValid()) problems.push('Componenti aggiuntivi');
+
+    const detail = problems.length ? ` Sezioni non valide: ${problems.join(', ')}.` : '';
+
+    this.toastr.warning('Alcuni campi del preventivo non sono stati compilati.' + detail, 'Attenzione', {
       toastClass: 'custom-toastr ngx-toastr',
     });
   }
@@ -1398,11 +1413,18 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // Build Billing Data payload for API
   private buildBillingPayload(): BillingPayload {
-    return {
+    const activeLogo = this.logoStorage.list().find(l => l.active)?.dataUrl;
+    const payload: BillingPayload = {
       supplierData: this.form.value.supplierData,
       customerData: this.form.value.customerData,
       ...this.buildPayload()
     };
+
+    if (activeLogo) {
+      payload.logoDataUrl = activeLogo;
+    }
+
+    return payload;
   }
 
   // Build Data payload for API

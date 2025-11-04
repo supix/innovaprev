@@ -2,6 +2,7 @@ import { ApplicationRef, ComponentRef, createComponent, Injectable } from '@angu
 import { ErrorModalComponent } from "../components/error-modal/error-modal.component";
 import { PreviewModalComponent } from '../components/preview-modal/preview-modal.component';
 import { ArchiveModalComponent } from '../components/archive-modal/archive-modal.component';
+import { LogoManagerModalComponent } from '../components/logo-manager-modal/logo-manager-modal.component';
 
 @Injectable({providedIn: 'root'})
 export class ModalService {
@@ -70,5 +71,20 @@ export class ModalService {
     });
   }
 
+  showLogoManagerModal(): void {
+    const componentRef: ComponentRef<LogoManagerModalComponent> = createComponent(LogoManagerModalComponent, {
+      environmentInjector: this.appRef.injector,
+    });
+
+    componentRef.changeDetectorRef.detectChanges();
+
+    const element = componentRef.location.nativeElement;
+    document.body.appendChild(element);
+
+    componentRef.instance.close = () => {
+      document.body.removeChild(element);
+      componentRef.destroy();
+    };
+  }
 
 }

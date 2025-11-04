@@ -1,0 +1,62 @@
+<div id="app-logo-manager-modal" class="modal-backdrop">
+  <div class="modal-card">
+    <div class="modal-header d-flex justify-content-between align-items-center">
+      <h5 class="m-0">Gestisci loghi</h5>
+      <button class="btn-close" (click)="close()" aria-label="Chiudi"></button>
+    </div>
+    <div class="modal-body">
+      <div class="row g-3">
+        <div class="col-12 col-md-6">
+          <div class="mb-2 d-flex justify-content-between align-items-center">
+            <button class="btn btn-secondary" (click)="openFileDialog()">Carica logo</button>
+            <input #fileInput type="file" accept="image/*" (change)="onFileSelected($event)" hidden />
+            <div class="d-flex align-items-center" *ngIf="imageLoaded">
+              <label for="zoomRange" class="me-2">Zoom</label>
+              <input id="zoomRange" type="range" [min]="minScale" [max]="maxScale" step="0.01" [value]="scale" (input)="onScaleInput($event)" />
+            </div>
+          </div>
+
+          <div class="canvas-wrapper">
+            <canvas #canvas
+                    (wheel)="onWheel($event)"
+                    (mousedown)="onMouseDown($event)"
+                    (mousemove)="onMouseMove($event)"
+                    (mouseup)="onMouseUp()"
+                    (mouseleave)="onMouseLeave()"></canvas>
+          </div>
+
+          <div class="mt-2 text-end">
+            <button class="btn btn-primary" [disabled]="!imageLoaded" (click)="save()">Salva</button>
+          </div>
+        </div>
+
+        <div class="col-12 col-md-6">
+          <h6>Loghi salvati</h6>
+          <div *ngIf="!logos?.length" class="text-muted small">Nessun logo salvato.</div>
+          <div class="logo-grid">
+            <div class="logo-item" *ngFor="let item of logos">
+              <img [src]="item.dataUrl" alt="logo salvato" />
+              <div class="form-check mt-1 d-flex align-items-center justify-content-center">
+                <input
+                  #cb
+                  class="form-check-input me-1"
+                  type="checkbox"
+                  [checked]="item.active"
+                  (change)="toggleActive(item, cb.checked)"
+                  aria-label="Attiva o disattiva"
+                />
+                <label class="form-check-label small">Attivo</label>
+              </div>
+              <button class="btn btn-sm btn-outline-danger mt-1" (click)="deleteLogo(item)">Elimina</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer d-flex justify-content-end">
+      <button class="btn btn-secondary" (click)="close()">Chiudi</button>
+    </div>
+  </div>
+</div>
+
