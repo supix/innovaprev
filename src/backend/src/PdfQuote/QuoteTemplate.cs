@@ -53,7 +53,26 @@ namespace PdfQuote
         {
             container.Row(row =>
             {
-                row.RelativeItem().Component(new AddressComponent(string.Empty, project.SupplierData));
+                var logoDataUrl = this.project.logoDataUrl;
+                if (!string.IsNullOrWhiteSpace(logoDataUrl))
+                {
+                    string base64 = logoDataUrl.Split(',')[1]; // remove "data:image/png;base64,"
+                    byte[] logoBytes = Convert.FromBase64String(base64);
+
+                    //row.RelativeItem().Image(logoBytes).FitArea();
+                    row.RelativeItem().Column(column =>
+                    {
+                        column.Item()
+                            .MaxWidth(320)   // limit width
+                            .MaxHeight(150)   // limit height
+                            .Image(logoBytes)
+                            .FitArea();      // keep aspect ratio, no stretching
+                    });
+                }
+                else
+                {
+                    row.RelativeItem().Component(new AddressComponent(string.Empty, project.SupplierData));
+                }
 
                 row.ConstantItem(50);
 

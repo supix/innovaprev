@@ -7,5 +7,6 @@
         public required ProductData ProductData { get; set; }
         public required WindowsData[] WindowsData { get; set; }
         public required CustomData[] CustomData { get; set; }
+        public string? logoDataUrl { get; set; }
     }
 }
