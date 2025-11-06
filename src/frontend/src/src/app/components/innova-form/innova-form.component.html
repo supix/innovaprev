@@ -20,7 +20,6 @@
       </button>
       <div class="tooltip" [id]="'tooltip-save'">{{ isLoading ? 'Operazione in corso, attendere…' : 'Salva il preventivo' }}
       </div>
-      <span *ngIf="isLoading" class="ms-2 text-muted small" aria-live="polite">⏳ Operazione in corso…</span>
       <button class="btn btn-secondary me-2" (mouseenter)="onEnterTooltip($event, 'tooltip-archive')"
               (mouseleave)="onLeaveTooltip('tooltip-archive')" (click)="openModalArchive()">
         <svg class="icon-default">

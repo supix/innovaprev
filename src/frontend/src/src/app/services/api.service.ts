@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import {HttpClient, HttpResponse} from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { BillingPayload, CollectionsResponse, PricePayload, QuotationResponse } from '../models';
 import { environment } from '../../environments/environment';
@@ -20,8 +20,8 @@ export class ApiService {
   }
 
   // API to download the PDF
-  downloadPdf(payload: BillingPayload): Observable<Blob> {
-    return this.http.post(`${this.baseUrl}${this.endpoints.downloadPdf}`, payload, {responseType: 'blob'});
+  downloadPdf(payload: BillingPayload): Observable<HttpResponse<Blob>> {
+    return this.http.post(`${this.baseUrl}${this.endpoints.downloadPdf}`, payload, {responseType: 'blob', observe: 'response'});
   }
 
   // API to retrieve collections data

@@ -55,6 +55,7 @@ import { ModalService } from '../../services/modal.service';
 import { SavedQuote, SavedQuotesService } from '../../services/saved-quotes.service';
 import { ToastrService } from 'ngx-toastr';
 import { LogoStorageService } from '../../services/logo-storage.service';
+import {HttpResponse} from "@angular/common/http";
 
 @Component({
   selector: 'app-innova-form',
@@ -600,27 +601,47 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  // Download the PDF
+// Download the PDF
   downloadPdf(): void {
+
+    function isHttpResponseBlob(x: any): x is HttpResponse<Blob> {
+      return x && typeof x === 'object' && 'body' in x && 'headers' in x;
+    }
+
     this.submitted = true;
     if (this.form.valid) {
       this.isLoading = true;
       const payload: BillingPayload = this.buildBillingPayload();
+
       this.apiService.downloadPdf(payload).pipe(
         finalize(() => {
           this.isLoading = false;
           this.submitted = false;
         })
       ).subscribe((response) => {
-        const blob = new Blob([response], {type: 'application/pdf'});
+
+        let filename = `estimate-${Date.now()}.pdf`;
+        let blob: Blob;
+
+        if (isHttpResponseBlob(response)) {
+          const contentDisposition = response.headers?.get('content-disposition') ?? '';
+          const matches = contentDisposition.match(/filename\*?=(?:UTF-8''|")?([^;\r\n"]+)/i);
+          if (matches && matches[1]) {
+            filename = decodeURIComponent(matches[1].trim());
+          }
+          blob = response.body as Blob;
+        } else {
+          blob = response as Blob;
+        }
+
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
-        const timestamp = Date.now();
         a.href = url;
-        a.download = `estimate-${timestamp}.pdf`;
+        a.download = filename;
         a.click();
         a.remove();
         window.URL.revokeObjectURL(url);
+
         this.toastr.info('Download del preventivo completato.', 'Scaricato', {
           toastClass: 'custom-toastr ngx-toastr',
         });
@@ -630,6 +651,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
       this.markAllTouchedAndValidate();
     }
   }
+
 
   // Adds tooltip on mouse enter
   onEnterTooltip(event: MouseEvent, tooltipId: string): void {
