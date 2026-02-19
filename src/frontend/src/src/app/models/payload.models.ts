@@ -42,6 +42,7 @@ export interface CustomRow {
 export interface BillingPayload extends PricePayload {
   supplierData: PersonalData;
   customerData: PersonalData;
+  discountPercentage?: number;
   logoDataUrl?: string; // dataURL (base64) of the active logo, if any
 }
 
