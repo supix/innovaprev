@@ -171,6 +171,20 @@ namespace PdfQuote
                         c.Item().Text($"TOTALE: {priceInfo.Total:c}").FontSize(14).Bold().AlignRight();
                         c.Item().Text($"Imposta: {priceInfo.Tax:c}").AlignRight();
                     });
+
+                //Footer
+                column.Item()
+                    .PaddingTop(30)
+                    .Column(c =>
+                    {
+                        c.Item().Text("CONDIZIONI DI VENDITA:");
+                        c.Item().PaddingLeft(10).PaddingTop(5).Text("- MERCE F.CO NS. DEPOSITO - TRASPORTO A CARICO DEL COMMITTENTE");
+                        c.Item().PaddingLeft(10).PaddingTop(5).Text("- L`APPROVVIGIONAMENTO DEI MATERIALI AVVIENE AL MOMENTO IN CUI LE MISURE SONO ESECUTIVE");
+                        c.Item().PaddingLeft(10).PaddingTop(5).Text("- VALIDITA` OFFERTA 5 GG");
+                        c.Item().PaddingLeft(10).PaddingTop(5).Text("- ANTICIPO 50% CON BONIFICO BANCARIO");
+                        c.Item().PaddingLeft(10).PaddingTop(5).Text("- I TEMPI DI CONSEGNA CONCORDATI POTRANNO SUBIRE DELLE MODIFICHE LEGATE ALLA DISPONIBILITA` DELLE MATERIE PRIME");
+                        c.Item().PaddingLeft(10).PaddingTop(5).Text("- SALDO ALLA CONSEGNA");
+                    });
             });
         }
     }
