@@ -168,6 +168,10 @@ namespace PdfQuote
                     .Padding(2)
                     .Column(c =>
                     {
+                        if (this.project.DiscountPercentage != null)
+                        {
+                            c.Item().Text($"Sconto: {this.project.DiscountPercentage.Value}%").AlignRight();
+                        }
                         c.Item().Text($"TOTALE: {priceInfo.Total:c}").FontSize(14).Bold().AlignRight();
                         c.Item().Text($"Imposta: {priceInfo.Tax:c}").AlignRight();
                     });

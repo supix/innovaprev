@@ -8,5 +8,6 @@
         public required WindowsData[] WindowsData { get; set; }
         public required CustomData[] CustomData { get; set; }
         public string? logoDataUrl { get; set; }
+        public int? DiscountPercentage { get; set; }
     }
 }

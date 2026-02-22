@@ -125,6 +125,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
     this.config.notFoundText = 'Nessun elemento trovato';
     this.config.clearAllText = 'Pulisci tutto';
     this.form = this.fb.group({
+      discountPercentage: [null, [Validators.min(0), Validators.max(100)]],
       supplierData: this.fb.group({
         companyName: ['', Validators.required],
         address: [''],
@@ -228,6 +229,10 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
   // Getter for the windows FormArray
   get customData(): FormArray {
     return this.form.get('customData') as FormArray;
+  }
+
+  get discountPercentageControl(): AbstractControl | null {
+    return this.form.get('discountPercentage');
   }
 
   sanitizeHtml(text: string): SafeHtml {
@@ -589,6 +594,22 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
+  onDiscountInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const value = input.value;
+    const validValue = value.match(/^\d{0,3}([.,]\d{0,2})?$/) ? value : input.dataset['previousValue'] || '';
+    input.dataset['previousValue'] = validValue;
+
+    const normalizedValue = validValue.replace(',', '.');
+    const parsedValue = normalizedValue === '' ? null : parseFloat(normalizedValue);
+    const clampedValue = parsedValue === null ? null : Math.min(100, Math.max(0, parsedValue));
+    this.discountPercentageControl?.setValue(clampedValue, {emitEvent: false});
+    const displayValue = clampedValue === null ? '' : String(clampedValue).replace('.', ',');
+    input.dataset['previousValue'] = displayValue;
+    input.value = displayValue;
+    this.calculatePriceHandler();
+  }
+
   // Needed to work around a ng-select issue
   ngSelectHandleFocus(enabled: boolean, myCustomClass: string = "custom-table-lg"): void {
     if (enabled) {
@@ -791,6 +812,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
 
     // Patch other form values
     this.form.patchValue({
+      discountPercentage: currentFormValue.discountPercentage ?? null,
       supplierData: {
         companyName: currentFormValue.supplierData?.companyName || 'Supplier Co.',
         address: currentFormValue.supplierData?.address || '123 Supplier Street',
@@ -861,6 +883,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.hasErrors(this.supplierData)) problems.push('Fornitore');
     if (this.hasErrors(this.customerData)) problems.push('Cliente');
     if (this.hasErrors(this.productData)) problems.push('Serie');
+    if (this.discountPercentageControl?.invalid) problems.push('Sconto');
     if (!this.areAllWindowRowsValid()) problems.push('Misure');
     if (!this.areAllCustomRowsValid()) problems.push('Componenti aggiuntivi');
 
@@ -892,6 +915,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
     this.onChangeProduct(product);
 
     this.form.patchValue({
+      discountPercentage: billingPayload.discountPercentage ?? null,
       supplierData: billingPayload.supplierData,
       customerData: billingPayload.customerData,
       productData: billingPayload.productData
@@ -1436,11 +1460,16 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
   // Build Billing Data payload for API
   private buildBillingPayload(): BillingPayload {
     const activeLogo = this.logoStorage.list().find(l => l.active)?.dataUrl;
+    const discountPercentage = this.discountPercentageControl?.value;
     const payload: BillingPayload = {
       supplierData: this.form.value.supplierData,
       customerData: this.form.value.customerData,
       ...this.buildPayload()
     };
+
+    if (typeof discountPercentage === 'number' && Number.isFinite(discountPercentage)) {
+      payload.discountPercentage = discountPercentage;
+    }
 
     if (activeLogo) {
       payload.logoDataUrl = activeLogo;
@@ -1451,13 +1480,20 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // Build Data payload for API
   private buildPayload(): PricePayload {
-    return {
+    const discountPercentage = this.discountPercentageControl?.value;
+    const payload: PricePayload = {
       productData: {
         ...this.form.get('productData')?.getRawValue()
       },
       ...this.buildWindowsPayload(),
       ...this.buildCustomPayload()
     };
+
+    if (typeof discountPercentage === 'number' && Number.isFinite(discountPercentage)) {
+      payload.discountPercentage = discountPercentage;
+    }
+
+    return payload;
   }
 
   // Build Windows payload for API using valid rows from the form

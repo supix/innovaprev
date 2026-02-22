@@ -42,12 +42,14 @@ export interface CustomRow {
 export interface BillingPayload extends PricePayload {
   supplierData: PersonalData;
   customerData: PersonalData;
+  discountPercentage?: number;
   logoDataUrl?: string; // dataURL (base64) of the active logo, if any
 }
 
 // Payload for a collection of window estimate rows
 export interface PricePayload extends WindowsPayload, CustomPayload {
   productData: ProductDetails;
+  discountPercentage?: number;
 }
 
 export interface WindowsPayload {
