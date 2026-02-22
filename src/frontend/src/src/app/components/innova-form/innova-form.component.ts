@@ -607,6 +607,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
     const displayValue = clampedValue === null ? '' : String(clampedValue).replace('.', ',');
     input.dataset['previousValue'] = displayValue;
     input.value = displayValue;
+    this.calculatePriceHandler();
   }
 
   // Needed to work around a ng-select issue
@@ -1479,13 +1480,20 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // Build Data payload for API
   private buildPayload(): PricePayload {
-    return {
+    const discountPercentage = this.discountPercentageControl?.value;
+    const payload: PricePayload = {
       productData: {
         ...this.form.get('productData')?.getRawValue()
       },
       ...this.buildWindowsPayload(),
       ...this.buildCustomPayload()
     };
+
+    if (typeof discountPercentage === 'number' && Number.isFinite(discountPercentage)) {
+      payload.discountPercentage = discountPercentage;
+    }
+
+    return payload;
   }
 
   // Build Windows payload for API using valid rows from the form

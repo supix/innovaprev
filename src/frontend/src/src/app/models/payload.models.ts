@@ -49,6 +49,7 @@ export interface BillingPayload extends PricePayload {
 // Payload for a collection of window estimate rows
 export interface PricePayload extends WindowsPayload, CustomPayload {
   productData: ProductDetails;
+  discountPercentage?: number;
 }
 
 export interface WindowsPayload {
