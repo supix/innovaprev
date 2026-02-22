@@ -182,12 +182,36 @@ namespace PdfQuote
                     .Column(c =>
                     {
                         c.Item().Text("CONDIZIONI DI VENDITA:");
-                        c.Item().PaddingLeft(10).PaddingTop(5).Text("- MERCE F.CO NS. DEPOSITO - TRASPORTO A CARICO DEL COMMITTENTE");
-                        c.Item().PaddingLeft(10).PaddingTop(5).Text("- L`APPROVVIGIONAMENTO DEI MATERIALI AVVIENE AL MOMENTO IN CUI LE MISURE SONO ESECUTIVE");
-                        c.Item().PaddingLeft(10).PaddingTop(5).Text("- VALIDITA` OFFERTA 5 GG");
-                        c.Item().PaddingLeft(10).PaddingTop(5).Text("- ANTICIPO 50% CON BONIFICO BANCARIO");
-                        c.Item().PaddingLeft(10).PaddingTop(5).Text("- I TEMPI DI CONSEGNA CONCORDATI POTRANNO SUBIRE DELLE MODIFICHE LEGATE ALLA DISPONIBILITA` DELLE MATERIE PRIME");
-                        c.Item().PaddingLeft(10).PaddingTop(5).Text("- SALDO ALLA CONSEGNA");
+                        c.Item().PaddingLeft(10).PaddingTop(5).Row(r =>
+                        {
+                            r.ConstantItem(10).Text("•");
+                            r.RelativeItem().Text("MERCE F.CO NS. DEPOSITO - TRASPORTO A CARICO DEL COMMITTENTE");
+                        });
+                        c.Item().PaddingLeft(10).PaddingTop(5).Row(r =>
+                        {
+                            r.ConstantItem(10).Text("•");
+                            r.RelativeItem().Text("L'APPROVVIGIONAMENTO DEI MATERIALI AVVIENE AL MOMENTO IN CUI LE MISURE SONO ESECUTIVE");
+                        });
+                        c.Item().PaddingLeft(10).PaddingTop(5).Row(r =>
+                        {
+                            r.ConstantItem(10).Text("•");
+                            r.RelativeItem().Text("VALIDITA' OFFERTA 5 GG");
+                        });
+                        c.Item().PaddingLeft(10).PaddingTop(5).Row(r =>
+                        {
+                            r.ConstantItem(10).Text("•");
+                            r.RelativeItem().Text("ANTICIPO 50% CON BONIFICO BANCARIO");
+                        });
+                        c.Item().PaddingLeft(10).PaddingTop(5).Row(r =>
+                        {
+                            r.ConstantItem(10).Text("•");
+                            r.RelativeItem().Text("I TEMPI DI CONSEGNA CONCORDATI POTRANNO SUBIRE DELLE MODIFICHE LEGATE ALLA DISPONIBILITA' DELLE MATERIE PRIME");
+                        });
+                        c.Item().PaddingLeft(10).PaddingTop(5).Row(r =>
+                        {
+                            r.ConstantItem(10).Text("•");
+                            r.RelativeItem().Text("SALDO ALLA CONSEGNA");
+                        });
                     });
             });
         }
