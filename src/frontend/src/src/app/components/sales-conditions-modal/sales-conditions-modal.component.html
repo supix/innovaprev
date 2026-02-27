@@ -1,0 +1,27 @@
+<div id="app-sales-conditions-modal" class="modal-backdrop">
+  <div class="modal-card">
+    <div class="modal-header d-flex justify-content-between align-items-center">
+      <h5 class="m-0">Condizioni di vendita</h5>
+      <button class="btn-close" (click)="close()" aria-label="Chiudi"></button>
+    </div>
+
+    <div class="modal-body">
+      <label for="salesConditionsHtml" class="form-label">Contenuto HTML</label>
+      <textarea
+        id="salesConditionsHtml"
+        class="form-control"
+        rows="12"
+        [(ngModel)]="value"
+        placeholder="Inserisci qui le condizioni di vendita in HTML">
+      </textarea>
+      <small class="text-muted d-block mt-2">
+        Il contenuto verrà salvato in locale e inviato nel campo <code>salesConditions</code> del DTO PDF.
+      </small>
+    </div>
+
+    <div class="modal-footer d-flex justify-content-end gap-2">
+      <button class="btn btn-secondary" (click)="close()">Annulla</button>
+      <button class="btn btn-primary" (click)="confirm()">Salva</button>
+    </div>
+  </div>
+</div>
