@@ -105,7 +105,7 @@ export class DrawService {
             this.drawHandle(ctx, width * dynamicScale, height * dynamicScale, openingType === 'OT_SX' ? 'right' : 'left');
         }
         if (['F2A', 'PF2A', 'PRT2A'].includes(materialType)) {
-            this.drawHandle(ctx, width * dynamicScale, height * dynamicScale, 'center');
+            this.drawHandle(ctx, width * dynamicScale, height * dynamicScale, openingType === 'OT_DX' ? 'center-left' : 'center-right');
         }
 
         // Wire cover
@@ -191,28 +191,32 @@ export class DrawService {
     private drawDoubleLeafWithVasistas(ctx: CanvasRenderingContext2D, w: number, h: number, input: WindowInput) {
         // X centrale su entrambe le ante
         this.drawDoubleLeaf(ctx, w, h, input);
-        // Triangolo vasistas SOLO a sinistra
-        this.drawVasistasOnHalf(ctx, w, h, 'left');
+        // Triangolo vasistas solo sull'anta principale
+        this.drawVasistasOnHalf(ctx, w, h, input.openingType === 'OT_DX' ? 'right' : 'left');
     }
 
     private drawHandle(
       ctx: CanvasRenderingContext2D,
       w: number,
       h: number,
-      side: 'left' | 'right' | 'center'
+      side: 'left' | 'right' | 'center-left' | 'center-right'
     ) {
         const handleWidth = 0.07 * w;
         const handleHeight = 0.16 * h;
         const y = h / 2 - handleHeight / 2;
+        const centerOffset = 0.02 * w;
 
         let x: number;
         if (side === 'left') {
             x = 0.04 * w;
         } else if (side === 'right') {
             x = w - handleWidth - 0.04 * w;
+        } else if (side === 'center-left') {
+            x = w / 2 + centerOffset;
+        } else if (side === 'center-right') {
+            x = w / 2 - handleWidth - centerOffset;
         } else {
-            // center: esattamente sulla linea centrale, leggermente decentrato verso sinistra
-            x = w / 2 - handleWidth / 2;
+            x = 0.04 * w;
         }
 
         ctx.save();
