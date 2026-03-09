@@ -177,20 +177,23 @@ namespace PdfQuote
                     });
 
                 //Footer
-                column.Item()
-                    .PaddingTop(30)
-                    .Column(c =>
-                    {
-                        c.Item().Text("CONDIZIONI DI VENDITA:");
-                        foreach (var cnd in project.SalesConditions)
+                if (project.SalesConditions.Length > 0)
+                {
+                    column.Item()
+                        .PaddingTop(30)
+                        .Column(c =>
                         {
-                            c.Item().PaddingLeft(10).PaddingTop(5).Row(r =>
+                            c.Item().Text("CONDIZIONI DI VENDITA:");
+                            foreach (var cnd in project.SalesConditions)
                             {
-                                r.ConstantItem(10).Text("•");
-                                r.RelativeItem().Text(cnd);
-                            });
-                        }
-                    });
+                                c.Item().PaddingLeft(10).PaddingTop(5).Row(r =>
+                                {
+                                    r.ConstantItem(10).Text("•");
+                                    r.RelativeItem().Text(cnd);
+                                });
+                            }
+                        });
+                }
             });
         }
     }
