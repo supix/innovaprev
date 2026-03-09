@@ -3,6 +3,7 @@ import { ErrorModalComponent } from "../components/error-modal/error-modal.compo
 import { PreviewModalComponent } from '../components/preview-modal/preview-modal.component';
 import { ArchiveModalComponent } from '../components/archive-modal/archive-modal.component';
 import { LogoManagerModalComponent } from '../components/logo-manager-modal/logo-manager-modal.component';
+import { SalesConditionsModalComponent } from '../components/sales-conditions-modal/sales-conditions-modal.component';
 
 @Injectable({providedIn: 'root'})
 export class ModalService {
@@ -85,6 +86,32 @@ export class ModalService {
       document.body.removeChild(element);
       componentRef.destroy();
     };
+  }
+
+  showSalesConditionsModal(initialValue: string[]): Promise<string[] | null> {
+    return new Promise<string[] | null>((resolve) => {
+      const componentRef: ComponentRef<SalesConditionsModalComponent> = createComponent(SalesConditionsModalComponent, {
+        environmentInjector: this.appRef.injector,
+      });
+
+      componentRef.instance.initialValue = initialValue;
+      componentRef.changeDetectorRef.detectChanges();
+
+      const element = componentRef.location.nativeElement;
+      document.body.appendChild(element);
+
+      componentRef.instance.confirmCallback = (value: string[]) => {
+        document.body.removeChild(element);
+        componentRef.destroy();
+        resolve(value);
+      };
+
+      componentRef.instance.close = () => {
+        document.body.removeChild(element);
+        componentRef.destroy();
+        resolve(null);
+      };
+    });
   }
 
 }

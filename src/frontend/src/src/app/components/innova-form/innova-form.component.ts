@@ -57,6 +57,8 @@ import { ToastrService } from 'ngx-toastr';
 import { LogoStorageService } from '../../services/logo-storage.service';
 import {HttpResponse} from "@angular/common/http";
 
+const SALES_CONDITIONS_STORAGE_KEY = 'sales_conditions';
+
 @Component({
   selector: 'app-innova-form',
   standalone: true,
@@ -97,6 +99,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
   debugIndex: number = 1;
 
   quoteId: string | null = null;
+  salesConditions: string[] = [];
 
   isLoading: boolean = false;
   private selectedProductId!: string | null;
@@ -188,6 +191,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
         this.subscribeToFormChanges();
         this.subscribeToSupplierDataChanges();
         this.restoreCachedSupplierData();
+        this.restoreSalesConditions();
         this.showFillFormButton = this.determineShowFillFormButton();
       });
   }
@@ -485,6 +489,16 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
 
   openLogoManager(): void {
     this.modalService.showLogoManagerModal();
+  }
+
+  async openSalesConditionsManager(): Promise<void> {
+    const value = await this.modalService.showSalesConditionsModal(this.salesConditions);
+    if (value === null) return;
+    this.salesConditions = value;
+    localStorage.setItem(SALES_CONDITIONS_STORAGE_KEY, JSON.stringify(value));
+    this.toastr.success('Condizioni di vendita salvate.', 'Successo', {
+      toastClass: 'custom-toastr ngx-toastr',
+    });
   }
 
   newQuote(): void {
@@ -954,6 +968,9 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
     });
     this.updateCustomPositions();
 
+    this.salesConditions = this.normalizeSalesConditions(billingPayload.salesConditions);
+    localStorage.setItem(SALES_CONDITIONS_STORAGE_KEY, JSON.stringify(this.salesConditions));
+
     this.hasTriggeredWindowsValidation = false;
     this.hasTriggeredCustomValidation = false;
   }
@@ -975,6 +992,20 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
     if (cached) {
       const data = JSON.parse(cached);
       this.fillSupplierForm(data);
+    }
+  }
+
+  private restoreSalesConditions(): void {
+    const cached = localStorage.getItem(SALES_CONDITIONS_STORAGE_KEY);
+    if (!cached) {
+      this.salesConditions = [];
+      return;
+    }
+
+    try {
+      this.salesConditions = this.normalizeSalesConditions(JSON.parse(cached));
+    } catch {
+      this.salesConditions = [];
     }
   }
 
@@ -1475,7 +1506,22 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
       payload.logoDataUrl = activeLogo;
     }
 
+    if (this.salesConditions.length > 0) {
+      payload.salesConditions = this.salesConditions;
+    }
+
     return payload;
+  }
+
+  private normalizeSalesConditions(value: unknown): string[] {
+    if (Array.isArray(value)) {
+      return value
+        .filter((item): item is string => typeof item === 'string')
+        .map(item => item.trim())
+        .filter(Boolean);
+    }
+
+    return [];
   }
 
   // Build Data payload for API

@@ -45,6 +45,15 @@
       </button>
       <div class="tooltip" [id]="'tooltip-logo'">Gestisci loghi
       </div>
+
+      <button class="btn btn-secondary ms-2" (mouseenter)="onEnterTooltip($event, 'tooltip-sales-conditions')"
+              (mouseleave)="onLeaveTooltip('tooltip-sales-conditions')" (click)="openSalesConditionsManager()">
+        <svg class="icon-default">
+          <use xlink:href="#icon-sales-conditions"></use>
+        </svg>
+      </button>
+      <div class="tooltip" [id]="'tooltip-sales-conditions'">Condizioni di vendita
+      </div>
     </div>
     <div class="discount-center order-3 order-md-2 mb-2 mb-md-0" [formGroup]="form">
       <div class="discount-field">
