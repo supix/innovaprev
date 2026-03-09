@@ -57,7 +57,7 @@ import { ToastrService } from 'ngx-toastr';
 import { LogoStorageService } from '../../services/logo-storage.service';
 import {HttpResponse} from "@angular/common/http";
 
-const SALES_CONDITIONS_STORAGE_KEY = 'sales_conditions_html';
+const SALES_CONDITIONS_STORAGE_KEY = 'sales_conditions';
 
 @Component({
   selector: 'app-innova-form',
@@ -99,7 +99,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
   debugIndex: number = 1;
 
   quoteId: string | null = null;
-  salesConditionsHtml: string = '';
+  salesConditions: string[] = [];
 
   isLoading: boolean = false;
   private selectedProductId!: string | null;
@@ -492,10 +492,10 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   async openSalesConditionsManager(): Promise<void> {
-    const value = await this.modalService.showSalesConditionsModal(this.salesConditionsHtml);
+    const value = await this.modalService.showSalesConditionsModal(this.salesConditions);
     if (value === null) return;
-    this.salesConditionsHtml = value;
-    localStorage.setItem(SALES_CONDITIONS_STORAGE_KEY, value);
+    this.salesConditions = value;
+    localStorage.setItem(SALES_CONDITIONS_STORAGE_KEY, JSON.stringify(value));
     this.toastr.success('Condizioni di vendita salvate.', 'Successo', {
       toastClass: 'custom-toastr ngx-toastr',
     });
@@ -968,8 +968,8 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
     });
     this.updateCustomPositions();
 
-    this.salesConditionsHtml = billingPayload.salesConditions ?? '';
-    localStorage.setItem(SALES_CONDITIONS_STORAGE_KEY, this.salesConditionsHtml);
+    this.salesConditions = this.normalizeSalesConditions(billingPayload.salesConditions);
+    localStorage.setItem(SALES_CONDITIONS_STORAGE_KEY, JSON.stringify(this.salesConditions));
 
     this.hasTriggeredWindowsValidation = false;
     this.hasTriggeredCustomValidation = false;
@@ -996,7 +996,17 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private restoreSalesConditions(): void {
-    this.salesConditionsHtml = localStorage.getItem(SALES_CONDITIONS_STORAGE_KEY) || '';
+    const cached = localStorage.getItem(SALES_CONDITIONS_STORAGE_KEY);
+    if (!cached) {
+      this.salesConditions = [];
+      return;
+    }
+
+    try {
+      this.salesConditions = this.normalizeSalesConditions(JSON.parse(cached));
+    } catch {
+      this.salesConditions = [];
+    }
   }
 
   // Handler to calculate the price based on valid rows
@@ -1496,11 +1506,22 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
       payload.logoDataUrl = activeLogo;
     }
 
-    if (this.salesConditionsHtml.trim()) {
-      payload.salesConditions = this.salesConditionsHtml;
+    if (this.salesConditions.length > 0) {
+      payload.salesConditions = this.salesConditions;
     }
 
     return payload;
+  }
+
+  private normalizeSalesConditions(value: unknown): string[] {
+    if (Array.isArray(value)) {
+      return value
+        .filter((item): item is string => typeof item === 'string')
+        .map(item => item.trim())
+        .filter(Boolean);
+    }
+
+    return [];
   }
 
   // Build Data payload for API

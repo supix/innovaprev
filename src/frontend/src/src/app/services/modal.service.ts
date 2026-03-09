@@ -88,8 +88,8 @@ export class ModalService {
     };
   }
 
-  showSalesConditionsModal(initialValue: string): Promise<string | null> {
-    return new Promise<string | null>((resolve) => {
+  showSalesConditionsModal(initialValue: string[]): Promise<string[] | null> {
+    return new Promise<string[] | null>((resolve) => {
       const componentRef: ComponentRef<SalesConditionsModalComponent> = createComponent(SalesConditionsModalComponent, {
         environmentInjector: this.appRef.injector,
       });
@@ -100,7 +100,7 @@ export class ModalService {
       const element = componentRef.location.nativeElement;
       document.body.appendChild(element);
 
-      componentRef.instance.confirmCallback = (value: string) => {
+      componentRef.instance.confirmCallback = (value: string[]) => {
         document.body.removeChild(element);
         componentRef.destroy();
         resolve(value);

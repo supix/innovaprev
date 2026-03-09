@@ -6,93 +6,33 @@
     </div>
 
     <div class="modal-body">
-      <label class="form-label">Testo condizioni di vendita</label>
-      <div class="editor-toolbar mb-2" aria-label="Strumenti di formattazione">
-        <button
-          type="button"
-          class="btn btn-sm"
-          [class.btn-secondary]="activeFormats['bold']"
-          [class.active-toolbar-button]="activeFormats['bold']"
-          [class.btn-outline-secondary]="!activeFormats['bold']"
-          (mouseenter)="onEnterTooltip($event, 'tooltip-bold')"
-          (mouseleave)="onLeaveTooltip('tooltip-bold')"
-          (mousedown)="onToolbarAction($event, 'bold')">
-          <strong>B</strong>
-        </button>
-        <div class="tooltip" [id]="'tooltip-bold'">Grassetto</div>
-        <button
-          type="button"
-          class="btn btn-sm"
-          [class.btn-secondary]="activeFormats['italic']"
-          [class.active-toolbar-button]="activeFormats['italic']"
-          [class.btn-outline-secondary]="!activeFormats['italic']"
-          (mouseenter)="onEnterTooltip($event, 'tooltip-italic')"
-          (mouseleave)="onLeaveTooltip('tooltip-italic')"
-          (mousedown)="onToolbarAction($event, 'italic')">
-          <em>I</em>
-        </button>
-        <div class="tooltip" [id]="'tooltip-italic'">Corsivo</div>
-        <button
-          type="button"
-          class="btn btn-sm"
-          [class.btn-secondary]="activeFormats['underline']"
-          [class.active-toolbar-button]="activeFormats['underline']"
-          [class.btn-outline-secondary]="!activeFormats['underline']"
-          (mouseenter)="onEnterTooltip($event, 'tooltip-underline')"
-          (mouseleave)="onLeaveTooltip('tooltip-underline')"
-          (mousedown)="onToolbarAction($event, 'underline')">
-          <u>U</u>
-        </button>
-        <div class="tooltip" [id]="'tooltip-underline'">Sottolineato</div>
-        <button
-          type="button"
-          class="btn btn-sm toolbar-icon-button"
-          [class.btn-secondary]="activeFormats['insertUnorderedList']"
-          [class.active-toolbar-button]="activeFormats['insertUnorderedList']"
-          [class.btn-outline-secondary]="!activeFormats['insertUnorderedList']"
-          (mouseenter)="onEnterTooltip($event, 'tooltip-unordered-list')"
-          (mouseleave)="onLeaveTooltip('tooltip-unordered-list')"
-          (mousedown)="onToolbarAction($event, 'insertUnorderedList')"
-          aria-label="Elenco puntato">
-          <span aria-hidden="true">• • •</span>
-        </button>
-        <div class="tooltip" [id]="'tooltip-unordered-list'">Elenco puntato</div>
-        <button
-          type="button"
-          class="btn btn-sm toolbar-icon-button"
-          [class.btn-secondary]="activeFormats['insertOrderedList']"
-          [class.active-toolbar-button]="activeFormats['insertOrderedList']"
-          [class.btn-outline-secondary]="!activeFormats['insertOrderedList']"
-          (mouseenter)="onEnterTooltip($event, 'tooltip-ordered-list')"
-          (mouseleave)="onLeaveTooltip('tooltip-ordered-list')"
-          (mousedown)="onToolbarAction($event, 'insertOrderedList')"
-          aria-label="Elenco numerato">
-          <span aria-hidden="true">1. 2. 3.</span>
-        </button>
-        <div class="tooltip" [id]="'tooltip-ordered-list'">Elenco numerato</div>
-        <button
-          type="button"
-          class="btn btn-outline-secondary btn-sm toolbar-icon-button"
-          (mouseenter)="onEnterTooltip($event, 'tooltip-remove-format')"
-          (mouseleave)="onLeaveTooltip('tooltip-remove-format')"
-          (mousedown)="onToolbarAction($event, 'removeFormat')">
-          <span aria-hidden="true">Tx</span>
-        </button>
-        <div class="tooltip" [id]="'tooltip-remove-format'">Pulisci formattazione</div>
+      <div class="conditions-list">
+        <div class="condition-row" *ngFor="let condition of conditions; let i = index; trackBy: trackByIndex">
+          <div class="condition-input">
+            <label class="form-label condition-label">Riga {{ i + 1 }}</label>
+            <input
+              type="text"
+              class="form-control"
+              [value]="condition"
+              (input)="updateCondition(i, $any($event.target).value)"
+              [placeholder]="'Riga ' + (i + 1)" />
+          </div>
+          <button
+            type="button"
+            class="btn btn-outline-danger"
+            (click)="removeCondition(i)"
+            [disabled]="conditions.length === 1 && !conditions[0].trim()">
+            Rimuovi
+          </button>
+        </div>
       </div>
-      <div
-        #editor
-        class="form-control rich-text-editor"
-        contenteditable="true"
-        role="textbox"
-        aria-multiline="true"
-        (input)="syncValue(); onEditorInteraction()"
-        (keyup)="onEditorInteraction()"
-        (mouseup)="onEditorInteraction()">
-      </div>
-      <small class="text-muted d-block mt-2">
-        Il contenuto inserito verrà mostrato nel PDF.
-      </small>
+      <button
+        type="button"
+        class="btn btn-outline-primary mt-3"
+        (click)="addCondition()"
+        [disabled]="!canAddCondition">
+        Aggiungi riga #{{ nextRowNumber }}
+      </button>
     </div>
 
     <div class="modal-footer d-flex justify-content-end gap-2">

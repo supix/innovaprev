@@ -44,7 +44,7 @@ export interface BillingPayload extends PricePayload {
   customerData: PersonalData;
   discountPercentage?: number;
   logoDataUrl?: string; // dataURL (base64) of the active logo, if any
-  salesConditions?: string;
+  salesConditions?: string[];
 }
 
 // Payload for a collection of window estimate rows

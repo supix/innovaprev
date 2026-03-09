@@ -35,73 +35,33 @@
   overflow: auto;
 }
 
-.editor-toolbar {
+.conditions-list {
   display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 536px;
+  overflow-y: auto;
+  padding-right: 4px;
 }
 
-.editor-toolbar .active-toolbar-button {
-  background-color: var(--bs-secondary);
-  border-color: var(--bs-secondary);
-  color: #fff;
+.condition-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: end;
 }
 
-.tooltip {
-  position: fixed;
-  background-color: #333;
-  color: #fff;
-  padding: 0.5rem;
-  border-radius: 0.25rem;
-  font-size: 0.85rem;
-  white-space: normal;
-  max-width: 200px;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.2s ease-in-out;
-  z-index: 9999;
+.condition-input {
+  min-width: 0;
 }
 
-.tooltip::after {
-  content: '';
-  position: absolute;
-  top: -9px;
-  left: 50%;
-  transform: translateX(-50%);
-  border-width: 5px;
-  border-style: solid;
-  border-color: transparent transparent #333 transparent;
+.condition-label {
+  display: block;
+  margin-bottom: 6px;
 }
 
-.toolbar-icon-button {
-  min-width: 44px;
-  font-family: inherit;
-  letter-spacing: .5px;
-}
-
-.rich-text-editor {
-  min-height: 220px;
-  resize: vertical;
-  overflow: auto;
-  white-space: pre-wrap;
-}
-
-.rich-text-editor:focus {
-  outline: none;
-  box-shadow: none;
-  border-color: var(--bs-primary);
-}
-
-.rich-text-editor:empty::before {
-  content: 'Inserisci qui le condizioni di vendita';
-  color: #6c757d;
-}
-
-.rich-text-editor ul {
-  padding-left: 1.5rem;
-  margin-bottom: 0;
-}
-
-.rich-text-editor p {
-  margin-bottom: 0;
+@media (max-width: 640px) {
+  .condition-row {
+    grid-template-columns: 1fr;
+  }
 }

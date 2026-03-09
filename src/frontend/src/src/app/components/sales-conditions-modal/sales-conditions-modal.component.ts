@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -8,120 +8,64 @@ import { CommonModule } from '@angular/common';
   templateUrl: './sales-conditions-modal.component.html',
   styleUrl: './sales-conditions-modal.component.scss',
 })
-export class SalesConditionsModalComponent implements AfterViewInit {
+export class SalesConditionsModalComponent {
+  readonly maxConditions = 20;
+
   constructor(private readonly cdr: ChangeDetectorRef) {}
 
-  @Input() initialValue: string = '';
-  @ViewChild('editor') editor?: ElementRef<HTMLDivElement>;
-
-  value: string = '';
-  activeFormats: Record<string, boolean> = {
-    bold: false,
-    italic: false,
-    underline: false,
-    insertUnorderedList: false,
-    insertOrderedList: false,
-  };
-  private savedRange: Range | null = null;
-  confirmCallback?: (value: string) => void;
-
-  ngAfterViewInit(): void {
-    this.value = this.initialValue || '';
-    if (this.editor) {
-      this.editor.nativeElement.innerHTML = this.value;
-    }
-  }
-
-  onEditorInteraction(): void {
-    this.saveSelection();
-  }
-
-  onEnterTooltip(event: MouseEvent, tooltipId: string): void {
-    const tooltip = document.getElementById(tooltipId);
-    const target = event.currentTarget as HTMLElement;
-
-    if (tooltip && target) {
-      const rect = target.getBoundingClientRect();
-      tooltip.style.top = `${rect.bottom + 5}px`;
-      tooltip.style.left = `${rect.left + rect.width / 2}px`;
-      tooltip.style.transform = 'translateX(-50%)';
-      tooltip.style.opacity = '1';
-    }
-  }
-
-  onLeaveTooltip(tooltipId: string): void {
-    const tooltip = document.getElementById(tooltipId);
-
-    if (tooltip) {
-      tooltip.style.opacity = '0';
-    }
-  }
-
-  onToolbarAction(event: MouseEvent, command: string): void {
-    event.preventDefault();
-    this.restoreSelection();
-    document.execCommand(command);
-    this.saveSelection();
-    this.syncValue();
-
-    if (command !== 'removeFormat') {
-      this.activeFormats = {
-        ...this.activeFormats,
-        [command]: !this.activeFormats[command],
-      };
-    } else {
-      this.resetActiveFormats();
-    }
-
+  private _initialValue: string[] = [];
+  @Input() set initialValue(value: string[]) {
+    this._initialValue = value ?? [];
+    this.conditions = this._initialValue.length ? [...this._initialValue] : [''];
     this.cdr.detectChanges();
   }
 
-  syncValue(): void {
-    this.value = this.editor?.nativeElement.innerHTML || '';
+  get initialValue(): string[] {
+    return this._initialValue;
   }
 
-  private isSelectionInsideEditor(): boolean {
-    const selection = window.getSelection();
-    const editor = this.editor?.nativeElement;
+  conditions: string[] = [''];
 
-    if (!selection || !editor || selection.rangeCount === 0) {
+  confirmCallback?: (value: string[]) => void;
+
+  get nextRowNumber(): number {
+    return Math.min(this.conditions.length + 1, this.maxConditions);
+  }
+
+  get canAddCondition(): boolean {
+    if (this.conditions.length >= this.maxConditions) {
       return false;
     }
 
-    const anchorNode = selection.anchorNode;
-    return !!anchorNode && editor.contains(anchorNode);
+    return this.conditions.length === 0 || this.conditions[this.conditions.length - 1].trim().length > 0;
   }
 
-  private saveSelection(): void {
-    const selection = window.getSelection();
-
-    if (!selection || selection.rangeCount === 0 || !this.isSelectionInsideEditor()) {
+  addCondition(value: string = ''): void {
+    if (!this.canAddCondition) {
       return;
     }
-
-    this.savedRange = selection.getRangeAt(0).cloneRange();
+    this.conditions = [...this.conditions, value];
+    this.cdr.detectChanges();
   }
 
-  private restoreSelection(): void {
-    const selection = window.getSelection();
-
-    if (!selection || !this.savedRange) {
+  removeCondition(index: number): void {
+    this.conditions = this.conditions.filter((_, currentIndex) => currentIndex !== index);
+    if (this.conditions.length === 0) {
+      this.addCondition();
       return;
     }
-
-    this.editor?.nativeElement.focus();
-    selection.removeAllRanges();
-    selection.addRange(this.savedRange);
+    this.cdr.detectChanges();
   }
 
-  private resetActiveFormats(): void {
-    this.activeFormats = {
-      bold: false,
-      italic: false,
-      underline: false,
-      insertUnorderedList: false,
-      insertOrderedList: false,
-    };
+  updateCondition(index: number, value: string): void {
+    this.conditions = this.conditions.map((condition, currentIndex) =>
+      currentIndex === index ? value : condition
+    );
+    this.cdr.detectChanges();
+  }
+
+  trackByIndex(index: number): number {
+    return index;
   }
 
   close(): void {
@@ -129,6 +73,7 @@ export class SalesConditionsModalComponent implements AfterViewInit {
   }
 
   confirm(): void {
-    this.confirmCallback?.(this.value);
+    const value = this.conditions.map(item => item.trim()).filter(Boolean);
+    this.confirmCallback?.(value);
   }
 }
