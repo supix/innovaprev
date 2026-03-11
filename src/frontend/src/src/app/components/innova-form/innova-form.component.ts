@@ -1506,9 +1506,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
       payload.logoDataUrl = activeLogo;
     }
 
-    if (this.salesConditions.length > 0) {
-      payload.salesConditions = this.salesConditions;
-    }
+    payload.salesConditions = [...this.salesConditions];
 
     return payload;
   }
