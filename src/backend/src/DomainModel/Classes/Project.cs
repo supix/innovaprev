@@ -9,6 +9,6 @@
         public required CustomData[] CustomData { get; set; }
         public string? logoDataUrl { get; set; }
         public int? DiscountPercentage { get; set; }
-        public string[]? SalesConditions { get; set; }
+        public required string[] SalesConditions { get; set; }
     }
 }

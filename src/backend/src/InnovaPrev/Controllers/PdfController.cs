@@ -19,8 +19,6 @@ namespace InnovaPrev.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] Project project)
         {
-            if (project.SalesConditions == null)
-                project.SalesConditions = [];
             var buffer = pdfReportGenerator.Generate(project);
             var streamResult = new MemoryStream(buffer);
             return File(streamResult, "application/pdf", $"preventivo{DateTime.Now.ToString("_yyyyMMdd_HHmmss")}.pdf");
