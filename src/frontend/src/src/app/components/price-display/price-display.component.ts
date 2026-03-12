@@ -13,37 +13,42 @@ export class PriceDisplayComponent {
   @Input() amount: number | null | undefined = null;
   @Input() tax: number | null | undefined = null;
 
+  private readonly currencyFormatter = new Intl.NumberFormat('it-IT', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+    useGrouping: true
+  });
+
   get formattedAmountIntegerPart(): string {
-    return this.formatInteger(this.amount);
+    return this.formatParts(this.amount).integer;
   }
 
   get formattedAmountDecimalPart(): string {
-    return this.formatDecimal(this.amount);
+    return this.formatParts(this.amount).decimal;
   }
 
   get formattedTaxIntegerPart(): string {
-    return this.formatInteger(this.tax);
+    return this.formatParts(this.tax).integer;
   }
 
   get formattedTaxDecimalPart(): string {
-    return this.formatDecimal(this.tax);
+    return this.formatParts(this.tax).decimal;
   }
 
   get isPriceNull(): boolean {
     return this.grandTotal == null || this.grandTotal === 0;
   }
 
-  private formatInteger(value: number | null | undefined): string {
-    if (value == null || value === 0) {
-      return '0';
-    }
-    return Math.floor(value).toLocaleString('it-IT');
-  }
+  private formatParts(value: number | null | undefined): { integer: string; decimal: string } {
+    const safeValue = typeof value === 'number' && Number.isFinite(value) ? value : 0;
+    const parts = this.currencyFormatter.formatToParts(safeValue);
 
-  private formatDecimal(value: number | null | undefined): string {
-    if (value == null || value === 0) {
-      return '00';
-    }
-    return (value % 1).toFixed(2).substring(2);
+    return {
+      integer: parts
+        .filter((part) => part.type === 'integer' || part.type === 'group')
+        .map((part) => part.value)
+        .join('') || '0',
+      decimal: parts.find((part) => part.type === 'fraction')?.value || '00'
+    };
   }
 }
