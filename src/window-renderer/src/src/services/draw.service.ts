@@ -3,6 +3,7 @@ import { WindowInput } from '../interfaces/windows/window-input.interface';
 import { WindowMaterialType } from '../interfaces/windows/windows.type';
 
 type DrawFn = (ctx: CanvasRenderingContext2D, w: number, h: number, input: WindowInput) => void;
+type HandleSide = 'left' | 'right' | 'center-left' | 'center-right';
 
 export class DrawService {
     private readonly scale = 0.1;
@@ -107,6 +108,12 @@ export class DrawService {
         if (['F2A', 'PF2A', 'PRT2A'].includes(materialType)) {
             this.drawHandle(ctx, width * dynamicScale, height * dynamicScale, openingType === 'OT_DX' ? 'center-left' : 'center-right');
         }
+        if (materialType === 'FLD') {
+            this.drawHandle(ctx, width * dynamicScale, height * dynamicScale, openingType === 'OT_DX' ? 'left' : 'center-right');
+        }
+        if (materialType === 'FLS') {
+            this.drawHandle(ctx, width * dynamicScale, height * dynamicScale, openingType === 'OT_DX' ? 'center-left' : 'right');
+        }
 
         // Wire cover
         const wireCoverPadding = borderSize - 5;
@@ -199,7 +206,7 @@ export class DrawService {
       ctx: CanvasRenderingContext2D,
       w: number,
       h: number,
-      side: 'left' | 'right' | 'center-left' | 'center-right'
+      side: HandleSide
     ) {
         const handleWidth = 0.07 * w;
         const handleHeight = 0.16 * h;
