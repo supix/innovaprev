@@ -21,8 +21,8 @@ namespace DomainModel.Services.CollectionsProvider
                 },
                 WindowTypes = GetWindowTypesCollItems(),
                 OpeningTypes = new[] {
-                    new CollectionItem() { Id = "OT_DX", Desc = "SX" },
-                    new CollectionItem() { Id = "OT_SX", Desc = "DX" },
+                    new CollectionItem() { Id = "OT_DX", Desc = "DX" },
+                    new CollectionItem() { Id = "OT_SX", Desc = "SX" },
                 },
                 GlassTypes = new[] {
                     new CollectionItem() { Id = "GT_TRASPARENTE", Desc = "Trasparente" },
