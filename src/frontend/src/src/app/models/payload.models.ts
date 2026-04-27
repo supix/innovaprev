@@ -43,6 +43,7 @@ export interface BillingPayload extends PricePayload {
   supplierData: PersonalData;
   customerData: PersonalData;
   discountPercentage?: number;
+  taxRate?: number;
   logoDataUrl?: string; // dataURL (base64) of the active logo, if any
   salesConditions?: string[];
 }
@@ -51,6 +52,7 @@ export interface BillingPayload extends PricePayload {
 export interface PricePayload extends WindowsPayload, CustomPayload {
   productData: ProductDetails;
   discountPercentage?: number;
+  taxRate?: number;
 }
 
 export interface WindowsPayload {
