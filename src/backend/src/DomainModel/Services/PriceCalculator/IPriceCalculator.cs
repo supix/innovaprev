@@ -4,6 +4,6 @@ namespace DomainModel.Services.PriceCalculator
 {
     public interface IPriceCalculator
     {
-        PriceInfo getPrices(ProductData productData, WindowsData[] windowsData, CustomData[] customData, int discountPercentage);
+        PriceInfo getPrices(ProductData productData, WindowsData[] windowsData, CustomData[] customData, int discountPercentage, int taxRate);
     }
 }

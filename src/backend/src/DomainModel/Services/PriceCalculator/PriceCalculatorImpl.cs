@@ -9,7 +9,7 @@ namespace DomainModel.Services.PriceCalculator
 {
     internal class PriceCalculatorImpl : IPriceCalculator
     {
-        public PriceInfo getPrices(ProductData productData, WindowsData[] windowsData, CustomData[] customData, int discountPercentage)
+        public PriceInfo getPrices(ProductData productData, WindowsData[] windowsData, CustomData[] customData, int discountPercentage, int taxRate)
         {
             var internalColor = ColorFactory.CreateByCode(productData.InternalColor);
             var externalColor = ColorFactory.CreateByCode(productData.ExternalColor ?? productData.InternalColor);
@@ -29,7 +29,7 @@ namespace DomainModel.Services.PriceCalculator
                     var material = MaterialFactory.CreateByCode(wd.WindowType, m1, m2, (wd.OpeningType != null && wd.OpeningType.Contains("SX")) ? "SX" : "DX", wd.GlassType == "GT_OPACO", wd.WireCover, frame);
                     var netPrice = product.GetMaterialPrice(material);
                     var totalMaterialPrice = netPrice * wd.Quantity * (100 - discountPercentage) / 100;
-                    var detailPrice = new DetailPrice() { NetPrice = totalMaterialPrice, Vat = 0.22M };
+                    var detailPrice = new DetailPrice() { NetPrice = totalMaterialPrice, Vat = (decimal)taxRate / 100 };
                     acc.DetailPrices.Add(detailPrice);
                     acc.Total += totalMaterialPrice;
                     acc.Tax += detailPrice.Tax;

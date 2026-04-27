@@ -19,7 +19,7 @@ namespace InnovaPrev.Controllers
         [HttpPost]
         public GetQuoteOutputDto Post([FromBody] Dto dto)
         {
-            PriceInfo prices = priceCalculator.getPrices(dto.ProductData, dto.WindowsData, dto.CustomData, dto.DiscountPercentage ?? 0);
+            PriceInfo prices = priceCalculator.getPrices(dto.ProductData, dto.WindowsData, dto.CustomData, dto.DiscountPercentage ?? 0, dto.TaxRate ?? 22);
             return new GetQuoteOutputDto()
             {
                 Quotation = new Quotation()
@@ -38,6 +38,7 @@ namespace InnovaPrev.Controllers
         public required WindowsData[] WindowsData { get; set; }
         public required CustomData[] CustomData { get; set; }
         public int? DiscountPercentage { get; set; }
+        public int? TaxRate { get; set; }
     }
 
     public class GetQuoteOutputDto
