@@ -40,7 +40,7 @@ namespace DomainModel.Services.PriceCalculator
 
             return customData.Aggregate(productPriceInfo, ((acc, x) =>
             {
-                var detailPrice = new DetailPrice() { NetPrice = x.Price, Vat = 0.22M };
+                var detailPrice = new DetailPrice() { NetPrice = x.Price, Vat = (decimal)taxRate / 100 };
                 acc.DetailPrices.Add(detailPrice);
                 acc.Total += detailPrice.NetPrice;
                 acc.Tax += detailPrice.Tax;
