@@ -95,6 +95,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
     {label: 'Sì', value: true},
     {label: 'No', value: false}
   ];
+  taxRateOptions = [22, 10];
 
   debugIndex: number = 1;
 
@@ -129,6 +130,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
     this.config.clearAllText = 'Pulisci tutto';
     this.form = this.fb.group({
       discountPercentage: [null, [Validators.min(0), Validators.max(100)]],
+      taxRate: [22, Validators.required],
       supplierData: this.fb.group({
         companyName: ['', Validators.required],
         address: [''],
@@ -237,6 +239,10 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
 
   get discountPercentageControl(): AbstractControl | null {
     return this.form.get('discountPercentage');
+  }
+
+  get taxRateControl(): AbstractControl | null {
+    return this.form.get('taxRate');
   }
 
   sanitizeHtml(text: string): SafeHtml {
@@ -624,6 +630,10 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
     this.calculatePriceHandler();
   }
 
+  onTaxRateChange(): void {
+    this.calculatePriceHandler();
+  }
+
   // Needed to work around a ng-select issue
   ngSelectHandleFocus(enabled: boolean, myCustomClass: string = "custom-table-lg"): void {
     if (enabled) {
@@ -827,6 +837,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
     // Patch other form values
     this.form.patchValue({
       discountPercentage: currentFormValue.discountPercentage ?? null,
+      taxRate: currentFormValue.taxRate ?? 22,
       supplierData: {
         companyName: currentFormValue.supplierData?.companyName || 'Supplier Co.',
         address: currentFormValue.supplierData?.address || '123 Supplier Street',
@@ -875,6 +886,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
 
   onReset(): void {
     this.form.reset();
+    this.taxRateControl?.setValue(22);
 
     while (this.windows.length > 0) {
       this.windows.removeAt(0);
@@ -898,6 +910,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.hasErrors(this.customerData)) problems.push('Cliente');
     if (this.hasErrors(this.productData)) problems.push('Serie');
     if (this.discountPercentageControl?.invalid) problems.push('Sconto');
+    if (this.taxRateControl?.invalid) problems.push('IVA');
     if (!this.areAllWindowRowsValid()) problems.push('Misure');
     if (!this.areAllCustomRowsValid()) problems.push('Componenti aggiuntivi');
 
@@ -930,6 +943,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.form.patchValue({
       discountPercentage: billingPayload.discountPercentage ?? null,
+      taxRate: billingPayload.taxRate ?? 22,
       supplierData: billingPayload.supplierData,
       customerData: billingPayload.customerData,
       productData: billingPayload.productData
@@ -1492,6 +1506,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
   private buildBillingPayload(): BillingPayload {
     const activeLogo = this.logoStorage.list().find(l => l.active)?.dataUrl;
     const discountPercentage = this.discountPercentageControl?.value;
+    const taxRate = this.taxRateControl?.value;
     const payload: BillingPayload = {
       supplierData: this.form.value.supplierData,
       customerData: this.form.value.customerData,
@@ -1500,6 +1515,10 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
 
     if (typeof discountPercentage === 'number' && Number.isFinite(discountPercentage)) {
       payload.discountPercentage = discountPercentage;
+    }
+
+    if (typeof taxRate === 'number' && Number.isInteger(taxRate)) {
+      payload.taxRate = taxRate;
     }
 
     if (activeLogo) {
@@ -1525,6 +1544,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
   // Build Data payload for API
   private buildPayload(): PricePayload {
     const discountPercentage = this.discountPercentageControl?.value;
+    const taxRate = this.taxRateControl?.value;
     const payload: PricePayload = {
       productData: {
         ...this.form.get('productData')?.getRawValue()
@@ -1535,6 +1555,10 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
 
     if (typeof discountPercentage === 'number' && Number.isFinite(discountPercentage)) {
       payload.discountPercentage = discountPercentage;
+    }
+
+    if (typeof taxRate === 'number' && Number.isInteger(taxRate)) {
+      payload.taxRate = taxRate;
     }
 
     return payload;

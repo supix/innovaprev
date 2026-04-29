@@ -55,8 +55,8 @@
       <div class="tooltip" [id]="'tooltip-sales-conditions'">Condizioni di vendita
       </div>
     </div>
-    <div class="discount-center order-3 order-md-2 mb-2 mb-md-0" [formGroup]="form">
-      <div class="discount-field">
+    <div class="rate-controls order-3 order-md-2 mb-2 mb-md-0" [formGroup]="form">
+      <div class="rate-field">
         <label for="discountPercentage" class="discount-label form-label">Sconto</label>
         <div class="input-with-suffix">
           <input id="discountPercentage"
@@ -67,6 +67,19 @@
                  formControlName="discountPercentage"
                  [ngClass]="{ 'is-invalid': submitted && discountPercentageControl?.errors }"
                  (input)="onDiscountInput($event)"/>
+          <span class="suffix">%</span>
+        </div>
+      </div>
+      <div class="rate-field">
+        <label for="taxRate" class="discount-label form-label">IVA</label>
+        <div class="input-with-suffix">
+          <select id="taxRate"
+                  class="form-select"
+                  formControlName="taxRate"
+                  [ngClass]="{ 'is-invalid': submitted && taxRateControl?.errors }"
+                  (change)="onTaxRateChange()">
+            <option *ngFor="let option of taxRateOptions" [ngValue]="option">{{ option }}</option>
+          </select>
           <span class="suffix">%</span>
         </div>
       </div>
