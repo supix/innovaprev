@@ -4,6 +4,8 @@ import { PreviewModalComponent } from '../components/preview-modal/preview-modal
 import { ArchiveModalComponent } from '../components/archive-modal/archive-modal.component';
 import { LogoManagerModalComponent } from '../components/logo-manager-modal/logo-manager-modal.component';
 import { SalesConditionsModalComponent } from '../components/sales-conditions-modal/sales-conditions-modal.component';
+import { EnergyResultsModalComponent } from '../components/energy-results-modal/energy-results-modal.component';
+import { EnergyCalculationResult } from '../models';
 
 @Injectable({providedIn: 'root'})
 export class ModalService {
@@ -36,6 +38,23 @@ export class ModalService {
 
     componentRef.instance.imageBlob = image;
     componentRef.instance.title = title;
+    componentRef.changeDetectorRef.detectChanges();
+
+    const element = componentRef.location.nativeElement;
+    document.body.appendChild(element);
+
+    componentRef.instance.close = () => {
+      document.body.removeChild(element);
+      componentRef.destroy();
+    };
+  }
+
+  showEnergyResultsModal(result: EnergyCalculationResult): void {
+    const componentRef: ComponentRef<EnergyResultsModalComponent> = createComponent(EnergyResultsModalComponent, {
+      environmentInjector: this.appRef.injector,
+    });
+
+    componentRef.instance.result = result;
     componentRef.changeDetectorRef.detectChanges();
 
     const element = componentRef.location.nativeElement;

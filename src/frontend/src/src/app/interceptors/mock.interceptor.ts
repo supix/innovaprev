@@ -1,6 +1,13 @@
 import {HttpInterceptorFn, HttpResponse} from '@angular/common/http';
 import {delay, of, throwError} from 'rxjs';
-import {CollectionsResponse, Quotation, QuotationResponse} from '../models';
+import {
+  CollectionsResponse,
+  EnergyCalculationResult,
+  EnergyCollectionsResponse,
+  EnergyMunicipality,
+  Quotation,
+  QuotationResponse
+} from '../models';
 import {environment} from '../../environments/environment';
 
 export const mockInterceptor: HttpInterceptorFn = (req, next) => {
@@ -35,6 +42,60 @@ export const mockInterceptor: HttpInterceptorFn = (req, next) => {
   if (req.url === `${baseUrl}${endpoints.collections}` && req.method === 'GET') {
     return of(new HttpResponse<CollectionsResponse>({status: 200, body: getMockCollections()})).pipe(
       delay(1000)
+    );
+  }
+
+  if (req.url === `${baseUrl}${endpoints.energyCollections}` && req.method === 'GET') {
+    return of(new HttpResponse<EnergyCollectionsResponse>({status: 200, body: getMockEnergyCollections()})).pipe(
+      delay(500)
+    );
+  }
+
+  if (req.url.startsWith(`${baseUrl}${endpoints.energyMunicipalities}`) && req.method === 'GET') {
+    const search = (req.params.get('search') || '').toLowerCase();
+    const body = getMockMunicipalities().filter(item =>
+      !search || item.comune.toLowerCase().includes(search) || (item.provincia || '').toLowerCase().includes(search)
+    );
+    return of(new HttpResponse<EnergyMunicipality[]>({status: 200, body})).pipe(
+      delay(300)
+    );
+  }
+
+  if (req.url.endsWith(`${baseUrl}${endpoints.energyCalculate}`) && req.method === 'POST') {
+    const body: any = req.body || {};
+    const windowSurfaceSqm = Number(body.windowSurfaceSqm || 10);
+    const investmentAmount = Number(body.investmentAmount || 10000);
+    const oldWindowUw = Number(body.oldWindowUw || 2.8);
+    const newWindowUw = Number(body.newWindowUw || 1.2);
+    const deltaUw = Math.max(0, oldWindowUw - newWindowUw);
+    const annualPrimaryEnergySavedKwh = Number((windowSurfaceSqm * deltaUw * 180).toFixed(2));
+    const annualEconomicSaving = Number((annualPrimaryEnergySavedKwh * 0.11).toFixed(2));
+    const annualDeductionQuota = Number((investmentAmount * 0.5 / 10).toFixed(2));
+    const result: EnergyCalculationResult = {
+      municipalityLabel: 'Torino (TO)',
+      climateZone: 'E',
+      degreeDays: 2617,
+      fuelLabel: 'Metano',
+      buildingTypeLabel: 'Residenziale',
+      exposureTypeLabel: 'Verso l\'esterno',
+      windowSurfaceSqm,
+      investmentAmount,
+      oldWindowUw,
+      newWindowUw,
+      deltaUw: Number(deltaUw.toFixed(3)),
+      annualDispersionSavedKwh: Number((annualPrimaryEnergySavedKwh * 0.8).toFixed(2)),
+      annualPrimaryEnergySavedKwh,
+      annualEconomicSaving,
+      annualCo2SavedKg: Number((annualPrimaryEnergySavedKwh * 0.216).toFixed(2)),
+      deductionPercentage: 50,
+      deductionTotal: Number((investmentAmount * 0.5).toFixed(2)),
+      annualDeductionQuota,
+      paybackYearsWithoutDeduction: annualEconomicSaving > 0 ? Number((investmentAmount / annualEconomicSaving).toFixed(1)) : null,
+      paybackYearsWithDeduction: (annualEconomicSaving + annualDeductionQuota) > 0 ? Number((investmentAmount / (annualEconomicSaving + annualDeductionQuota)).toFixed(1)) : null
+    };
+
+    return of(new HttpResponse<EnergyCalculationResult>({status: 200, body: result})).pipe(
+      delay(800)
     );
   }
   return next(req);
@@ -113,3 +174,63 @@ const getMockCollections = (): CollectionsResponse => ({
     {id: 'A_FRAME', desc: 'Frame A', frameForProduct: []}
   ]
 });
+
+const getMockEnergyCollections = (): EnergyCollectionsResponse => ({
+  fuels: [
+    {id: '4', label: 'Metano', pci: 8.7, pricePerUnit: 0.89, unit: '(Kwh/Nm³)', priceLabel: '€ Kwh/Nm³'},
+    {id: '1', label: 'Energia Elettrica', pci: 1, pricePerUnit: 0.2, unit: '(Kwh/Kw)', priceLabel: '€/Kwh/Kw'},
+  ],
+  deductions: [
+    {id: 'ecobonus_50pct', label: 'Ecobonus 50%', percentage: 50, maxExpense: 96000, isApplicable: true},
+    {id: 'bonus_casa_50pct', label: 'Bonus casa 50%', percentage: 50, maxExpense: 96000, isApplicable: true},
+    {id: 'nuova_costruzione', label: 'Nuova costruzione', percentage: 0, maxExpense: 0, isApplicable: false}
+  ],
+  buildingTypes: [
+    {id: 'residenziale', label: 'Residenziale', factor: 0.9},
+    {id: 'non_residenziale', label: 'Non residenziale', factor: 0.6}
+  ],
+  exposureTypes: [
+    {id: 'verso_esterno', label: 'Verso l\'esterno', factor: 1},
+    {id: 'verso_ambiente_non_riscaldato', label: 'Verso ambiente non riscaldato', factor: 0.5},
+    {id: 'su_terreno', label: 'Su terreno', factor: 0.8}
+  ],
+  oldFrameTypes: [
+    {id: 'legno_duro', label: 'Legno duro spessore 50', uw: 2.4},
+    {id: 'pvc_due_camere', label: 'PVC a due camere', uw: 2.2}
+  ],
+  oldGlassTypes: [
+    {id: 'vetrata_singola', label: 'Vetrata singola', uw: 5.7},
+    {id: 'vetrata_4_12_4', label: 'Vetrata 4-12-4', uw: 2.9}
+  ],
+  frameAreaRatios: [
+    {id: '0.2', label: '20%', ratio: 0.2},
+    {id: '0.3', label: '30%', ratio: 0.3}
+  ],
+  permeabilityClasses: [],
+  shadingOptions: []
+});
+
+const getMockMunicipalities = (): EnergyMunicipality[] => ([
+  {
+    id: 'torino__to',
+    comune: 'Torino',
+    cap: '10121',
+    provincia: 'TO',
+    regione: 'Piemonte',
+    altitudineSlm: 239,
+    gradiGiorno: 2617,
+    zonaClimatica: 'E',
+    zonaVento: '1'
+  },
+  {
+    id: 'milano__mi',
+    comune: 'Milano',
+    cap: '20121',
+    provincia: 'MI',
+    regione: 'Lombardia',
+    altitudineSlm: 120,
+    gradiGiorno: 2404,
+    zonaClimatica: 'E',
+    zonaVento: '1'
+  }
+]);
