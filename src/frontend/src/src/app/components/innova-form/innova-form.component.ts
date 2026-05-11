@@ -807,23 +807,24 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
     this.energyCalculation = null;
   }
 
-  onEnergyMunicipalitySelection(item: EnergyMunicipality | null): void {
-    this.selectedEnergyMunicipality = item;
-    this.energyMunicipalities = this.mergeSelectedMunicipality(item ? [item] : []);
+  onEnergyMunicipalitySelection(item: EnergyMunicipality | null | undefined): void {
+    const selectedItem = item ?? null;
+    this.selectedEnergyMunicipality = selectedItem;
+    this.energyMunicipalities = this.mergeSelectedMunicipality(selectedItem ? [selectedItem] : []);
 
-    if (!item) {
+    if (!selectedItem) {
       this.clearEnergyMunicipalitySelection(false);
       return;
     }
 
     this.energyReportData.patchValue({
-      municipalityId: item.id,
-      municipalityLabel: item.comune,
-      province: item.provincia || '',
-      region: item.regione || '',
-      climateZone: item.zonaClimatica || '',
-      degreeDays: item.gradiGiorno ?? null,
-      altitudeSlm: item.altitudineSlm ?? null
+      municipalityId: selectedItem.id,
+      municipalityLabel: selectedItem.comune,
+      province: selectedItem.provincia || '',
+      region: selectedItem.regione || '',
+      climateZone: selectedItem.zonaClimatica || '',
+      degreeDays: selectedItem.gradiGiorno ?? null,
+      altitudeSlm: selectedItem.altitudineSlm ?? null
     });
     this.energyCalculation = null;
   }
@@ -864,7 +865,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
     this.municipalitySearchSub = this.municipalitySearchSubject.pipe(
       debounceTime(300),
       switchMap((term) => {
-        const normalizedTerm = term.trim();
+        const normalizedTerm = (term ?? '').trim();
         if (normalizedTerm.length < 2) {
           return of<EnergyMunicipality[]>(this.selectedEnergyMunicipality ? [this.selectedEnergyMunicipality] : []);
         }
