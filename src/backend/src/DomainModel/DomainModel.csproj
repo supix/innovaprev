@@ -10,4 +10,10 @@
     <None Include="Services\CollectionsProvider\ColorCollectionItem.cs" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Include="Data/Energy/*.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>

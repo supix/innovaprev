@@ -1,5 +1,6 @@
 ﻿using DomainModel.Services;
 using DomainModel.Services.CollectionsProvider;
+using DomainModel.Services.EnergyReport;
 using DomainModel.Services.PriceCalculator;
 using DomainModel.Services.WindowImageRenderer;
 using PdfQuote;
@@ -16,6 +17,8 @@ namespace CompositionRoot
             container.Register<IPdfReportGenerator, Generator>();
             container.Register<IPriceCalculator, PriceCalculatorImpl>();
             container.Register<ICollectionProvider, CollectionProviderImpl>();
+            container.RegisterSingleton<IEnergyDatasetProvider, EnergyDatasetProviderCsv>();
+            container.RegisterSingleton<IEnergySavingsCalculator, EnergySavingsCalculator>();
 
             container.Register<IProductImageProvider, FromResources>();
 

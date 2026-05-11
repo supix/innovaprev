@@ -39,11 +39,33 @@ export interface CustomRow {
   price: number;
 }
 
+export interface EnergyReportData {
+  municipalityId: string | null;
+  municipalityLabel?: string | null;
+  province?: string | null;
+  region?: string | null;
+  climateZone?: string | null;
+  degreeDays?: number | null;
+  altitudeSlm?: number | null;
+  buildingTypeId: string | null;
+  exposureTypeId: string | null;
+  fuelId: string | null;
+  deductionId: string | null;
+  oldFrameTypeId: string | null;
+  oldGlassTypeId: string | null;
+  frameAreaRatio: number | null;
+  oldWindowUw: number | null;
+  newWindowUw: number | null;
+  windowSurfaceSqm: number | null;
+  investmentAmount: number | null;
+}
+
 export interface BillingPayload extends PricePayload {
   supplierData: PersonalData;
   customerData: PersonalData;
   discountPercentage?: number;
   taxRate?: number;
+  energyReportData?: EnergyReportData;
   logoDataUrl?: string; // dataURL (base64) of the active logo, if any
   salesConditions?: string[];
 }

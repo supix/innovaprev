@@ -1,0 +1,8 @@
+﻿fuel_id,descrizione,codice_extra,unita_misura,pci,prezzo_unita,label_prezzo,coefficiente_extra
+1,Energia Elettrica,4,(Kwh/Kw),1,0.2,€/Kwh/Kw,
+2,Gasolio,,(L.),10.199999999999999,1.1599999999999999,€ L.,
+3,GPL,,(L.),12.8,0.9,€ L.,
+4,Metano,,(Kwh/Nm³),8.6999999999999993,0.89,€ Kwh/Nm³,0.9
+5,Metano (Caldaia a condensazione),,(Kwh/Nm³),9.6,1,€ Kwh/Nm³,0.9
+6,Pellet,,(Kg.),5,0.45,€ Kg.,
+7,Legna di Faggio,,(Kg.),4,0.2,€ Kg.,

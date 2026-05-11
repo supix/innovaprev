@@ -1,7 +1,17 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpResponse} from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { BillingPayload, CollectionsResponse, PricePayload, QuotationResponse } from '../models';
+import {
+  BillingPayload,
+  CollectionsResponse,
+  EnergyCalculationResult,
+  EnergyCollectionsResponse,
+  EnergyMunicipality,
+  EnergyReportData,
+  PricePayload,
+  QuotationResponse,
+  WindowsPayload
+} from '../models';
 import { environment } from '../../environments/environment';
 
 @Injectable({
@@ -27,6 +37,23 @@ export class ApiService {
   // API to retrieve collections data
   getCollectionsData(): Observable<CollectionsResponse> {
     return this.http.get<CollectionsResponse>(`${this.baseUrl}${this.endpoints.collections}`);
+  }
+
+  getEnergyCollections(): Observable<EnergyCollectionsResponse> {
+    return this.http.get<EnergyCollectionsResponse>(`${this.baseUrl}${this.endpoints.energyCollections}`);
+  }
+
+  searchEnergyMunicipalities(search: string, take: number = 30): Observable<EnergyMunicipality[]> {
+    return this.http.get<EnergyMunicipality[]>(`${this.baseUrl}${this.endpoints.energyMunicipalities}`, {
+      params: {
+        search,
+        take
+      }
+    });
+  }
+
+  calculateEnergyReport(payload: EnergyReportData & Partial<WindowsPayload>): Observable<EnergyCalculationResult> {
+    return this.http.post<EnergyCalculationResult>(`${this.baseUrl}${this.endpoints.energyCalculate}`, payload);
   }
 
   getImageUrl(productCode: string, isThumb: boolean = true): string {

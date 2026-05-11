@@ -17,6 +17,11 @@ import {
   CollectionsResponse,
   Colors,
   CustomPayload,
+  EnergyCalculationResult,
+  EnergyCollectionsResponse,
+  EnergyMunicipality,
+  EnergyReportData,
+  EnergyWindowOption,
   FrameType,
   PricePayload,
   Quotation,
@@ -74,11 +79,15 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
   form: FormGroup;
   quotation: Quotation | null = null;
   collections: CollectionsResponse | null = null;
+  energyCollections: EnergyCollectionsResponse | null = null;
   isCollectionsLoading: boolean = false;
+  isEnergyCalculationLoading: boolean = false;
+  isMunicipalitySearchLoading: boolean = false;
 
   submitted: boolean = false;
   hasTriggeredWindowsValidation: boolean = false;
   hasTriggeredCustomValidation: boolean = false;
+  hasTriggeredEnergyValidation: boolean = false;
 
   currentTab: TabNames = TabNames.supplier;
   tabNames = TabNames;
@@ -90,6 +99,9 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
   internalColorList: Colors[] = [];
   windowTypeList: WindowType[] = [];
   frameTypeList: FrameType[] = [];
+  energyMunicipalities: EnergyMunicipality[] = [];
+  selectedEnergyMunicipality: EnergyMunicipality | null = null;
+  energyCalculation: EnergyCalculationResult | null = null;
 
   yesNoOptions = [
     {label: 'Sì', value: true},
@@ -108,9 +120,11 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
   private previousPayloadHash: string | null = null;
   private formChangesSub?: Subscription;
   private supplierDataFormChangesSub?: Subscription;
+  private municipalitySearchSub?: Subscription;
   private windowSubscriptions: Subscription[] = [];
   private customSubscriptions: Subscription[] = [];
   private drawableWindowTypes: string[] = [];
+  municipalitySearchSubject = new Subject<string>();
 
   private maxValues: { [key: string]: number } = {
     height: 5000,
@@ -128,6 +142,8 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
     this.config.bindValue = 'id';
     this.config.notFoundText = 'Nessun elemento trovato';
     this.config.clearAllText = 'Pulisci tutto';
+    this.config.loadingText = 'Caricamento...';
+    this.config.typeToSearchText = 'Digita per cercare';
     this.form = this.fb.group({
       discountPercentage: [null, [Validators.min(0), Validators.max(100)]],
       taxRate: [22, Validators.required],
@@ -155,6 +171,26 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
         accessoryColor: [null, Validators.required],
         notes: ['']
       }),
+      energyReportData: this.fb.group({
+        municipalityId: [null],
+        municipalityLabel: [''],
+        province: [''],
+        region: [''],
+        climateZone: [''],
+        degreeDays: [null],
+        altitudeSlm: [null],
+        buildingTypeId: [null],
+        exposureTypeId: [null],
+        fuelId: [null],
+        deductionId: [null],
+        oldFrameTypeId: [null],
+        oldGlassTypeId: [null],
+        frameAreaRatio: [null, [Validators.min(0.01), Validators.max(0.99)]],
+        oldWindowUw: [null, [Validators.min(0.01)]],
+        newWindowUw: [null, [Validators.min(0.01)]],
+        windowSurfaceSqm: [null, [Validators.min(0.01)]],
+        investmentAmount: [null, [Validators.min(0.01)]]
+      }),
       windowsData: this.fb.array([]), // Contains the rows for the window estimates
       customData: this.fb.array([]), // Contains the rows for the custom data
     });
@@ -178,6 +214,19 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
           frameTypes: []
         }))
       ),
+      energyCollections: this.apiService.getEnergyCollections().pipe(
+        catchError(() => of({
+          fuels: [],
+          deductions: [],
+          buildingTypes: [],
+          exposureTypes: [],
+          oldFrameTypes: [],
+          oldGlassTypes: [],
+          frameAreaRatios: [],
+          permeabilityClasses: [],
+          shadingOptions: []
+        }))
+      ),
       windowTypes: this.windowApiService.getDrawableWindowTypes().pipe(
         catchError(() => of([]))
       )
@@ -185,15 +234,19 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
       .pipe(
         finalize(() => this.isCollectionsLoading = false)
       )
-      .subscribe(({collections, windowTypes}) => {
+      .subscribe(({collections, energyCollections, windowTypes}) => {
         this.collections = collections;
+        this.energyCollections = energyCollections;
         this.drawableWindowTypes = windowTypes;
         this.showPreviewButton = Array.isArray(windowTypes) && windowTypes.length > 0;
         this.setupPriceCalculationSubscription();
         this.subscribeToFormChanges();
         this.subscribeToSupplierDataChanges();
+        this.setupMunicipalitySearchSubscription();
         this.restoreCachedSupplierData();
         this.restoreSalesConditions();
+        this.initializeEnergyDefaults();
+        this.syncEnergyDefaultsFromCurrentQuote();
         this.showFillFormButton = this.determineShowFillFormButton();
       });
   }
@@ -210,6 +263,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
     this.customSubscriptions.forEach(subscription => subscription.unsubscribe());
     this.formChangesSub?.unsubscribe();
     this.supplierDataFormChangesSub?.unsubscribe();
+    this.municipalitySearchSub?.unsubscribe();
   }
 
   // Getter for the supplier FormGroup
@@ -225,6 +279,10 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
   // Getter for the product FormGroup
   get productData(): FormGroup {
     return this.form.get('productData') as FormGroup;
+  }
+
+  get energyReportData(): FormGroup {
+    return this.form.get('energyReportData') as FormGroup;
   }
 
   // Getter for the windows FormArray
@@ -322,6 +380,10 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
 
   hasErrorsInCustomData(): boolean {
     return this.currentTab !== TabNames.customData && this.hasTriggeredCustomValidation && !this.areAllCustomRowsValid();
+  }
+
+  hasErrorsInEnergyData(): boolean {
+    return this.currentTab !== TabNames.energyData && this.hasTriggeredEnergyValidation && !this.isEnergyCalculationReady();
   }
 
   areAllWindowRowsValid(): boolean {
@@ -727,6 +789,227 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
     return this.apiService.getImageUrl(productCode, isThumb);
   }
 
+  getEnergyMunicipalityCaption(item: EnergyMunicipality | null | undefined): string {
+    if (!item) {
+      return '';
+    }
+
+    const suffix = [item.provincia, item.regione].filter(Boolean).join(' - ');
+    return suffix ? `${item.comune} (${suffix})` : item.comune;
+  }
+
+  compareEnergyMunicipalities(first: EnergyMunicipality | null, second: EnergyMunicipality | null): boolean {
+    return first?.id === second?.id;
+  }
+
+  onEnergyConfigurationChanged(): void {
+    this.recalculateOldWindowUw();
+    this.energyCalculation = null;
+  }
+
+  onEnergyMunicipalitySelection(item: EnergyMunicipality | null): void {
+    this.selectedEnergyMunicipality = item;
+    this.energyMunicipalities = this.mergeSelectedMunicipality(item ? [item] : []);
+
+    if (!item) {
+      this.clearEnergyMunicipalitySelection(false);
+      return;
+    }
+
+    this.energyReportData.patchValue({
+      municipalityId: item.id,
+      municipalityLabel: item.comune,
+      province: item.provincia || '',
+      region: item.regione || '',
+      climateZone: item.zonaClimatica || '',
+      degreeDays: item.gradiGiorno ?? null,
+      altitudeSlm: item.altitudineSlm ?? null
+    });
+    this.energyCalculation = null;
+  }
+
+  calculateEnergyReport(): void {
+    this.hasTriggeredEnergyValidation = true;
+    this.syncEnergyDefaultsFromCurrentQuote();
+    this.recalculateOldWindowUw();
+
+    if (!this.isEnergyCalculationReady()) {
+      this.toastr.warning(`Compila i dati energetici mancanti: ${this.getEnergyValidationMessages().join(', ')}.`, 'Attenzione', {
+        toastClass: 'custom-toastr ngx-toastr',
+      });
+      return;
+    }
+
+    const payload = this.buildEnergyCalculationPayload();
+    this.isEnergyCalculationLoading = true;
+
+    this.apiService.calculateEnergyReport(payload).pipe(
+      finalize(() => this.isEnergyCalculationLoading = false)
+    ).subscribe({
+      next: (result) => {
+        this.energyCalculation = result;
+        this.modalService.showEnergyResultsModal(result);
+      },
+      error: (error) => {
+        const message = error?.error?.message || 'Calcolo del risparmio energetico non disponibile.';
+        this.energyCalculation = null;
+        this.toastr.error(message, 'Errore', {
+          toastClass: 'custom-toastr ngx-toastr',
+        });
+      }
+    });
+  }
+
+  private setupMunicipalitySearchSubscription(): void {
+    this.municipalitySearchSub = this.municipalitySearchSubject.pipe(
+      debounceTime(300),
+      switchMap((term) => {
+        const normalizedTerm = term.trim();
+        if (normalizedTerm.length < 2) {
+          return of<EnergyMunicipality[]>(this.selectedEnergyMunicipality ? [this.selectedEnergyMunicipality] : []);
+        }
+
+        this.isMunicipalitySearchLoading = true;
+        return this.apiService.searchEnergyMunicipalities(normalizedTerm).pipe(
+          finalize(() => this.isMunicipalitySearchLoading = false),
+          catchError(() => of<EnergyMunicipality[]>([]))
+        );
+      })
+    ).subscribe((items) => {
+      this.energyMunicipalities = this.mergeSelectedMunicipality(items);
+    });
+  }
+
+  private mergeSelectedMunicipality(items: EnergyMunicipality[]): EnergyMunicipality[] {
+    if (!this.selectedEnergyMunicipality) {
+      return items;
+    }
+
+    const hasSelected = items.some(item => item.id === this.selectedEnergyMunicipality?.id);
+    return hasSelected ? items : [this.selectedEnergyMunicipality, ...items];
+  }
+
+  private clearEnergyMunicipalitySelection(clearItems: boolean = true): void {
+    this.selectedEnergyMunicipality = null;
+    if (clearItems) {
+      this.energyMunicipalities = [];
+    }
+
+    this.energyReportData.patchValue({
+      municipalityId: null,
+      municipalityLabel: '',
+      province: '',
+      region: '',
+      climateZone: '',
+      degreeDays: null,
+      altitudeSlm: null
+    });
+    this.energyCalculation = null;
+  }
+
+  private initializeEnergyDefaults(): void {
+    const energyDefaults: Partial<EnergyReportData> = {};
+
+    if (!this.energyReportData.get('buildingTypeId')?.value) {
+      energyDefaults.buildingTypeId = this.energyCollections?.buildingTypes?.[0]?.id ?? null;
+    }
+
+    if (!this.energyReportData.get('exposureTypeId')?.value) {
+      energyDefaults.exposureTypeId = this.energyCollections?.exposureTypes?.[0]?.id ?? null;
+    }
+
+    if (!this.energyReportData.get('deductionId')?.value) {
+      energyDefaults.deductionId = this.energyCollections?.deductions?.[0]?.id ?? null;
+    }
+
+    this.energyReportData.patchValue(energyDefaults, {emitEvent: false});
+  }
+
+  private syncEnergyDefaultsFromCurrentQuote(): void {
+    const surfaceControl = this.energyReportData.get('windowSurfaceSqm');
+    const investmentControl = this.energyReportData.get('investmentAmount');
+    const computedSurface = this.calculateWindowSurfaceSqmFromRows();
+
+    if ((!surfaceControl?.value || surfaceControl.value <= 0) && computedSurface > 0) {
+      surfaceControl?.setValue(Number(computedSurface.toFixed(2)), {emitEvent: false});
+    }
+
+    if ((!investmentControl?.value || investmentControl.value <= 0) && this.quotation?.grandTotal) {
+      investmentControl?.setValue(Number(this.quotation.grandTotal.toFixed(2)), {emitEvent: false});
+    }
+  }
+
+  private calculateWindowSurfaceSqmFromRows(): number {
+    return this.windows.controls.reduce((total, control) => {
+      const rowValue = control.getRawValue();
+      const height = Number(rowValue.height) || 0;
+      const width = Number(rowValue.width) || 0;
+      const quantity = Number(rowValue.quantity) || 0;
+
+      if (height <= 0 || width <= 0 || quantity <= 0) {
+        return total;
+      }
+
+      return total + (height * width * quantity) / 1_000_000;
+    }, 0);
+  }
+
+  private recalculateOldWindowUw(): void {
+    const frameId = this.energyReportData.get('oldFrameTypeId')?.value;
+    const glassId = this.energyReportData.get('oldGlassTypeId')?.value;
+    const frameAreaRatio = Number(this.energyReportData.get('frameAreaRatio')?.value);
+
+    const frame = this.getEnergyWindowOptionById(this.energyCollections?.oldFrameTypes || [], frameId);
+    const glass = this.getEnergyWindowOptionById(this.energyCollections?.oldGlassTypes || [], glassId);
+
+    if (!frame || !glass || !frameAreaRatio || frameAreaRatio <= 0 || frameAreaRatio >= 1) {
+      this.energyReportData.get('oldWindowUw')?.setValue(null, {emitEvent: false});
+      return;
+    }
+
+    const oldWindowUw = (frame.uw * frameAreaRatio) + (glass.uw * (1 - frameAreaRatio));
+    this.energyReportData.get('oldWindowUw')?.setValue(Number(oldWindowUw.toFixed(3)), {emitEvent: false});
+  }
+
+  private getEnergyWindowOptionById(options: EnergyWindowOption[], id: string | null | undefined): EnergyWindowOption | undefined {
+    return options.find((option) => option.id === id);
+  }
+
+  private buildEnergyCalculationPayload(): EnergyReportData & Partial<WindowsPayload> {
+    const raw = this.energyReportData.getRawValue() as EnergyReportData;
+    return {
+      ...raw,
+      windowsData: this.buildWindowsPayload().windowsData
+    };
+  }
+
+  private isEnergyCalculationReady(): boolean {
+    if (!this.energyReportData.valid) {
+      return false;
+    }
+
+    return this.getEnergyValidationMessages().length === 0;
+  }
+
+  private getEnergyValidationMessages(): string[] {
+    const raw = this.energyReportData.getRawValue() as EnergyReportData;
+    const messages: string[] = [];
+
+    if (!raw.municipalityId) messages.push('comune');
+    if (!raw.fuelId) messages.push('combustibile');
+    if (!raw.buildingTypeId) messages.push('tipologia edificio');
+    if (!raw.exposureTypeId) messages.push('esposizione');
+    if (!raw.oldFrameTypeId) messages.push('telaio esistente');
+    if (!raw.oldGlassTypeId) messages.push('vetrazione esistente');
+    if (!raw.frameAreaRatio) messages.push('percentuale telaio');
+    if (!(raw.oldWindowUw && raw.oldWindowUw > 0)) messages.push('Uw infisso esistente');
+    if (!(raw.newWindowUw && raw.newWindowUw > 0)) messages.push('Uw nuovo infisso');
+    if (!(raw.windowSurfaceSqm && raw.windowSurfaceSqm > 0)) messages.push('superficie intervento');
+    if (!(raw.investmentAmount && raw.investmentAmount > 0)) messages.push('importo investimento');
+
+    return messages;
+  }
+
   fillForm(): void {
     if (!this.collections) {
       console.error('Collections data is not loaded');
@@ -866,6 +1149,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.hasTriggeredWindowsValidation = false;
     this.hasTriggeredCustomValidation = false;
+    this.syncEnergyDefaultsFromCurrentQuote();
 
     // Helper function to pick a random item from an array
     function getRandomItem<T extends CollectionBaseItem>(items: T[], defaultValue: string | null = null): string | null {
@@ -899,7 +1183,12 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
     this.addWindowRow(true);
     this.hasTriggeredWindowsValidation = false;
     this.hasTriggeredCustomValidation = false;
+    this.hasTriggeredEnergyValidation = false;
     this.submitted = false;
+    this.selectedEnergyMunicipality = null;
+    this.energyMunicipalities = [];
+    this.energyCalculation = null;
+    this.initializeEnergyDefaults();
 
     this.calculatePriceSubject.next(null);
   }
@@ -946,7 +1235,8 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
       taxRate: billingPayload.taxRate ?? 22,
       supplierData: billingPayload.supplierData,
       customerData: billingPayload.customerData,
-      productData: billingPayload.productData
+      productData: billingPayload.productData,
+      energyReportData: billingPayload.energyReportData ?? {}
     });
     this.windows.removeAt(0);
 
@@ -987,6 +1277,17 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.hasTriggeredWindowsValidation = false;
     this.hasTriggeredCustomValidation = false;
+    this.hasTriggeredEnergyValidation = false;
+    this.energyCalculation = null;
+    this.selectedEnergyMunicipality = billingPayload.energyReportData?.municipalityId ? {
+      id: billingPayload.energyReportData.municipalityId,
+      comune: billingPayload.energyReportData.municipalityLabel || billingPayload.energyReportData.municipalityId,
+      provincia: billingPayload.energyReportData.province || undefined,
+      regione: billingPayload.energyReportData.region || undefined,
+      altitudineSlm: billingPayload.energyReportData.altitudeSlm ?? undefined,
+      gradiGiorno: billingPayload.energyReportData.degreeDays ?? undefined,
+      zonaClimatica: billingPayload.energyReportData.climateZone || undefined
+    } : null;
   }
 
 
@@ -1230,6 +1531,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
       })
     ).subscribe(({quotation}) => {
       this.quotation = quotation;
+      this.syncEnergyDefaultsFromCurrentQuote();
     });
   }
 
@@ -1521,6 +1823,8 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
       payload.taxRate = taxRate;
     }
 
+    payload.energyReportData = this.energyReportData.getRawValue() as EnergyReportData;
+
     if (activeLogo) {
       payload.logoDataUrl = activeLogo;
     }
@@ -1636,5 +1940,6 @@ enum TabNames {
   customer = 'personal-tab',
   product = 'product-tab',
   measurements = 'measurements-tab',
-  customData = 'custom-data-tab'
+  customData = 'custom-data-tab',
+  energyData = 'energy-data-tab'
 }

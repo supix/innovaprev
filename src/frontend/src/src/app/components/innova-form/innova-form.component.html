@@ -130,6 +130,12 @@
           Componenti aggiuntivi
         </button>
       </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" [id]="tabNames.energyData" data-bs-toggle="tab" data-bs-target="#energyDataSection"
+                [ngClass]="{ 'tab-is-invalid': hasErrorsInEnergyData() }" type="button" role="tab">
+          Risparmio energetico
+        </button>
+      </li>
     </ul>
     <div class="tab-content" id="tabContent">
 
@@ -723,6 +729,179 @@
                   [disabled]="addCustomRowCheck()">
             Aggiungi Componente
           </button>
+        </div>
+      </div>
+
+      <!-- Energy Data -->
+      <div class="tab-pane fade" id="energyDataSection" role="tabpanel">
+        <div [formGroup]="energyReportData" class="row g-3 mt-1 energy-section">
+          <div class="col-md-6">
+            <label class="form-label">Comune di installazione</label>
+            <ng-select
+              [items]="energyMunicipalities"
+              [loading]="isMunicipalitySearchLoading"
+              [typeahead]="municipalitySearchSubject"
+              [minTermLength]="2"
+              [searchable]="true"
+              [clearable]="true"
+              [editableSearchTerm]="true"
+              bindLabel="comune"
+              [compareWith]="compareEnergyMunicipalities"
+              [ngModel]="selectedEnergyMunicipality"
+              [ngModelOptions]="{ standalone: true }"
+              (change)="onEnergyMunicipalitySelection($event)"
+              placeholder="Digita almeno 2 caratteri">
+              <ng-template ng-option-tmp let-item="item">
+                <div>{{ item.comune }}<span *ngIf="item.provincia"> ({{ item.provincia }})</span><span *ngIf="item.regione"> - {{ item.regione }}</span></div>
+              </ng-template>
+              <ng-template ng-label-tmp let-item="item">
+                {{ getEnergyMunicipalityCaption(item) }}
+              </ng-template>
+            </ng-select>
+            <div *ngIf="hasTriggeredEnergyValidation && !energyReportData.get('municipalityId')?.value" class="invalid-feedback d-block">
+              Il comune è obbligatorio.
+            </div>
+          </div>
+
+          <div class="col-md-3">
+            <label for="energyClimateZone" class="form-label">Zona climatica</label>
+            <input id="energyClimateZone" type="text" class="form-control" formControlName="climateZone" readonly/>
+          </div>
+
+          <div class="col-md-3">
+            <label for="energyDegreeDays" class="form-label">Gradi giorno</label>
+            <input id="energyDegreeDays" type="number" class="form-control" formControlName="degreeDays" readonly/>
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label">Tipologia edificio</label>
+            <ng-select
+              [items]="energyCollections?.buildingTypes || []"
+              bindLabel="label"
+              bindValue="id"
+              [searchable]="false"
+              [clearable]="false"
+              formControlName="buildingTypeId"
+              (change)="onEnergyConfigurationChanged()">
+            </ng-select>
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label">Esposizione</label>
+            <ng-select
+              [items]="energyCollections?.exposureTypes || []"
+              bindLabel="label"
+              bindValue="id"
+              [searchable]="false"
+              [clearable]="false"
+              formControlName="exposureTypeId"
+              (change)="onEnergyConfigurationChanged()">
+            </ng-select>
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label">Combustibile</label>
+            <ng-select
+              [items]="energyCollections?.fuels || []"
+              bindLabel="label"
+              bindValue="id"
+              [searchable]="true"
+              [clearable]="false"
+              formControlName="fuelId"
+              (change)="onEnergyConfigurationChanged()">
+            </ng-select>
+            <div *ngIf="hasTriggeredEnergyValidation && !energyReportData.get('fuelId')?.value" class="invalid-feedback d-block">
+              Il combustibile è obbligatorio.
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label">Telaio esistente</label>
+            <ng-select
+              [items]="energyCollections?.oldFrameTypes || []"
+              bindLabel="label"
+              bindValue="id"
+              [searchable]="true"
+              [clearable]="false"
+              formControlName="oldFrameTypeId"
+              (change)="onEnergyConfigurationChanged()">
+            </ng-select>
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label">Vetrazione esistente</label>
+            <ng-select
+              [items]="energyCollections?.oldGlassTypes || []"
+              bindLabel="label"
+              bindValue="id"
+              [searchable]="true"
+              [clearable]="false"
+              formControlName="oldGlassTypeId"
+              (change)="onEnergyConfigurationChanged()">
+            </ng-select>
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label">Percentuale area telaio</label>
+            <ng-select
+              [items]="energyCollections?.frameAreaRatios || []"
+              bindLabel="label"
+              bindValue="ratio"
+              [searchable]="false"
+              [clearable]="false"
+              formControlName="frameAreaRatio"
+              (change)="onEnergyConfigurationChanged()">
+            </ng-select>
+          </div>
+
+          <div class="col-md-4">
+            <label for="energyOldUw" class="form-label">Uw infisso esistente</label>
+            <input id="energyOldUw" type="number" class="form-control" formControlName="oldWindowUw" readonly/>
+          </div>
+
+          <div class="col-md-4" *ngIf="energyReportData.get('newWindowUw') as newWindowUwControl">
+            <label for="energyNewUw" class="form-label">Uw nuovo infisso</label>
+            <input id="energyNewUw" type="number" step="0.001" class="form-control"
+                   formControlName="newWindowUw"
+                   [ngClass]="{ 'is-invalid': hasTriggeredEnergyValidation && newWindowUwControl.invalid }"
+                   (input)="onEnergyConfigurationChanged()"/>
+          </div>
+
+          <div class="col-md-4" *ngIf="energyReportData.get('windowSurfaceSqm') as windowSurfaceControl">
+            <label for="energyWindowSurface" class="form-label">Superficie intervento (m²)</label>
+            <input id="energyWindowSurface" type="number" step="0.01" class="form-control"
+                   formControlName="windowSurfaceSqm"
+                   [ngClass]="{ 'is-invalid': hasTriggeredEnergyValidation && windowSurfaceControl.invalid }"
+                   (input)="onEnergyConfigurationChanged()"/>
+          </div>
+
+          <div class="col-md-6" *ngIf="energyReportData.get('investmentAmount') as investmentAmountControl">
+            <label for="energyInvestmentAmount" class="form-label">Importo investimento (€)</label>
+            <input id="energyInvestmentAmount" type="number" step="0.01" class="form-control"
+                   formControlName="investmentAmount"
+                   [ngClass]="{ 'is-invalid': hasTriggeredEnergyValidation && investmentAmountControl.invalid }"
+                   (input)="onEnergyConfigurationChanged()"/>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label">Detrazione fiscale</label>
+            <ng-select
+              [items]="energyCollections?.deductions || []"
+              bindLabel="label"
+              bindValue="id"
+              [searchable]="false"
+              [clearable]="false"
+              formControlName="deductionId"
+              (change)="onEnergyConfigurationChanged()">
+            </ng-select>
+          </div>
+
+          <div class="col-12 d-flex flex-wrap gap-2 align-items-center">
+            <button type="button" class="btn btn-primary" (click)="calculateEnergyReport()" [disabled]="isEnergyCalculationLoading">
+              {{ isEnergyCalculationLoading ? 'Calcolo in corso…' : 'Calcola risparmio energetico' }}
+            </button>
+            <span class="text-muted small">La stima è indicativa e non sostituisce un calcolo asseverato.</span>
+          </div>
         </div>
       </div>
     </div>

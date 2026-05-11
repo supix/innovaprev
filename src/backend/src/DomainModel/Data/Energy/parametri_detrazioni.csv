@@ -1,0 +1,8 @@
+﻿codice,label,percentuale_detrazione,massimale_spesa,detrazione_applicabile
+ecobonus_50pct,Ecobonus 50%,50,96000,si
+ecobonus_36pct,Ecobonus 36%,36,96000,si
+bonus_casa_50pct,Bonus casa 50%,50,96000,si
+bonus_casa_36pct,Bonus casa 36%,36,96000,si
+bonus_sicurezza_50pct,Bonus sicurezza 50%,50,96000,si
+bonus_sicurezza_36pct,Bonus sicurezza 36%,36,48000,si
+nuova_costruzione,Nuova costruzione,0,,no
