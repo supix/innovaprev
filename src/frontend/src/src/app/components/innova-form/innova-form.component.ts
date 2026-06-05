@@ -95,7 +95,7 @@ export class InnovaFormComponent implements OnInit, AfterViewInit, OnDestroy {
     {label: 'Sì', value: true},
     {label: 'No', value: false}
   ];
-  taxRateOptions = [22, 10];
+  taxRateOptions = [22, 10, 4];
 
   debugIndex: number = 1;
 
