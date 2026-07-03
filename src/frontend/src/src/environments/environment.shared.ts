@@ -9,7 +9,10 @@ export const sharedEnvironment = {
       getQuote: 'getQuote',
       downloadPdf: 'pdf',
       collections: 'collections',
-      productImage: 'ProductImage'
+      productImage: 'ProductImage',
+      energyCollections: 'energy/collections',
+      energyMunicipalities: 'energy/municipalities',
+      energyCalculate: 'energy/calculate'
     }
   }
 };

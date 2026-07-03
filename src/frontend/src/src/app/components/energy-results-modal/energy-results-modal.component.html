@@ -1,0 +1,60 @@
+<div class="modal-backdrop fade show" (click)="close()"></div>
+<div class="modal fade show" tabindex="-1" role="dialog" style="display: block;" aria-modal="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div>
+          <h5 class="modal-title mb-1">Risultato risparmio energetico</h5>
+          <div class="modal-subtitle">{{ result.municipalityLabel }}<span *ngIf="result.climateZone"> · Zona {{ result.climateZone }}</span></div>
+        </div>
+        <button type="button" class="btn-close" aria-label="Chiudi" (click)="close()"></button>
+      </div>
+
+      <div class="modal-body">
+        <div class="energy-results">
+          <div class="energy-result-card">
+            <span class="energy-result-label">Energia primaria risparmiata</span>
+            <strong>{{ result.annualPrimaryEnergySavedKwh | number:'1.0-2' }} kWh/anno</strong>
+          </div>
+          <div class="energy-result-card">
+            <span class="energy-result-label">Risparmio economico annuo</span>
+            <strong>{{ result.annualEconomicSaving | currency:'EUR':'symbol':'1.2-2':'it-IT' }}</strong>
+          </div>
+          <div class="energy-result-card">
+            <span class="energy-result-label">CO₂ evitata</span>
+            <strong>{{ result.annualCo2SavedKg | number:'1.0-2' }} kg/anno</strong>
+          </div>
+          <div class="energy-result-card">
+            <span class="energy-result-label">Quota detrazione annua</span>
+            <strong>{{ result.annualDeductionQuota | currency:'EUR':'symbol':'1.2-2':'it-IT' }}</strong>
+          </div>
+          <div class="energy-result-card highlight">
+            <span class="energy-result-label">Rientro senza detrazione</span>
+            <strong>{{ result.paybackYearsWithoutDeduction != null ? (result.paybackYearsWithoutDeduction | number:'1.1-1') + ' anni' : 'n.d.' }}</strong>
+          </div>
+          <div class="energy-result-card highlight">
+            <span class="energy-result-label">Rientro con detrazione</span>
+            <strong>{{ result.paybackYearsWithDeduction != null ? (result.paybackYearsWithDeduction | number:'1.1-1') + ' anni' : 'n.d.' }}</strong>
+          </div>
+        </div>
+
+        <div class="energy-summary mt-3">
+          <div><strong>Comune:</strong> {{ result.municipalityLabel }}</div>
+          <div><strong>Gradi giorno:</strong> {{ result.degreeDays }}</div>
+          <div><strong>Tipologia edificio:</strong> {{ result.buildingTypeLabel }}</div>
+          <div><strong>Esposizione:</strong> {{ result.exposureTypeLabel }}</div>
+          <div><strong>Combustibile:</strong> {{ result.fuelLabel }}</div>
+          <div><strong>Superficie intervento:</strong> {{ result.windowSurfaceSqm | number:'1.0-2' }} m²</div>
+          <div><strong>Uw esistente / nuovo:</strong> {{ result.oldWindowUw | number:'1.2-3' }} / {{ result.newWindowUw | number:'1.2-3' }}</div>
+          <div><strong>Delta Uw:</strong> {{ result.deltaUw | number:'1.2-3' }}</div>
+          <div><strong>Investimento:</strong> {{ result.investmentAmount | currency:'EUR':'symbol':'1.2-2':'it-IT' }}</div>
+          <div><strong>Detrazione totale:</strong> {{ result.deductionTotal | currency:'EUR':'symbol':'1.2-2':'it-IT' }}</div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="close()">Chiudi</button>
+      </div>
+    </div>
+  </div>
+</div>
